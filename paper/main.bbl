@@ -1,0 +1,990 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Allaire%
+}{%
+Allaire%
+}{%
+{\protect \APACyear {2006}}%
+}]{%
+allaire2006}
+\APACinsertmetastar {%
+allaire2006}%
+\begin{APACrefauthors}%
+Allaire, G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2006}.
+\newblock
+\APACrefbtitle {Conception {{Optimale}} de {{Structures}}} {Conception {{Optimale}} de {{Structures}}}\ (\BVOL~58).
+\newblock
+\APACaddressPublisher{}{Springer Berlin Heidelberg}.
+\newblock
+\begin{APACrefDOI} \doi{10.1007/978-3-540-36856-4} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Allaire%
+, Dapogny%
+\BCBL {}\ \BBA {} Frey%
+}{%
+Allaire%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2014}}%
+}]{%
+allaire2014}
+\APACinsertmetastar {%
+allaire2014}%
+\begin{APACrefauthors}%
+Allaire, G.%
+, Dapogny, C.%
+\BCBL {}\ \BBA {} Frey, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2014}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Shape Optimization with a Level Set Based Mesh Evolution Method} {Shape optimization with a level set based mesh evolution method}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Computer Methods in Applied Mechanics and Engineering}{282}{}{22--53}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Allaire%
+, Dapogny%
+\BCBL {}\ \BBA {} Jouve%
+}{%
+Allaire%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2021}}%
+}]{%
+allaire2021}
+\APACinsertmetastar {%
+allaire2021}%
+\begin{APACrefauthors}%
+Allaire, G.%
+, Dapogny, C.%
+\BCBL {}\ \BBA {} Jouve, F.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Chapter 1 - {{Shape}} and {{Topology Optimization}}} {Chapter 1 - {{Shape}} and {{Topology Optimization}}}.{\BBCQ}
+\newblock
+\BIn{} A.~Bonito\ \BBA {} R\BPBI H.~Nochetto\ (\BEDS), \APACrefbtitle {Geometric {{Partial Differential Equations}} - {{Part II}}} {Geometric {{Partial Differential Equations}} - {{Part II}}}\ (\BVOL~22, \BPGS\ 1--132).
+\newblock
+\APACaddressPublisher{}{Elsevier}.
+\newblock
+\begin{APACrefDOI} \doi{10.1016/bs.hna.2020.10.004} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Allaire%
+, Jouve%
+\BCBL {}\ \BBA {} Toader%
+}{%
+Allaire%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2004}}%
+}]{%
+allaire2004}
+\APACinsertmetastar {%
+allaire2004}%
+\begin{APACrefauthors}%
+Allaire, G.%
+, Jouve, F.%
+\BCBL {}\ \BBA {} Toader, A\BHBI M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2004}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Structural Optimization Using Sensitivity Analysis and a Level-Set Method} {Structural optimization using sensitivity analysis and a level-set method}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of computational physics}{194}{1}{363--393}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Bagnardi%
+\ \BBA {} Hooper%
+}{%
+Bagnardi%
+\ \BBA {} Hooper%
+}{%
+{\protect \APACyear {2018}}%
+}]{%
+bagnardi2018}
+\APACinsertmetastar {%
+bagnardi2018}%
+\begin{APACrefauthors}%
+Bagnardi, M.%
+\BCBT {}\ \BBA {} Hooper, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2018}{{\APACmonth{07}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Inversion of {{Surface Deformation Data}} for {{Rapid Estimates}} of {{Source Parameters}} and {{Uncertainties}}: {{A Bayesian Approach}}} {Inversion of {{Surface Deformation Data}} for {{Rapid Estimates}} of {{Source Parameters}} and {{Uncertainties}}: {{A Bayesian Approach}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Geochemistry, Geophysics, Geosystems}{19}{7}{2194--2211}.
+\newblock
+\begin{APACrefDOI} \doi{10.1029/2018GC007585} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Bends{\o}e%
+\ \BBA {} Sigmund%
+}{%
+Bends{\o}e%
+\ \BBA {} Sigmund%
+}{%
+{\protect \APACyear {2004}}%
+}]{%
+bendsoe2004}
+\APACinsertmetastar {%
+bendsoe2004}%
+\begin{APACrefauthors}%
+Bends{\o}e, M\BPBI P.%
+\BCBT {}\ \BBA {} Sigmund, O.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2004}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Topology {{Optimization}} by {{Distribution}} of {{Isotropic Material}}} {Topology {{Optimization}} by {{Distribution}} of {{Isotropic Material}}}.{\BBCQ}
+\newblock
+\BIn{} M\BPBI P.~Bends{\o}e\ \BBA {} O.~Sigmund\ (\BEDS), \APACrefbtitle {Topology {{Optimization}}: {{Theory}}, {{Methods}}, and {{Applications}}} {Topology {{Optimization}}: {{Theory}}, {{Methods}}, and {{Applications}}}\ (\BPGS\ 1--69).
+\newblock
+\APACaddressPublisher{Berlin, Heidelberg}{Springer}.
+\newblock
+\begin{APACrefDOI} \doi{10.1007/978-3-662-05086-6_1} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Bui%
+, Dapogny%
+\BCBL {}\ \BBA {} Frey%
+}{%
+Bui%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2012}}%
+}]{%
+bui2012}
+\APACinsertmetastar {%
+bui2012}%
+\begin{APACrefauthors}%
+Bui, C.%
+, Dapogny, C.%
+\BCBL {}\ \BBA {} Frey, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2012}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {An Accurate Anisotropic Adaptation Method for Solving the Level Set Advection Equation} {An accurate anisotropic adaptation method for solving the level set advection equation}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{International Journal for Numerical Methods in Fluids}{70}{7}{899--922}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Cea%
+}{%
+Cea%
+}{%
+{\protect \APACyear {1986}}%
+}]{%
+cea1986}
+\APACinsertmetastar {%
+cea1986}%
+\begin{APACrefauthors}%
+Cea, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1986}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Conception {{Optimale Ou Identification}} de {{Formes}}, {{Calcul Rapide}} de {{La D{\'e}riv{\'e}e Directionnelle}} de {{La Fonction Co{\^u}t}}} {Conception {{Optimale Ou Identification}} de {{Formes}}, {{Calcul Rapide}} de {{La D{\'e}riv{\'e}e Directionnelle}} de {{La Fonction Co{\^u}t}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{ESAIM: Mod{\'e}lisation math{\'e}matique et analyse num{\'e}rique}{20}{3}{371--402}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Cervelli%
+, Murray%
+, Segall%
+, Aoki%
+\BCBL {}\ \BBA {} Kato%
+}{%
+Cervelli%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2001}}%
+}]{%
+cervelli2001}
+\APACinsertmetastar {%
+cervelli2001}%
+\begin{APACrefauthors}%
+Cervelli, P.%
+, Murray, M\BPBI H.%
+, Segall, P.%
+, Aoki, Y.%
+\BCBL {}\ \BBA {} Kato, T.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2001}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Estimating {{Source Parameters}} from {{Deformation Data}}, with an {{Application}} to the {{March}} 1997 {{Earthquake Swarm}} off the {{Izu Peninsula}}, {{Japan}}} {Estimating {{Source Parameters}} from {{Deformation Data}}, with an {{Application}} to the {{March}} 1997 {{Earthquake Swarm}} off the {{Izu Peninsula}}, {{Japan}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Geophysical Research: Solid Earth}{106}{B6}{11217--11237}.
+\newblock
+\begin{APACrefDOI} \doi{10.1029/2000JB900399} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Charco%
+\ \BBA {} {Gal{\'a}n del Sastre}%
+}{%
+Charco%
+\ \BBA {} {Gal{\'a}n del Sastre}%
+}{%
+{\protect \APACyear {2014}}%
+}]{%
+charco2014}
+\APACinsertmetastar {%
+charco2014}%
+\begin{APACrefauthors}%
+Charco, M.%
+\BCBT {}\ \BBA {} {Gal{\'a}n del Sastre}, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2014}{{\APACmonth{03}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Efficient {{Inversion}} of {{Three-Dimensional Finite Element Models}} of {{Volcano Deformation}}} {Efficient {{Inversion}} of {{Three-Dimensional Finite Element Models}} of {{Volcano Deformation}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Geophysical Journal International}{196}{3}{1441--1454}.
+\newblock
+\begin{APACrefDOI} \doi{10.1093/gji/ggt490} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Dapogny%
+\ \BBA {} Feppon%
+}{%
+Dapogny%
+\ \BBA {} Feppon%
+}{%
+{\protect \APACyear {2023}}%
+}]{%
+dapogny2023}
+\APACinsertmetastar {%
+dapogny2023}%
+\begin{APACrefauthors}%
+Dapogny, C.%
+\BCBT {}\ \BBA {} Feppon, F.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2023}{{\APACmonth{10}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Shape {{Optimization Using}} a {{Level Set Based Mesh Evolution Method}}: {{An Overview}} and {{Tutorial}}} {Shape {{Optimization Using}} a {{Level Set Based Mesh Evolution Method}}: {{An Overview}} and {{Tutorial}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Comptes Rendus. Math{\'e}matique}{361}{G8}{1267--1332}.
+\newblock
+\begin{APACrefDOI} \doi{10.5802/crmath.498} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Dzurisin%
+}{%
+Dzurisin%
+}{%
+{\protect \APACyear {2007}}%
+}]{%
+dzurisin2007}
+\APACinsertmetastar {%
+dzurisin2007}%
+\begin{APACrefauthors}%
+Dzurisin, D.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2007}.
+\newblock
+\APACrefbtitle {Volcano {{Deformation}}: {{Geodetic Monitoring Techniques}}} {Volcano {{Deformation}}: {{Geodetic Monitoring Techniques}}}.
+\newblock
+\APACaddressPublisher{Berlin ; New York : Chichester, UK}{Springer ; Praxis}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Feppon%
+, Allaire%
+\BCBL {}\ \BBA {} Dapogny%
+}{%
+Feppon%
+, Allaire%
+\BCBL {}\ \BBA {} Dapogny%
+}{%
+{\protect \APACyear {2020}}%
+}]{%
+feppon2020a}
+\APACinsertmetastar {%
+feppon2020a}%
+\begin{APACrefauthors}%
+Feppon, F.%
+, Allaire, G.%
+\BCBL {}\ \BBA {} Dapogny, C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2020}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Null Space Gradient Flows for Constrained Optimization with Applications to Shape Optimization} {Null space gradient flows for constrained optimization with applications to shape optimization}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{ESAIM: Control, Optimisation and Calculus of Variations}{26}{}{90}.
+\newblock
+\begin{APACrefDOI} \doi{10.1051/cocv/2020015} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Feppon%
+, Allaire%
+, Dapogny%
+\BCBL {}\ \BBA {} Jolivet%
+}{%
+Feppon%
+, Allaire%
+, Dapogny%
+\BCBL {}\ \BBA {} Jolivet%
+}{%
+{\protect \APACyear {2020}}%
+}]{%
+feppon2020}
+\APACinsertmetastar {%
+feppon2020}%
+\begin{APACrefauthors}%
+Feppon, F.%
+, Allaire, G.%
+, Dapogny, C.%
+\BCBL {}\ \BBA {} Jolivet, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2020}{{\APACmonth{09}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Topology {{Optimization}} of {{Thermal Fluid}}--{{Structure Systems Using Body-Fitted Meshes}} and {{Parallel Computing}}} {Topology {{Optimization}} of {{Thermal Fluid}}--{{Structure Systems Using Body-Fitted Meshes}} and {{Parallel Computing}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Computational Physics}{417}{}{109574}.
+\newblock
+\begin{APACrefDOI} \doi{10.1016/j.jcp.2020.109574} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Frei%
+}{%
+Frei%
+}{%
+{\protect \APACyear {2015}}%
+}]{%
+frei2015}
+\APACinsertmetastar {%
+frei2015}%
+\begin{APACrefauthors}%
+Frei, W.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2015}{{\APACmonth{12}}}{}.
+\newblock
+\APACrefbtitle {Designing {{New Structures}} with {{Shape Optimization}}.} {Designing {{New Structures}} with {{Shape Optimization}}.}
+\newblock
+\APACaddressPublisher{}{COMSOL}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Geuzaine%
+, Remacle%
+\BCBL {}\ \BBA {} Dular%
+}{%
+Geuzaine%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2009}}%
+}]{%
+geuzaine2009}
+\APACinsertmetastar {%
+geuzaine2009}%
+\begin{APACrefauthors}%
+Geuzaine, C.%
+, Remacle, J\BHBI F.%
+\BCBL {}\ \BBA {} Dular, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2009}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Gmsh: {{A Three-Dimensional Finite Element Mesh Generator}}} {Gmsh: {{A Three-Dimensional Finite Element Mesh Generator}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{International Journal for Numerical Methods in Engineering}{79}{11}{1309--1331}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Hecht%
+}{%
+Hecht%
+}{%
+{\protect \APACyear {2012}}%
+}]{%
+hecht2012}
+\APACinsertmetastar {%
+hecht2012}%
+\begin{APACrefauthors}%
+Hecht, F.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2012}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {New {{Development}} in {{FreeFem}}++} {New {{Development}} in {{FreeFem}}++}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Numerical Mathematics}{20}{3-4}{251--265}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Henrot%
+\ \BBA {} Pierre%
+}{%
+Henrot%
+\ \BBA {} Pierre%
+}{%
+{\protect \APACyear {2018}}%
+}]{%
+henrot2018}
+\APACinsertmetastar {%
+henrot2018}%
+\begin{APACrefauthors}%
+Henrot, A.%
+\BCBT {}\ \BBA {} Pierre, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2018}.
+\newblock
+\APACrefbtitle {Shape {{Variation}} and {{Optimization}}} {Shape {{Variation}} and {{Optimization}}}.
+\newblock
+\APACaddressPublisher{}{EMS Tracts in Mathematics Vol. 28}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Hickey%
+\ \BBA {} Gottsmann%
+}{%
+Hickey%
+\ \BBA {} Gottsmann%
+}{%
+{\protect \APACyear {2014}}%
+}]{%
+hickey2014}
+\APACinsertmetastar {%
+hickey2014}%
+\begin{APACrefauthors}%
+Hickey, J.%
+\BCBT {}\ \BBA {} Gottsmann, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2014}{{\APACmonth{06}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Benchmarking and {{Developing Numerical Finite Element Models}} of {{Volcanic Deformation}}} {Benchmarking and {{Developing Numerical Finite Element Models}} of {{Volcanic Deformation}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Volcanology and Geothermal Research}{280}{}{126--130}.
+\newblock
+\begin{APACrefDOI} \doi{10.1016/j.jvolgeores.2014.05.011} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Le~Quilliec%
+}{%
+Le~Quilliec%
+}{%
+{\protect \APACyear {2014}}%
+}]{%
+lequilliec2014}
+\APACinsertmetastar {%
+lequilliec2014}%
+\begin{APACrefauthors}%
+Le~Quilliec, G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2014}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Topology {{Optimization Procedure TOPOPTIM}} and {{Other Various Developments Made}} with {{Cast3M}}} {Topology {{Optimization Procedure TOPOPTIM}} and {{Other Various Developments Made}} with {{Cast3M}}}.{\BBCQ}
+\newblock
+
+\newblock
+\begin{APACrefDOI} \doi{10.13140/2.1.2718.3682} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Lucchini%
+, Torchio%
+, Cirimele%
+, Alotto%
+\BCBL {}\ \BBA {} Bettini%
+}{%
+Lucchini%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2022}}%
+}]{%
+lucchini2022}
+\APACinsertmetastar {%
+lucchini2022}%
+\begin{APACrefauthors}%
+Lucchini, F.%
+, Torchio, R.%
+, Cirimele, V.%
+, Alotto, P.%
+\BCBL {}\ \BBA {} Bettini, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2022}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Topology Optimization for Electromagnetics: {{A}} Survey} {Topology optimization for electromagnetics: {{A}} survey}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{IEEE Access}{10}{}{98593--98611}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+McTigue%
+}{%
+McTigue%
+}{%
+{\protect \APACyear {1987}}%
+}]{%
+mctigue1987}
+\APACinsertmetastar {%
+mctigue1987}%
+\begin{APACrefauthors}%
+McTigue, D\BPBI F.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1987}{{\APACmonth{11}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Elastic {{Stress}} and {{Deformation}} near a {{Finite Spherical Magma Body}}: {{Resolution}} of the {{Point Source Paradox}}} {Elastic {{Stress}} and {{Deformation}} near a {{Finite Spherical Magma Body}}: {{Resolution}} of the {{Point Source Paradox}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Geophysical Research: Solid Earth}{92}{B12}{12931--12940}.
+\newblock
+\begin{APACrefDOI} \doi{10.1029/JB092iB12p12931} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Mogi%
+}{%
+Mogi%
+}{%
+{\protect \APACyear {1958}}%
+}]{%
+mogi1958}
+\APACinsertmetastar {%
+mogi1958}%
+\begin{APACrefauthors}%
+Mogi, K.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1958}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Relations between the {{Eruptions}} of {{Various Volcanoes}} and the {{Deformations}} of the {{Ground Surfaces}} around {{Them}}} {Relations between the {{Eruptions}} of {{Various Volcanoes}} and the {{Deformations}} of the {{Ground Surfaces}} around {{Them}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Earthq Res Inst}{36}{}{99--134}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Murat%
+\ \BBA {} Simon%
+}{%
+Murat%
+\ \BBA {} Simon%
+}{%
+{\protect \APACyear {1976}}%
+}]{%
+murat1976}
+\APACinsertmetastar {%
+murat1976}%
+\begin{APACrefauthors}%
+Murat, F.%
+\BCBT {}\ \BBA {} Simon, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1976}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Sur Le Contr{\^o}le Par Un Domaine G{\'e}om{\'e}trique} {Sur le contr{\^o}le par un domaine g{\'e}om{\'e}trique}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Pr{\'e}-publication du Laboratoire d'Analyse Num{\'e}rique,(76015)}{}{}{}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Osher%
+\ \BBA {} Fedkiw%
+}{%
+Osher%
+\ \BBA {} Fedkiw%
+}{%
+{\protect \APACyear {2006}}%
+}]{%
+osher2006}
+\APACinsertmetastar {%
+osher2006}%
+\begin{APACrefauthors}%
+Osher, S.%
+\BCBT {}\ \BBA {} Fedkiw, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2006}.
+\newblock
+\APACrefbtitle {Level Set Methods and Dynamic Implicit Surfaces} {Level set methods and dynamic implicit surfaces}\ (\BVOL~153).
+\newblock
+\APACaddressPublisher{}{Springer Science \& Business Media}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Parks%
+\ \protect \BOthers {.}}{%
+Parks%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2024}}%
+}]{%
+parks2024}
+\APACinsertmetastar {%
+parks2024}%
+\begin{APACrefauthors}%
+Parks, M.%
+, Drouin, V.%
+, Geirsson, H.%
+, Hooper, A.%
+, Hreinsd{\'o}ttir, S.%
+, {\'O}feigsson, B.%
+\BDBL {}Tolpekin, V.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2024}{{\APACmonth{01}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Data and {{Geodetic Modelling Results}} for {{Science Article}} "{{Fracturing}} and {{Tectonic Stress Drives Ultra-Rapid Magma Flow}} into {{Dikes}}"} {Data and {{Geodetic Modelling Results}} for {{Science Article}} "{{Fracturing}} and {{Tectonic Stress Drives Ultra-Rapid Magma Flow}} into {{Dikes}}"}.{\BBCQ}
+\newblock
+
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Perrot%
+}{%
+Perrot%
+}{%
+{\protect \APACyear {2024}}%
+}]{%
+perrot2024}
+\APACinsertmetastar {%
+perrot2024}%
+\begin{APACrefauthors}%
+Perrot, T.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2024}{}{}.
+\newblock
+\APACrefbtitle {{\textbackslash}{{textttmagmaOpt}}.} {{\textbackslash}{{textttmagmaOpt}}.}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Plessix%
+}{%
+Plessix%
+}{%
+{\protect \APACyear {2006}}%
+}]{%
+plessix2006}
+\APACinsertmetastar {%
+plessix2006}%
+\begin{APACrefauthors}%
+Plessix, R\BHBI E.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2006}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {A Review of the Adjoint-State Method for Computing the Gradient of a Functional with Geophysical Applications} {A review of the adjoint-state method for computing the gradient of a functional with geophysical applications}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Geophysical Journal International}{167}{2}{495--503}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Sethian%
+}{%
+Sethian%
+}{%
+{\protect \APACyear {1999}}%
+}]{%
+sethian1999}
+\APACinsertmetastar {%
+sethian1999}%
+\begin{APACrefauthors}%
+Sethian, J\BPBI A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{1999}.
+\newblock
+\APACrefbtitle {Level Set Methods and Fast Marching Methods: Evolving Interfaces in Computational Geometry, Fluid Mechanics, Computer Vision, and Materials Science} {Level set methods and fast marching methods: Evolving interfaces in computational geometry, fluid mechanics, computer vision, and materials science}\ (\BVOL~3).
+\newblock
+\APACaddressPublisher{}{Cambridge university press}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Sigmund%
+}{%
+Sigmund%
+}{%
+{\protect \APACyear {2001}}%
+}]{%
+sigmund2001}
+\APACinsertmetastar {%
+sigmund2001}%
+\begin{APACrefauthors}%
+Sigmund, O.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2001}{{\APACmonth{04}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {A 99 {{Line Topology Optimization Code Written}} in {{Matlab}}} {A 99 {{Line Topology Optimization Code Written}} in {{Matlab}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Structural and Multidisciplinary Optimization}{21}{2}{120--127}.
+\newblock
+\begin{APACrefDOI} \doi{10.1007/s001580050176} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Sigmund%
+\ \BBA {} Maute%
+}{%
+Sigmund%
+\ \BBA {} Maute%
+}{%
+{\protect \APACyear {2013}}%
+}]{%
+sigmund2013}
+\APACinsertmetastar {%
+sigmund2013}%
+\begin{APACrefauthors}%
+Sigmund, O.%
+\BCBT {}\ \BBA {} Maute, K.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2013}{{\APACmonth{12}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Topology {{Optimization Approaches}}: {{A Comparative Review}}} {Topology {{Optimization Approaches}}: {{A Comparative Review}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Structural and Multidisciplinary Optimization}{48}{6}{1031--1055}.
+\newblock
+\begin{APACrefDOI} \doi{10.1007/s00158-013-0978-6} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Sigmundsson%
+\ \protect \BOthers {.}}{%
+Sigmundsson%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2024}}%
+}]{%
+sigmundsson2024}
+\APACinsertmetastar {%
+sigmundsson2024}%
+\begin{APACrefauthors}%
+Sigmundsson, F.%
+, Parks, M.%
+, Geirsson, H.%
+, Hooper, A.%
+, Drouin, V.%
+, Vogfj{\"o}rd, K\BPBI S.%
+\BDBL {}Barsotti, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2024}{{\APACmonth{02}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Fracturing and {{Tectonic Stress Drives Ultrarapid Magma Flow}} into {{Dikes}}} {Fracturing and {{Tectonic Stress Drives Ultrarapid Magma Flow}} into {{Dikes}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Science}{}{}{eadn2838}.
+\newblock
+\begin{APACrefDOI} \doi{10.1126/science.adn2838} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Slavov%
+\ \BBA {} {Konsulova-Bakalova}%
+}{%
+Slavov%
+\ \BBA {} {Konsulova-Bakalova}%
+}{%
+{\protect \APACyear {2019}}%
+}]{%
+slavov2019}
+\APACinsertmetastar {%
+slavov2019}%
+\begin{APACrefauthors}%
+Slavov, S.%
+\BCBT {}\ \BBA {} {Konsulova-Bakalova}, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2019}{{\APACmonth{01}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Optimizing {{Weight}} of {{Housing Elements}} of {{Two-stage Reducer}} by {{Using}} the {{Topology Management Optimization Capabilities Integrated}} in {{SOLIDWORKS}}: {{A Case Study}}} {Optimizing {{Weight}} of {{Housing Elements}} of {{Two-stage Reducer}} by {{Using}} the {{Topology Management Optimization Capabilities Integrated}} in {{SOLIDWORKS}}: {{A Case Study}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Machines}{7}{1}{9}.
+\newblock
+\begin{APACrefDOI} \doi{10.3390/machines7010009} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Taylor%
+, Johnson%
+\BCBL {}\ \BBA {} Herd%
+}{%
+Taylor%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2021}}%
+}]{%
+taylor2021}
+\APACinsertmetastar {%
+taylor2021}%
+\begin{APACrefauthors}%
+Taylor, N\BPBI C.%
+, Johnson, J\BPBI H.%
+\BCBL {}\ \BBA {} Herd, R\BPBI A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{{\APACmonth{11}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Making the {{Most}} of the {{Mogi Model}}: {{Size Matters}}} {Making the {{Most}} of the {{Mogi Model}}: {{Size Matters}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Volcanology and Geothermal Research}{419}{}{107380}.
+\newblock
+\begin{APACrefDOI} \doi{10.1016/j.jvolgeores.2021.107380} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Trasatti%
+}{%
+Trasatti%
+}{%
+{\protect \APACyear {2022}}%
+}]{%
+trasatti2022}
+\APACinsertmetastar {%
+trasatti2022}%
+\begin{APACrefauthors}%
+Trasatti, E.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2022}{{\APACmonth{07}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Volcanic and {{Seismic Source Modeling}}: {{An Open Tool}} for {{Geodetic Data Modeling}}} {Volcanic and {{Seismic Source Modeling}}: {{An Open Tool}} for {{Geodetic Data Modeling}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Frontiers in Earth Science}{10}{}{}.
+\newblock
+\begin{APACrefDOI} \doi{10.3389/feart.2022.917222} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Valssson%
+}{%
+Valssson%
+}{%
+{\protect \APACyear {2019}}%
+}]{%
+valssson2019}
+\APACinsertmetastar {%
+valssson2019}%
+\begin{APACrefauthors}%
+Valssson, G\BPBI {\TH}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2019}{{\APACmonth{03}}}{}.
+\newblock
+\APACrefbtitle {{{ISN2016}} - {{T{\ae}knisk{\'y}rsla}}} {{{ISN2016}} - {{T{\ae}knisk{\'y}rsla}}}\ \APACbVolEdTR{}{\BTR{}}.
+\newblock
+\APACaddressInstitution{{\'I}slands}{Landm{\ae}lingar}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Velez%
+, Euillades%
+, Caselli%
+, Blanco%
+\BCBL {}\ \BBA {} D{\'i}az%
+}{%
+Velez%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2011}}%
+}]{%
+velez2011}
+\APACinsertmetastar {%
+velez2011}%
+\begin{APACrefauthors}%
+Velez, M\BPBI L.%
+, Euillades, P.%
+, Caselli, A.%
+, Blanco, M.%
+\BCBL {}\ \BBA {} D{\'i}az, J\BPBI M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2011}{{\APACmonth{04}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Deformation of {{Copahue Volcano}}: {{Inversion}} of {{InSAR Data Using}} a {{Genetic Algorithm}}} {Deformation of {{Copahue Volcano}}: {{Inversion}} of {{InSAR Data Using}} a {{Genetic Algorithm}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Volcanology and Geothermal Research}{202}{1}{117--126}.
+\newblock
+\begin{APACrefDOI} \doi{10.1016/j.jvolgeores.2011.01.012} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Yang%
+, Davis%
+\BCBL {}\ \BBA {} Dieterich%
+}{%
+Yang%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {1988}}%
+}]{%
+yang1988}
+\APACinsertmetastar {%
+yang1988}%
+\begin{APACrefauthors}%
+Yang, X\BHBI M.%
+, Davis, P\BPBI M.%
+\BCBL {}\ \BBA {} Dieterich, J\BPBI H.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1988}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Deformation from {{Inflation}} of a {{Dipping Finite Prolate Spheroid}} in an {{Elastic Half-Space}} as a {{Model}} for {{Volcanic Stressing}}} {Deformation from {{Inflation}} of a {{Dipping Finite Prolate Spheroid}} in an {{Elastic Half-Space}} as a {{Model}} for {{Volcanic Stressing}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Geophysical Research: Solid Earth}{93}{B5}{4249--4257}.
+\newblock
+\begin{APACrefDOI} \doi{10.1029/JB093iB05p04249} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}

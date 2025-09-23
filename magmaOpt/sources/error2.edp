@@ -1,0 +1,62 @@
+/* Calculation of the ERROR of the input structure */
+include "./sources/inout.idp"
+include "./sources/macros.idp"
+include "./sources/insar.idp"
+
+load "msh3"
+load "iovtk"
+
+/* Get mesh and sol names, and global parameters */
+string MESH       = getsParam(EXCHFILE,"MeshName");
+string SOL        = getsParam(EXCHFILE,"DispName");
+int REFUP        = getiParam(EXCHFILE,"Refup");
+int REFNEU        = getiParam(EXCHFILE,"Neumann");
+int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
+
+// string MSHLOS      = getsParam(EXCHFILE,"MeshLos");
+string LOS1       = getsParam(EXCHFILE,"Track1");
+string LOS2       = getsParam(EXCHFILE,"Track2");
+
+real err;
+// real err1;
+/* Loading mesh */
+mesh3 Th = readmesh3(MESH);
+
+/* Finite element spaces and functions */
+fespace Vh(Th,P1);
+Vh ux,uy,uz,los1,los2,ulos1,ulos2;
+
+
+/* Read solution */
+loadvec3(SOL,ux[],uy[],uz[]);
+
+
+
+/*Get LOS displacement*/
+// mesh3 Thl = readmesh3(MSHLOS);
+// fespace Vhl(Thl,P1);
+// Vhl losl1,losl2;
+// loadsol(LOS1,losl1[]);
+// loadsol(LOS2,losl2[]);
+// //Interpolation on the current mesh
+// los1 = losl1 ;
+// los2 = losl2 ;
+
+loadsol(LOS1,los1[]);
+loadsol(LOS2,los2[]);
+
+err = int2d(Th,REFUP)(jlos(ux,uy,uz,los1,los2));
+
+ulos1 = UtoLOS1(ux,uy,uz);
+ulos2 = UtoLOS2(ux,uy,uz);
+
+savevtk("ulos.vtu",Th,[ulos1,ulos2,0]);
+/* Save result */
+setrParam(EXCHFILE,"Error",err);
+cout << "ERROR : " << err << endl ;
+
+// check if not skipping -99 terms change => YES
+// err1 = int2d(Th,REFUP)((UtoLOS1(ux,uy,uz)-los1)^2+(UtoLOS2(ux,uy,uz)-los2)^2);
+// cout << "ERROR : " << err1 << endl ;
+
+

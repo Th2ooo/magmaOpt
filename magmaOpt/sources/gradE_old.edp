@@ -1,0 +1,85 @@
+/* Calculation of a shape gradient (not a descent direction) for the compliance functional */
+include "./sources/inout.idp"
+include "./sources/macros.idp"
+load "msh3"
+// load "iovtk"
+/* Get mesh and sol names */
+string MESH       = getsParam(EXCHFILE,"MeshName");
+string DISP       = getsParam(EXCHFILE,"DispName");
+string GRADE     = getsParam(EXCHFILE,"GradEName");
+string ADJ        = getsParam(EXCHFILE,"AdjName");
+string PHI        = getsParam(EXCHFILE,"PhiName");
+int REFINT          = getiParam(EXCHFILE,"Refint");
+int REFNEU        = getiParam(EXCHFILE,"Neumann");
+int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
+
+/* Loading mesh */
+mesh3 Th = readmesh3(MESH);
+
+/* Finite element spaces and functions */
+fespace Vh(Th,P1);
+fespace Vh0(Th,P0);
+
+Vh ux,uy,uz,px,py,pz,g,v,phi,nx,ny,nz,norm,kappa,Neug;
+Vh0 reg = region;
+
+/* Load elastic displacement */
+loadvec3(DISP,ux[],uy[],uz[]);
+loadvec3(ADJ,px[],py[],pz[]);
+
+/* Mesh of the interior part and corresponding FE spaces */
+mesh3 Thi = trunc(Th,(reg(x,y,z) == REFINT),label=REFINT);
+
+fespace Vhi(Thi,P1);
+fespace Vh0i(Thi,P0);
+
+Vhi uix,uiy,uiz,pix,piy,piz;
+Vh0i Aeuep;
+
+/* Integrand of the shape derivative */
+uix = ux;
+uiy = uy;
+uiz = uz;
+pix = px;
+piy = py;
+piz = pz;
+
+
+/* Computation of shape gradient terms */
+/*Possible to externalize the computation bc problem solution g is not in these terms*/
+
+//elasticproduct
+Aeuep = mu*(2.0*(dx(uix)*dx(pix)+dy(uiy)*dy(piy)+dz(uiz)*dz(piz))
+     + ((dx(uiy)+dy(uix))*(dx(piy)+dy(pix)) + (dx(uiz)+dz(uix))*(dx(piz)+dz(pix)) + (dy(uiz)+dz(uiy))*(dy(piz)+dz(piy))))
+     + lm*(dx(uix)+dy(uiy)+dz(uiz))*(dx(pix)+dy(piy)+dz(piz)) ;
+
+
+//normal vector
+loadsol(PHI,phi[]);
+real eps = 1.e-6;
+norm = sqrt(eps+dx(phi)*dx(phi)+dy(phi)*dy(phi)+dz(phi)*dz(phi));
+nx = dx(phi)/norm ;
+ny = dy(phi)/norm ;
+nz = dz(phi)/norm ;
+kappa = dx(nx)+dy(ny)+dz(nz); //mean curvature
+
+
+//gradient of neumann boundary condition (red term) !!!peut être *-1
+Neug = -DPs*(
+     (dx((nx))*(nx)*pix+dy(ny)*(ny)*piy+dz(nz)*(nz)*piz)
+     +(dx(pix)*(nx)^2+dy(piy)*(ny)^2+dz(piz)*(nz)^2)
+     +kappa*(nx*pix+ny*piy+nz*piz));
+
+
+
+/* Resolution of the extension - regularization problem */
+problem velext(g,v,solver=CG) = psreg(g,v)
+                        - int2d(Thi,REFISO)((Aeuep+Neug)*v);
+                        // + on(REFNEU,g=0.0);
+
+/* Solve problem and save solution */
+velext;
+printsol(GRADE,g[]);
+
+// savevtk("normal.vtu", Th, [-nx,-ny,-nz]);
+cout << "GRADE" << g[] << endl ;

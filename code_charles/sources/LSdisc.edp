@@ -1,0 +1,46 @@
+/* Calculation of the compliance of the input structure */
+include "./sources/inout.idp"
+include "./sources/macros.idp"
+load "msh3"
+load "medit"
+load "iovtk"
+
+/* Get mesh and sol names, and global parameters */
+string MESH       = getsParam(EXCHFILE,"MeshName");
+string MESHT      = getsParam(EXCHFILE,"MeshTarget");
+string SOL        = getsParam(EXCHFILE,"DispName");
+string SOLT       = getsParam(EXCHFILE,"SolTarget");
+int REFEXT        = getiParam(EXCHFILE,"Refext");
+int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
+int REFTARG       = getiParam(EXCHFILE,"Observation");
+
+/* Loading mesh and target mesh*/
+mesh3 Th  = readmesh3(MESH);
+mesh3 ThT = readmesh3(MESHT);
+
+/* Finite element spaces and functions */
+fespace Vh(Th,P1);
+fespace VhT(ThT,P1);
+Vh ux,uy,uz,utemx,utemy,utemz;
+VhT uxT,uyT,uzT;
+
+/* Other parameters */
+real J;
+
+/* Read solution and observation */
+loadvec3(SOL,ux[],uy[],uz[]);
+loadvec3(SOLT,uxT[],uyT[],uzT[]);
+
+/* Interpolation from ThT to Th*/
+utemx = uxT;
+utemy = uyT;
+utemz = uzT;
+
+/* Calculate objective */
+J = int2d(Th,REFTARG)( (ux-utemx)^2 + (uy-utemy)^2 + (uy-utemy)^2 );
+
+/* Save result */
+setrParam(EXCHFILE,"LSdiscrepancy",J);
+
+
+savevtk("obj.vtu", ThT, [uxT,uyT,uzT]);

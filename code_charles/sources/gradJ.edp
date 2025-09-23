@@ -1,0 +1,64 @@
+/* Calculation of a shape gradient (not a descent direction) for the compliance functional */
+include "./sources/inout.idp"
+include "./sources/macros.idp"
+load "msh3"
+load "iovtk"
+
+/* Get mesh and sol names */
+string MESH       = getsParam(EXCHFILE,"MeshName");
+string DISP       = getsParam(EXCHFILE,"DispName");
+string ADJ        = getsParam(EXCHFILE,"AdjName");
+string GRADJ      = getsParam(EXCHFILE,"GradName");
+int REFEXT        = getiParam(EXCHFILE,"Refext");
+int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
+string PHI        = getsParam(EXCHFILE,"PhiName");
+
+/* Load mesh */
+mesh3 Th = readmesh3(MESH);
+
+/* Finite element spaces and functions */
+fespace Vh(Th,P1);
+fespace Vh0(Th,P0);
+
+Vh ux,uy,uz,px,py,pz,g,v,phi;
+Vh0 reg = region;
+
+/* Load elastic and adjoint displacements */
+loadvec3(DISP,ux[],uy[],uz[]);
+loadvec3(ADJ,px[],py[],pz[]);
+
+/* Mesh of the exterior part and corresponding FE spaces */
+mesh3 The = trunc(Th,(reg(x,y,z) == REFEXT),label=REFEXT);
+fespace Vhe(The,P1);
+fespace Vh0e(The,P0);
+Vhe uex,uey,uez,pex,pey,pez;
+Vh0e Aeuep,divp;
+
+/* Integrand of the shape derivative */
+uex = ux;
+uey = uy;
+uez = uz;
+
+pex = px;
+pey = py;
+pez = pz;
+
+Aeuep = 2.0*mu*( dx(uex)*dx(pex) + dy(uey)*dy(pey) + dz(uez)*dz(pez) )
+        + mu*( (dx(uey)+dy(uex))*(dx(pey)+dy(pex)) + (dx(uez)+dz(uex))*(dx(pez)+dz(pex)) + (dy(uez)+dz(uey))*(dy(pez)+dz(pey)) )
+        + lm * (dx(uex)+dy(uey)+dz(uez)) * (dx(pex)+dy(pey)+dz(pez));
+        
+divp  = dx(pex) + dy(pey) + dz(pez);
+
+/* Resolution of the extension - regularization problem */
+problem velext(g,v,solver=CG) = psreg(g,v)
+                        - int2d(The,REFISO)(-Aeuep*v -Deltap*divp*v);
+
+/* Solve problem and save solution */
+velext;
+printsol(GRADJ,g[]);
+
+
+
+
+loadsol(PHI,phi[]);
+savevtk("ls.vtu", Th,phi);

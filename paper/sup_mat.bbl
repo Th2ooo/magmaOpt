@@ -1,0 +1,84 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Allaire%
+, Jouve%
+\BCBL {}\ \BBA {} Toader%
+}{%
+Allaire%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2004}}%
+}]{%
+allaire2004}
+\APACinsertmetastar {%
+allaire2004}%
+\begin{APACrefauthors}%
+Allaire, G.%
+, Jouve, F.%
+\BCBL {}\ \BBA {} Toader, A\BHBI M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2004}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Structural Optimization Using Sensitivity Analysis and a
+  Level-Set Method} {Structural optimization using sensitivity analysis and a
+  level-set method}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of computational physics}{194}{1}{363--393}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Cea%
+}{%
+Cea%
+}{%
+{\protect \APACyear {1986}}%
+}]{%
+cea1986}
+\APACinsertmetastar {%
+cea1986}%
+\begin{APACrefauthors}%
+Cea, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1986}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Conception {{Optimale Ou Identification}} de {{Formes}},
+  {{Calcul Rapide}} de {{La D{\'e}riv{\'e}e Directionnelle}} de {{La Fonction
+  Co{\^u}t}}} {Conception {{Optimale Ou Identification}} de {{Formes}},
+  {{Calcul Rapide}} de {{La D{\'e}riv{\'e}e Directionnelle}} de {{La Fonction
+  Co{\^u}t}}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{ESAIM: Mod{\'e}lisation math{\'e}matique et analyse
+  num{\'e}rique}{20}{3}{371--402}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Henrot%
+\ \BBA {} Pierre%
+}{%
+Henrot%
+\ \BBA {} Pierre%
+}{%
+{\protect \APACyear {2018}}%
+}]{%
+henrot2018}
+\APACinsertmetastar {%
+henrot2018}%
+\begin{APACrefauthors}%
+Henrot, A.%
+\BCBT {}\ \BBA {} Pierre, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2018}.
+\newblock
+\APACrefbtitle {Shape {{Variation}} and {{Optimization}}} {Shape {{Variation}}
+  and {{Optimization}}}.
+\newblock
+\APACaddressPublisher{}{EMS Tracts in Mathematics Vol. 28}.
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}

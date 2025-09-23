@@ -1,0 +1,11 @@
+magmaOpt/res/
+magmaOpt/best_results
+magmaOpt/data/
+unshared/
+*.mp4
+*.pyc
+
+*/res*/
+*.data
+*.mesh
+*.sol

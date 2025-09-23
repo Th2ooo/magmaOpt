@@ -1,0 +1,46 @@
+/* Calculation of a shape gradient (not a descent direction) for the compliance functional */
+include "./sources/inout.idp"
+include "./sources/macros.idp"
+
+load "msh3"
+
+
+/* Get mesh and sol names */
+string MESH       = getsParam(EXCHFILE,"MeshName");
+string DISP       = getsParam(EXCHFILE,"DispName");
+string GRADCP     = getsParam(EXCHFILE,"GradName");
+string PHI        = getsParam(EXCHFILE,"PhiName");
+int REFINT          = getiParam(EXCHFILE,"Refint");
+int REFNEU        = getiParam(EXCHFILE,"Neumann");
+int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
+
+/* Loading mesh */
+mesh3 Th = readmesh3(MESH);
+
+
+/* Finite element spaces and functions */
+fespace Vh(Th,P1);
+fespace Vh0(Th,P0);
+Vh nx,ny,nz,norm,phi,g,v,kappa;
+Vh0 reg = region;
+
+/* Mesh of the interior part */
+mesh3 Thi = trunc(Th,(reg(x,y,z) == REFINT),label=REFINT);
+
+/* Other parameters */
+real eps = 1.e-6;
+
+loadsol(PHI,phi[]);
+
+norm = sqrt(eps+dx(phi)*dx(phi)+dy(phi)*dy(phi)+dz(phi)*dz(phi));
+nx = dx(phi)/norm ;
+ny = dy(phi)/norm ;
+nz = dz(phi)/norm ;
+
+kappa = dx(nx)+dy(ny)+dz(nz); //mean curvature
+
+
+
+
+problem velext(g,v,solver=CG) = psreg(g,v)
+                        - int2d(Thi,REFISO)(dx(nx)*v);

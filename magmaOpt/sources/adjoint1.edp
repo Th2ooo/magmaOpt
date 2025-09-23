@@ -1,0 +1,79 @@
+/* Calculation of the adjoint state for the stress functional */
+include "./sources/inout.idp"
+include "./sources/macros.idp"
+
+load "medit"
+load "msh3"
+
+/* Get mesh and sol names, and global parameters */
+string MESH       = getsParam(EXCHFILE,"MeshName");
+string SOL        = getsParam(EXCHFILE,"DispName");
+string ADJ        = getsParam(EXCHFILE,"AdjName");
+int REFINT          = getiParam(EXCHFILE,"Refint");
+int REFDIR        = getiParam(EXCHFILE,"Dirichlet");
+int REFUP        = getiParam(EXCHFILE,"Refup");
+
+string OMESH       = getsParam(EXCHFILE,"ObjMesh");
+string OSOL        = getsParam(EXCHFILE,"ObjDisp");
+
+/* Loading mesh */
+mesh3 Th = readmesh3(MESH);
+
+/* Finite element spaces and functions */
+fespace Vh(Th,P1);
+fespace Vh0(Th,P0);
+Vh ux,uy,uz,px,py,pz;
+Vh0 reg = region;
+
+/* Load displacement */
+loadvec3(SOL,ux[],uy[],uz[]);
+
+/* Mesh of the interior part and corresponding FE space */
+mesh3 Thi = trunc(Th,(reg(x,y,z) == REFINT),label=REFINT);
+fespace Vhi(Thi,P1);
+Vhi uix,uiy,uiz,pix,piy,piz,vix,viy,viz,uxo,uyo,uzo;;
+
+
+/* Interpolation of displacement from full to sub mesh */
+uix = ux;
+uiy = uy;
+uiz = uz;
+
+
+
+
+// Load objective vector field
+mesh3 Thob = readmesh3(OMESH);
+fespace Vhob(Thob,P1);
+Vhob uxob,uyob,uzob;
+loadvec3(OSOL,uxob[],uyob[],uzob[]);
+// Project on the current mesh
+uxo = uxob ;
+uyo = uyob ;
+uzo = uzob ;
+
+
+// fespace Vh0i(Thi,P0);
+// Vh0i Aevep;
+// //elasticproduct
+// Aevep = mu*(2.0*(dx(vix)*dx(pix)+dy(viy)*dy(piy)+dz(viz)*dz(piz)) //diag 2mu*EPS
+//      + ((dx(viy)+dy(vix))*(dx(piy)+dy(pix)) + (dx(viz)+dz(vix))*(dx(piz)+dz(pix)) + (dy(viz)+dz(viy))*(dy(piz)+dz(piy)))) //sides 2mu*EPS
+//      + lm*(dx(vix)+dy(viy)+dz(viz))*(dx(pix)+dy(piy)+dz(piz)) ;//lm*tr(EPS)*Id
+
+
+/* Variational formulation of the problem */
+problem adjoint([pix,piy,piz],[vix,viy,viz]) =  int3d(Thi)(mu*(2.0*(dx(vix)*dx(pix)+dy(viy)*dy(piy)+dz(viz)*dz(piz)) + ((dx(viy)+dy(vix))*(dx(piy)+dy(pix)) + (dx(viz)+dz(vix))*(dx(piz)+dz(pix)) + (dy(viz)                          +dz(viy))*(dy(piz)+dz(piy)))) + lm*(dx(vix)+dy(viy)+dz(viz))*(dx(pix)+dy(piy)+dz(piz)))
+                                              + int2d(Thi,REFUP)(2.0*((uix-uxo)*vix+(uiy-uyo)*viy+(uiz-uzo)*viz))
+                                              + on(REFDIR,pix=0.0,piy=0.0,piz=0.0);
+
+
+/* Solve problem */
+adjoint;
+
+/* Transfer the problem on the full mesh */
+px = pix;
+py = piy;
+pz = piz ;
+
+/* Save solution */
+printvec3(ADJ,px[],py[],py[]);
