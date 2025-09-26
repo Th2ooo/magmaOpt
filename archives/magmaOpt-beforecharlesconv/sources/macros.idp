@@ -1,0 +1,31 @@
+/* General macros ansd global parameters for shape and topology optimization */
+/* File for communication of data with python */
+string EXCHFILE   = "./res/exch.data";
+
+/* Inner product for extension / regularization */
+real alpha        = getrParam(EXCHFILE,"Regularization");
+real alphaRLS     = getrParam(EXCHFILE,"RegularizationLS");
+macro psreg(u,v) ( int3d(Th)(alpha^2*(dx(u)*dx(v)+dy(u)*dy(v)+dz(u)*dz(v)) + u*v) )//EOM
+
+//Attempt elastic product implementation
+// macro psreg(u,v) ( int3d(Th)(2.0*mu*(dx(ux)*dx(vx)+dy(uy)*dy(vy)+dz(uz)*dz(vz))
+//                                    + mu*((dx(uy)+dy(ux))*(dx(vy)+dy(vx)) + (dx(uz)+dz(ux))*(dx(vz)+dz(vx)) + (dy(uz)+dz(uy))*(dy(vz)+dz(vy)))
+//                                    + lm*(dx(ux)+dy(uy)+dz(uz))*(dx(vx)+dy(vy)+dz(vz))
+//                                 + ux*vx+uy*vy+uz*vz) //
+
+
+/* Get magmatic source problem parameters */
+real E         = getrParam(EXCHFILE,"Young");
+real nu        = getrParam(EXCHFILE,"Poisson");
+real Rs        = getrParam(EXCHFILE,"Rvrai");
+real dpth      = getrParam(EXCHFILE,"Depth");
+real xst      = getrParam(EXCHFILE,"Xst");
+real yst      = getrParam(EXCHFILE,"Yst");
+real DPs       = getrParam(EXCHFILE,"Pressure") ;
+
+
+//real lm  = E*nu/((1+nu)*(1-2*nu)) ; //lambda lame coeff
+//real mu  = E/2*(1+nu);              //mu lame coeff
+
+real lm     = 0.5769;
+real mu     = 0.3846;

@@ -33,40 +33,47 @@ Vh0 reg = region;
 // savemesh(Th,"elasticitt.mesh");
 
 /* Mesh of the interior part and corresponding FE space */
-mesh3 Thi = trunc(Th,(reg(x,y,z) == REFINT),label=REFINT);
-
-// medit("full",Th);
-// mesh3 ell = trunc(Th,region=3) ;
-// medit("ell",ell);
-// medit("Interior",Thi);
-
-
-fespace Vhi(Thi,P1);
-Vhi uix,uiy,uiz,vix,viy,viz;
+// mesh3 Thi = trunc(Th,(reg(x,y,z) == REFEXT),label=REFEXT);
+//
+// // medit("full",Th);
+// // mesh3 ell = trunc(Th,region=3) ;
+// // medit("ell",ell);
+// // medit("Interior",Thi);
+//
+//
+// fespace Vhi(Thi,P1);
+// Vhi uix,uiy,uiz,vix,viy,viz;
 
 /* Variational formulation of the problem :
  MODIFICATION TO HAVE :
     - T = DP.n on source*/
-problem elas([uix,uiy,uiz],[vix,viy,viz],solver=CG) = int3d(Thi)(2.0*mu*(dx(uix)*dx(vix)+dy(uiy)*dy(viy)+dz(uiz)*dz(viz)))
-                                   + int3d(Thi)(mu*((dx(uiy)+dy(uix))*(dx(viy)+dy(vix)) + (dx(uiz)+dz(uix))*(dx(viz)+dz(vix)) + (dy(uiz)+dz(uiy))*(dy(viz)+dz(viy))))
-                                   + int3d(Thi)(lm*(dx(uix)+dy(uiy)+dz(uiz))*(dx(vix)+dy(viy)+dz(viz)))
-                                   + int2d(Thi,REFNEU)(+DPs*(vix*(N.x)+viy*(N.y)+viz*(N.z))) //Negative pressure bc the normal is coming inside the source
-                                   + on(REFDIR,uix=0.0,uiy=0.0,uiz=0.0);
+// problem elas([uix,uiy,uiz],[vix,viy,viz],solver=CG) = int3d(Thi)(2.0*mu*(dx(uix)*dx(vix)+dy(uiy)*dy(viy)+dz(uiz)*dz(viz)))
+//                                    + int3d(Thi)(mu*((dx(uiy)+dy(uix))*(dx(viy)+dy(vix)) + (dx(uiz)+dz(uix))*(dx(viz)+dz(vix)) + (dy(uiz)+dz(uiy))*(dy(viz)+dz(viy))))
+//                                    + int3d(Thi)(lm*(dx(uix)+dy(uiy)+dz(uiz))*(dx(vix)+dy(viy)+dz(viz)))
+//                                    + int2d(Thi,REFNEU)(+DPs*(vix*(N.x)+viy*(N.y)+viz*(N.z))) //Negative pressure bc the normal is coming inside the source
+//
+//                                    + on(REFDIR,uix=0.0,uiy=0.0,uiz=0.0);
 
-/*
-THEO : if i want to change the load case (uniform pressure over normal,
-                                   then i'll have to compute the normal,
-                                   wich is the gradient of the surface ;-((
-                                       */
 
+/* Mesh of the interior part and corresponding FE space */
+mesh3 The = trunc(Th,(reg(x,y,z) == REFEXT),label=REFEXT);
+
+fespace Vhe(The,P1);
+Vhe uex,uey,uez,vex,vey,vez;
+
+/* Variational formulation of the problem */
+problem elas([uex,uey,uez],[vex,vey,vez],solver=CG) = int3d(The)(2.0*mu*(dx(uex)*dx(vex)+dy(uey)*dy(vey)+dz(uez)*dz(vez)))
+                                   + int3d(The)(mu*((dx(uey)+dy(uex))*(dx(vey)+dy(vex)) + (dx(uez)+dz(uex))*(dx(vez)+dz(vex)) + (dy(uez)+dz(uey))*(dy(vez)+dz(vey))))
+                                   + int3d(The)(lm*(dx(uex)+dy(uey)+dz(uez))*(dx(vex)+dy(vey)+dz(vez)))
+                                   + int2d(The,REFISO)(DPs*(N.x*vex+N.y*vey+N.z*vez))
+                                   + on(REFDIR,uex=0.0,uey=0.0,uez=0.0);
 /* Solve problem */
 elas;
 
 /* Transfer the problem on the full mesh */
-ux = uix;
-uy = uiy;
-uz = uiz;
-
+ux = uex;
+uy = uey;
+uz = uez;
 
 
 cout << MESH << endl;

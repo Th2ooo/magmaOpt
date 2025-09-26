@@ -42,8 +42,6 @@ ZS = -0.3 #z coordinate of the center
 REX = 0.1 #x semi-axe of intial ellispoidal source
 REY = 0.2 #y semi-axe of intial ellispoidal source
 REZ = 0.1 #z semi-axe of intial ellispoidal source
-# REX = RVRAI ; REY = REX ; REZ = REX ;  #FOR TESTING
-
 
 # Error type parameters
 ERRMOD = 1  
@@ -129,6 +127,8 @@ FFTRUNC        = SCRIPT + "truncvid.edp"
 
 # Names of output and exchange files
 DEFMMG       = "./DEFAULT.mmg3d"
+DEFMSHD      = "./DEFAULT.mshdist"
+
 EXCHFILE     = RES + "exch.data"
 EXCHFILEVID  = VID + "exch.data"
 LOGFILE      = RES + "log.data"

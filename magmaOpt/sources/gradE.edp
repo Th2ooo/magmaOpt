@@ -10,6 +10,8 @@ string GRADE     = getsParam(EXCHFILE,"GradEName");
 string ADJ        = getsParam(EXCHFILE,"AdjName");
 string PHI        = getsParam(EXCHFILE,"PhiName");
 int REFINT          = getiParam(EXCHFILE,"Refint");
+int REFEXT        = getiParam(EXCHFILE,"Refext");
+
 int REFNEU        = getiParam(EXCHFILE,"Neumann");
 int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
 
@@ -28,7 +30,7 @@ loadvec3(DISP,ux[],uy[],uz[]);
 loadvec3(ADJ,px[],py[],pz[]);
 
 /* Mesh of the interior part and corresponding FE spaces */
-mesh3 Thi = trunc(Th,(reg(x,y,z) == REFINT),label=REFINT);
+mesh3 Thi = trunc(Th,(reg(x,y,z) == REFEXT),label=REFEXT);
 
 fespace Vhi(Thi,P1);
 fespace Vh0i(Thi,P0);
@@ -71,7 +73,7 @@ Neug = DPs*(dx(pix)+dy(piy)+dz(piz));
 
 /* Resolution of the extension - regularization problem */
 problem velext(g,v,solver=CG) = psreg(g,v)
-                        - int2d(Thi,REFISO)((-Aeuep+Neug)*v);
+                        - int2d(Thi,REFISO)(-Aeuep*v-Neug*v);
                         // + on(REFNEU,g=0.0);
 
 
@@ -83,7 +85,15 @@ problem velext(g,v,solver=CG) = psreg(g,v)
 velext;
 printsol(GRADE,g[]);
 
-
+// optional : just to check how level set is dicretised
 loadsol(PHI,phi[]);
 savevtk("ls.vtu", Th,phi);
+
+
+savevtk("p.vtu", Th, [px,py,pz]);
+
+savevtk("gscal.vtu", Th, g);
+
+
+
 cout << "GRADE" << g[] << endl ;

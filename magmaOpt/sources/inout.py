@@ -106,9 +106,15 @@ def iniWF():
   ff.close()
   
   # Create DEFAULT.mmg3d file: mmg removes components disconnected from bdy path.REFDIR
-  ff = open(path.DEFMMG,'w')
-  ff.write("LSBaseReferences\n1\n\n{refdir}".format(refdir=path.REFDIR))
+  # ff = open(path.DEFMMG,'w')
+  # ff.write("LSBaseReferences\n1\n\n{refdir}".format(refdir=path.REFDIR))
+  # ff.close()
+  
+  # Create DEFAULT.mshdist file: to make sure the level set is computed from the good interior
+  ff = open(path.DEFMSHD,'w')
+  ff.write(f"InteriorDomains\n1\n\n{path.REFINT}")
   ff.close()
+  
   
   # Add global information (e.g. about Dirichlet and Neumann boundaries)
   setAtt(file=path.EXCHFILE,attname="Dirichlet",attval=path.REFDIR)

@@ -44,3 +44,8 @@ setrParam(EXCHFILE,"LSdiscrepancy",J);
 
 
 savevtk("obj.vtu", ThT, [uxT,uyT,uzT]);
+
+
+medit("Therr", Th,  (ux-utemx)^2 + (uy-utemy)^2 + (uy-utemy)^2);
+
+// exec("ffmedit Therr");

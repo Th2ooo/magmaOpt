@@ -72,6 +72,8 @@ TESTSOL      = TESTDIR + "test.grad.sol"
 # Data
 MESHTARG     = "./meshT3.mesh"
 SOLTARG      = "./solT3.sol"
+# MESHTARG     = "./uobj.mesh"
+# SOLTARG      = "./uobj.sol"
 
 # Shortcut for various file types
 def step(n,typ) :

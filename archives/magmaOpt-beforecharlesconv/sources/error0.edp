@@ -1,0 +1,47 @@
+/* Calculation of the ERROR of the input structure */
+include "./sources/inout.idp"
+include "./sources/macros.idp"
+include "./sources/anadisp.edp"
+load "msh3"
+load "medit"
+/* Get mesh and sol names, and global parameters */
+string MESH       = getsParam(EXCHFILE,"MeshName");
+string SOL        = getsParam(EXCHFILE,"DispName");
+int REFUP        = getiParam(EXCHFILE,"Refup");
+int REFNEU        = getiParam(EXCHFILE,"Neumann");
+int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
+int OUTANA    =  getiParam(EXCHFILE,"OutAna");
+string OSOL        = getsParam(EXCHFILE,"ObjDisp");
+
+/* Loading mesh */
+mesh3 Th = readmesh3(MESH);
+
+/* Finite element spaces and functions */
+fespace Vh(Th,P1);
+Vh ux,uy,uz,uxo,uyo,uzo;
+
+/* Other parameters */
+real err;
+
+/* Read solution */
+loadvec3(SOL,ux[],uy[],uz[]);
+
+
+//Observed displacement computed with analytic solution
+cout << "BO";
+uxo = uxTi(x,y);
+uyo = uyTi(x,y);
+uzo = uzTi(x,y);
+
+
+err = int2d(Th,REFUP)((ux-uxo)^2+(uy-uyo)^2+(uz-uzo)^2);
+
+
+/* Save result */
+setrParam(EXCHFILE,"Error",err);
+cout << "ERROR : " << err << endl ;
+// medit("errormsh",Th);
+
+/*Out analytic displacement field*/
+if (OUTANA==1){
+printvec3(OSOL,uxo[],uyo[],uzo[]);}

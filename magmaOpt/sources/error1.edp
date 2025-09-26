@@ -1,55 +1,120 @@
-/* Calculation of the ERROR of the input structure */
+// /* Calculation of the ERROR of the input structure */
+// include "./sources/inout.idp"
+// include "./sources/macros.idp"
+//
+// load "msh3"
+// load "medit"
+// load "iovtk"
+// load "medit"
+//
+// /* Get mesh and sol names, and global parameters */
+// string MESH       = getsParam(EXCHFILE,"MeshName");
+// string SOL        = getsParam(EXCHFILE,"DispName");
+// int REFUP        = getiParam(EXCHFILE,"Refup");
+//
+// string OMESH       = getsParam(EXCHFILE,"ObjMesh");
+// string OSOL        = getsParam(EXCHFILE,"ObjDisp");
+//
+//
+// /* Loading mesh */
+// mesh3 Th = readmesh3(MESH);
+// mesh3 Thob = readmesh3(OMESH);// Load objective mesh
+//
+//
+// /* Finite element spaces and functions */
+// fespace Vh(Th,P1);
+// fespace Vhob(Thob,P1);
+//
+//
+// Vh ux,uy,uz,uxo,uyo,uzo;
+// Vhob uxob,uyob,uzob;
+//
+//
+// /* Other parameters */
+// real err;
+//
+// /* Read solution and obseravtion */
+// loadvec3(SOL,ux[],uy[],uz[]);
+// loadvec3(OSOL,uxob[],uyob[],uzob[]); // Load objective vector field
+//
+//
+// // Project on the current mesh
+// uxo = uxob ;
+// uyo = uyob ;
+// uzo = uzob ;
+//
+//
+//
+// // cout << "UXTI" << MESH << OMESH<< endl;
+//
+// err = int2d(Th,REFUP)( (ux-uxo)^2 + (uy-uyo)^2 + (uz-uzo)^2 );
+//
+// /* Save result */
+// setrParam(EXCHFILE,"Error",err);
+//
+// cout << "ERROR : " << err << endl ;
+// cout << "ObjMesh : " << OMESH << endl ;
+//
+// // medit("errormsh",Th);
+// savevtk("obj.vtu", Thob, [uxob,uyob,uzob]);
+//
+// medit("Therr", Th, (ux-uxo)^2+(uy-uyo)^2+(uz-uzo)^2);
+//
+// // medit("Thob", Thob,  [uxob,uyob,uzob]);
+// // medit("Th", Th,  [ux,uy,uz]);
+// // medit("Tho", Th,  [uxo,uyo,uzo]);
+//
+
+
+/* Calculation of the compliance of the input structure */
 include "./sources/inout.idp"
 include "./sources/macros.idp"
-
 load "msh3"
 load "medit"
+load "iovtk"
+
 /* Get mesh and sol names, and global parameters */
 string MESH       = getsParam(EXCHFILE,"MeshName");
+string MESHT      = getsParam(EXCHFILE,"ObjMesh");
 string SOL        = getsParam(EXCHFILE,"DispName");
-int REFUP        = getiParam(EXCHFILE,"Refup");
-int REFNEU        = getiParam(EXCHFILE,"Neumann");
+string SOLT       = getsParam(EXCHFILE,"ObjDisp");
+int REFEXT        = getiParam(EXCHFILE,"Refext");
 int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
+int REFTARG       = getiParam(EXCHFILE,"Refup");
 
-string OMESH       = getsParam(EXCHFILE,"ObjMesh");
-string OSOL        = getsParam(EXCHFILE,"ObjDisp");
-
-
-/* Loading mesh */
-mesh3 Th = readmesh3(MESH);
+/* Loading mesh and target mesh*/
+mesh3 Th  = readmesh3(MESH);
+mesh3 ThT = readmesh3(MESHT);
 
 /* Finite element spaces and functions */
 fespace Vh(Th,P1);
-Vh ux,uy,uz,uxo,uyo,uzo;
+fespace VhT(ThT,P1);
+Vh ux,uy,uz,utemx,utemy,utemz;
+VhT uxT,uyT,uzT;
 
 /* Other parameters */
-real err;
+real J;
 
-/* Read solution */
+/* Read solution and observation */
 loadvec3(SOL,ux[],uy[],uz[]);
+loadvec3(SOLT,uxT[],uyT[],uzT[]);
 
+/* Interpolation from ThT to Th*/
+utemx = uxT;
+utemy = uyT;
+utemz = uzT;
 
-//Observed displacement computed with numerical solution
-
-
-// Load objective vector field
-mesh3 Thob = readmesh3(OMESH);
-fespace Vhob(Thob,P1);
-Vhob uxob,uyob,uzob;
-loadvec3(OSOL,uxob[],uyob[],uzob[]);
-// Project on the current mesh
-uxo = uxob ;
-uyo = uyob ;
-uzo = uzob ;
-
-
-
-// cout << "UXTI" << MESH << OMESH<< endl;
-
-err = int2d(Th,REFUP)((ux-uxo)^2+(uy-uyo)^2+(uz-uzo)^2);
+/* Calculate objective */
+J = int2d(Th,REFTARG)( (ux-utemx)^2 + (uy-utemy)^2 + (uy-utemy)^2 );
 
 /* Save result */
-setrParam(EXCHFILE,"Error",err);
+setrParam(EXCHFILE,"Error",J);
 
-cout << "ERROR : " << err << endl ;
-// medit("errormsh",Th);
+
+savevtk("obj.vtu", ThT, [uxT,uyT,uzT]);
+
+
+// medit("Therr", Th,  (ux-utemx)^2 + (uy-utemy)^2 + (uy-utemy)^2);
+
+
+

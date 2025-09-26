@@ -34,17 +34,26 @@ import sources.basemesh as basemesh
 """
 TODO BEFORE PUBLISHING
 
-    -finsh cleaning merit / gradient calcluation -> DONE
     -recheck signs/code
     -benchmark with Charles code
 
 
 TODO NOOW :
     - null test systematically
-    - check signs (descent.edp)
     - numerical errror 
     - test insar again
-    - commmon output folder for results
+    - commmon output folder for results3
+    - prevent mmg to move the cube booundaries :
+        use api funcytion in mmg https://mmgtools.github.io/libmmg3d_8h.html#a1988eee6836bb0414873981bed777393
+
+
+DONE 
+    -finsh cleaning merit / gradient calcluation -> DONE
+    
+Usefull links :
+    medit doc : https://www.ljll.fr/frey/logiciels/Docmedit.dir/
+    sotuto paper : https://dapogny.org/publis/sotuto.pdf
+    charles tuto scientific comp : https://dapogny.github.io/sctuto/index.html
 
 
 """
@@ -77,10 +86,11 @@ if not restart  :
         tmp = [path.REX,path.REY,path.REZ,path.XS,path.YS,path.ZS]
         path.REX = path.RVRAI ; path.REY = path.RVRAI ; path.REZ = path.RVRAI;
         path.XS = path.XST ; path.YS = path.YST ; path.ZS = -path.DEPTH ;
-        basemesh.inimsh(path.OBJMESH,vizu=True) #creating custom mesh
+        basemesh.inimsh(path.OBJMESH,vizu=0) #creating custom mesh
         
         #Compute the error of this "best" mesh
         e = mechtools.elasticity(path.OBJMESH,path.OBJDISP)
+        
         if path.ERRMOD == 0 : #Analytical error against mogi soultion of best mesh possible
             bestE = mechtools.error(path.OBJMESH,path.OBJDISP) 
         elif path.ERRMOD == 1 : #Best possible error is 0 bc best mesh exists
@@ -90,18 +100,19 @@ if not restart  :
         path.REX = tmp[0] ; path.REY = tmp[1] ; path.REZ = tmp[2] ;
         path.XS = tmp[3] ; path.YS = tmp[4] ;path.ZS = tmp[5];
     
-    
+
     ## Creation of the initial mesh
     print("Creating intial mesh")
-    basemesh.inimsh(path.step(0,"mesh"),vizu=True,basic=True)
+    basemesh.inimsh(path.step(0,"mesh"),vizu=1)
     
         
     ## Compute Null test of the best solution
+    print("Null test computation ...")
     inout.setAtt(file=path.EXCHFILE,attname="Pressure",attval=0.0) # -> set null pressure to have a 0 disp field
     mechtools.elasticity(path.step(0,"mesh"),path.step(0,"u.sol"))
     nullE = mechtools.error(path.step(0,"mesh"),path.step(0,"u.sol"))
     inout.setAtt(file=path.EXCHFILE,attname="Pressure",attval=path.PRESS) 
-    print(f"Null test {bestE}")
+    print(f"Null test {nullE}")
 
         
     if path.ERRMOD == 2 : #if unknow source, null test is the ref
@@ -189,7 +200,6 @@ for it in range(itstart,path.MAXIT) :
     print("  Creation of a level set function")
     lstools.mshdist(curmesh,curphi)
     
-    
     print("  Computation of the adjoint state ")
     mechtools.adjoint(curmesh,curu,curp)
     
@@ -267,6 +277,3 @@ print("*************************************************")
     
     
     
-# main_loop()  
-    
-

@@ -2,6 +2,7 @@
 include "./sources/inout.idp"
 include "./sources/macros.idp"
 load "msh3"
+load "iovtk"
 
 /* Get mesh and sol names, and global parameters */
 string MESH       = getsParam(EXCHFILE,"MeshName");
@@ -61,3 +62,6 @@ gz = g * nz;
 
 /* Save solution */
 printvec3(GRAD,gx[],gy[],gz[]);
+
+savevtk("gvec.vtu", Th, [gx,gy,gz]);
+

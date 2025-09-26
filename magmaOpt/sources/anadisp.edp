@@ -4,8 +4,8 @@
 // include "./sources/macros.idp" // get all magmatic source parameters
 
 //All the parameters are from macros.idp
-real xs = 0; // source hor location
-real ys = 0 ;
+real xs = xst; // source hor location
+real ys = yst ;
 real ds = dpth ; //source depth
 
 cout <<"ds" << ds << endl  ;
