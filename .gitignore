@@ -9,3 +9,6 @@ unshared/
 *.data
 *.mesh
 *.sol
+
+*.png
+*.vtu
