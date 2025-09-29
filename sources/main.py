@@ -42,21 +42,20 @@ import sources.basemesh as basemesh
 """
 TODO BEFORE PUBLISHING
 
-    -recheck signs/code
-    -benchmark with Charles code
-
-
-TODO NOOW :
-    - null test systematically
+    - solve dimension problem
     - numerical errror 
     - test insar again
-    - commmon output folder for results3
-    - prevent mmg to move the cube booundaries :
-        use api funcytion in mmg https://mmgtools.github.io/libmmg3d_8h.html#a1988eee6836bb0414873981bed777393
 
 
 DONE 
     -finsh cleaning merit / gradient calcluation -> DONE
+    -recheck signs/code
+    -benchmark with Charles code
+    - null test systematically
+    - commmon output folder for results3
+    - prevent mmg to move the cube booundaries :
+
+
     
 Usefull links :
     medit doc : https://www.ljll.fr/frey/logiciels/Docmedit.dir/
@@ -96,7 +95,7 @@ if not restart  :
         path.REX = path.RVRAI ; path.REY = path.RVRAI ; path.REZ = path.RVRAI;
         path.XS = path.XST ; path.YS = path.YST ; path.ZS = -path.DEPTH ;
         
-        basemesh.inimsh(path.OBJMESH,vizu=1) #creating mesh of the solution
+        basemesh.inimsh(path.OBJMESH,vizu=0) #creating mesh of the solution
         
         #Compute the error of this "best" mesh
         e = mechtools.elasticity(path.OBJMESH,path.OBJDISP) # computing its displacement field
@@ -113,7 +112,7 @@ if not restart  :
 
     ## Creation of the initial mesh
     print("Creating intial mesh")
-    basemesh.inimsh(path.step(0,"mesh"),vizu=1)
+    basemesh.inimsh(path.step(0,"mesh"),vizu=0)
     
         
     ## Compute Null test of the best solution
@@ -126,7 +125,6 @@ if not restart  :
 
         
     if path.ERRMOD == 2 : #if unknow source, null test is the ref
-        import sources.insar as insar
         bestE = nullE
 
         
@@ -141,7 +139,7 @@ if not restart  :
     print("*** Initialization: Error {}".format(newE))
     
     # Coefficient for time step ( descent direction is scaled with respect to mesh size)
-    coef = 0.02
+    coef = 10
     # Number of refinement steps
     nref = 0
     

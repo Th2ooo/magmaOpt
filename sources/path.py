@@ -79,8 +79,8 @@ ALPHA         = 0.07 # Parameter for velocity extension - regularization
 ALPHALS       = 0.01 # Parameter for regularization of LS function
 MAXIT         = 100000   # Maximum number of iterations in the shape optimization process
 MAXITLS       = 6   # Maximum number of iterations in the line search procedure
-MAXCOEF       = 3.0 # Maximum allowed step between two iterations (in # * MESHSIZ)
-MINCOEF       = 0.02 # Minimum allowed move between two iterations (in # * MESHSIZ)
+MAXCOEF       = 100 # Maximum allowed step between two iterations (in # * MESHSIZ)
+MINCOEF       = 10 # Minimum allowed move between two iterations (in # * MESHSIZ)
 TOL           = 0.001  # Tolerance for a slight increase in the ERROR
 
 

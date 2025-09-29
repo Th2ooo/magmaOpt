@@ -7,7 +7,6 @@ Created on Fri May 24 00:24:58 2024
 """
 import os
 import gmsh 
-import numpy as np
 import subprocess
 
 

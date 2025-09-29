@@ -1,6 +1,5 @@
-magmaOpt/res/
-magmaOpt/best_results
-magmaOpt/data/
+res/
+data/
 unshared/
 *.mp4
 *.pyc
