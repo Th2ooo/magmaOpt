@@ -40,7 +40,7 @@ def plot_conv(save=False) :
     bestit = np.argmin(El)
     
     #Set integer ticker for the x axis
-    fig, axs = plt.subplots(2,3,figsize=(40,20),constrained_layout=False)
+    fig, axs = plt.subplots(2,3,figsize=(40,20),constrained_layout=True)
     axs = axs.flatten()
     
     axs[0].set_title("Evolution of error",fontsize=10)
@@ -102,7 +102,7 @@ def plot_conv(save=False) :
     fig.suptitle(f"Convergence plots, min error found {El[bestit]} found at iteration {bestit} ")
     
     if save :
-        plt.savefig(path.RES+"convplot.png")
+        plt.savefig(path.PLOTS+"convplot.png")
     else :
         plt.show()
 
@@ -182,7 +182,7 @@ def plot_dmr(it) :
 
 # TODO : create animation of 
 
-plot_conv(save=0)
+plot_conv(save=1)
 
 
 print("**********************************************")

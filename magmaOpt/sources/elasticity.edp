@@ -5,6 +5,8 @@ load "medit"
 load "msh3"
 load "iovtk"
 
+// load "MUMPS_mpi" // Load the MUMPS interface for parallel solving
+
 /* Get mesh and sol names, and global parameters */
 string MESH       = getsParam(EXCHFILE,"MeshName");
 string SOL        = getsParam(EXCHFILE,"DispName");
@@ -62,7 +64,7 @@ fespace Vhe(The,P1);
 Vhe uex,uey,uez,vex,vey,vez;
 
 /* Variational formulation of the problem */
-problem elas([uex,uey,uez],[vex,vey,vez],solver=CG) = int3d(The)(2.0*mu*(dx(uex)*dx(vex)+dy(uey)*dy(vey)+dz(uez)*dz(vez)))
+problem elas([uex,uey,uez],[vex,vey,vez],solver=CG,tgv=1e30) = int3d(The)(2.0*mu*(dx(uex)*dx(vex)+dy(uey)*dy(vey)+dz(uez)*dz(vez)))
                                    + int3d(The)(mu*((dx(uey)+dy(uex))*(dx(vey)+dy(vex)) + (dx(uez)+dz(uex))*(dx(vez)+dz(vex)) + (dy(uez)+dz(uey))*(dy(vez)+dz(vey))))
                                    + int3d(The)(lm*(dx(uex)+dy(uey)+dz(uez))*(dx(vex)+dy(vey)+dz(vez)))
                                    + int2d(The,REFISO)(DPs*(N.x*vex+N.y*vey+N.z*vez))
@@ -75,12 +77,13 @@ ux = uex;
 uy = uey;
 uz = uez;
 
+// if(mpirank == 0) {
+// cout << MESH << endl;
+// /* Save solution */
+// printvec3(SOL,ux[],uy[],uz[]);
+// }
 
-cout << MESH << endl;
-/* Save solution */
 printvec3(SOL,ux[],uy[],uz[]);
-
-
 
 
 savevtk("u.vtu", Th, [ux,uy,uz]);

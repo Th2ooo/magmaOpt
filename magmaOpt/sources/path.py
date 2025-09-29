@@ -9,39 +9,43 @@ import numpy as np
 BASE = "/home/th2o/Documents/Cours/magmaOpt_dev/magmaOpt/"
 RES     = "./res/"       # Directory for results
 VID     = "./vid/"       # Directory for outputting truncated meshes
+PLOTS   = RES+"plots/"    # Directory to output the plots and animations 
 TESTDIR = RES + "test/"  # Directory for test of libraries
 SCRIPT  = "./sources/"   # Directory for sources
 DATA    = "./data/"      # directory for data folder
+RUNS = "./runs"       # directory for the outputs of the different runs
 
 # Global parameters
 REFDIR        = 1          # Reference for Dirichlet B.C (bottom)
 REFNEU        = 10 # REFIS ou 9       # Reference for Neumann B.C. (source)
 REFISO        = REFNEU      # Reference for the boundary edges of the shape (source)
 REFUP         = 20     # Reference for upper surface where data-model error (target function) is computed 
-REFINT        = 3       # Reference of the interior domain !!!!!!!!! DONT CHANGE BC IT IS DEFAULT INTERIOR FOR MSHDIST
-REFEXT        = 2       # Reference of the exterior domain
+REFINT        = 3    #3  # Reference of the interior domain !!!!!!!!! DONT CHANGE BC IT IS DEFAULT INTERIOR FOR MSHDIST
+REFEXT        = 2     #2  # Reference of the exterior domain
 
 # Physical constants
-#!!! USELESS NOW BC MU LM DEFINED IN macros.idp
 YOUNG = 10e9 ; #E
 POISS = 0.25 ; #nu
+PRESS = 2 ;  #Pressure change DP (source load)
 
-PRESS = 2.0 ;  #Pressure change DP (source load)
-
-# Synthetic source parameters
-XST = 0.3
-YST = 0.3
-DEPTH =  0.2     ; #depth of source (>0)
-RVRAI = 0.1 ; # radius of the target analytical spherical source
-
-
+fact = 10e3 #6e3
 # Initial guess parameters
 XS = 0. #x coordinate of the center
-YS = 0. #y coordinate of the center
-ZS = -0.3 #z coordinate of the center
-REX = 0.1 #x semi-axe of intial ellispoidal source
-REY = 0.2 #y semi-axe of intial ellispoidal source
-REZ = 0.1 #z semi-axe of intial ellispoidal source
+YS = 0.0 #y coordinate of the center
+ZS = -0.3*fact #z coordinate of the center
+REX = 0.1*fact #x semi-axe of intial ellispoidal source
+REY = 0.2*fact #y semi-axe of intial ellispoidal source
+REZ = 0.1*fact #z semi-axe of intial ellispoidal source
+
+
+
+# Synthetic source parameters
+XST = 0.3*fact
+YST = 0.3*fact
+DEPTH =  0.2*fact   ; #depth of source (>0)
+RVRAI = 0.1*fact ; # radius of the target analytical spherical source
+
+
 
 # Error type parameters
 ERRMOD = 1  
@@ -51,16 +55,21 @@ ERRMOD = 1
 """
 OUTANA = 0 #out analytic displacement
 
-# Parameters of the mesh
-XEXT          = 1 #extent of domain in X direction
-YEXT          = 1 #extent of domain in X direction
-ZEXT          = 1 #extent of domain in X direction
 
-MESHSIZ       = 0.05 #nominal size of thee mesh (used by initial mesher and as regularisation length)
-HMIN          = 0.02 #minimum autorized element lenght
-HMAX          = 0.05 #maximum authorized element length
-HAUSD         = 0.005  #mawimum authorized gap between ideal shape and its mesh nodes
-HGRAD         = 1.4 #max rati allowed between 2 adjascent edges
+
+# Parameters of the mesh
+XEXT          = 1.*fact #extent of domain in X direction
+YEXT          = 1.*fact #extent of domain in X direction
+ZEXT          = 1.*fact #extent of domain in X direction
+
+
+
+MESHSIZ       = 0.05*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
+HMIN          = 0.02*fact #minimum autorized element lenght
+HMAX          = 0.05*fact #maximum authorized element length
+HAUSD         = 0.007*fact  #mawimum authorized gap between ideal shape and its mesh nodes
+HGRAD         = 1.8 #max rati allowed between 2 adjascent edges
+
 
 
 # Other parameters of the shape opt algo
@@ -68,9 +77,9 @@ EPS           = 1e-10 # Precision parameter
 EPSP          = 1e-20 # Precision parameter for packing
 ALPHA         = 0.07 # Parameter for velocity extension - regularization
 ALPHALS       = 0.01 # Parameter for regularization of LS function
-MAXIT         = 2000   # Maximum number of iterations in the shape optimization process
-MAXITLS       = 3   # Maximum number of iterations in the line search procedure
-MAXCOEF       = 1.0  # Maximum allowed step between two iterations (in # * MESHSIZ)
+MAXIT         = 100000   # Maximum number of iterations in the shape optimization process
+MAXITLS       = 6   # Maximum number of iterations in the line search procedure
+MAXCOEF       = 3.0 # Maximum allowed step between two iterations (in # * MESHSIZ)
 MINCOEF       = 0.02 # Minimum allowed move between two iterations (in # * MESHSIZ)
 TOL           = 0.001  # Tolerance for a slight increase in the ERROR
 

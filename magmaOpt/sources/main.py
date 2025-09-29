@@ -21,13 +21,21 @@ Improvements ideas
     
 """
 
+import sys
 import os
+
+if 0 : #To activate if called from any other directory than magmaOpt
+    # Set working directory to magma/ and add sources to path
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(script_dir)
+    os.chdir(project_root)
+    sys.path.insert(0, project_root)
+
 import numpy as np
 import subprocess
 import sources.path as path
 import sources.inout as inout
-import sources.mshtools as mshtools
-import sources.lstools as lstools
+import sources.extools as extools
 import sources.mechtools as mechtools
 import sources.basemesh as basemesh
 
@@ -54,6 +62,7 @@ Usefull links :
     medit doc : https://www.ljll.fr/frey/logiciels/Docmedit.dir/
     sotuto paper : https://dapogny.org/publis/sotuto.pdf
     charles tuto scientific comp : https://dapogny.github.io/sctuto/index.html
+    pierre jolivet freefem parralel computing tuto : https://joliv.et/FreeFem-tutorial/
 
 
 """
@@ -86,10 +95,11 @@ if not restart  :
         tmp = [path.REX,path.REY,path.REZ,path.XS,path.YS,path.ZS]
         path.REX = path.RVRAI ; path.REY = path.RVRAI ; path.REZ = path.RVRAI;
         path.XS = path.XST ; path.YS = path.YST ; path.ZS = -path.DEPTH ;
-        basemesh.inimsh(path.OBJMESH,vizu=0) #creating custom mesh
+        
+        basemesh.inimsh(path.OBJMESH,vizu=1) #creating mesh of the solution
         
         #Compute the error of this "best" mesh
-        e = mechtools.elasticity(path.OBJMESH,path.OBJDISP)
+        e = mechtools.elasticity(path.OBJMESH,path.OBJDISP) # computing its displacement field
         
         if path.ERRMOD == 0 : #Analytical error against mogi soultion of best mesh possible
             bestE = mechtools.error(path.OBJMESH,path.OBJDISP) 
@@ -135,7 +145,7 @@ if not restart  :
     # Number of refinement steps
     nref = 0
     
-    iniE = newE #Initial error
+    iniE = newE #Initia0.02l error
     minE = newE
     itstart = 0
     minit = 0
@@ -144,11 +154,12 @@ if not restart  :
 else : ## To restart loop at  a given it
     curE = mechtools.error(path.step(restart,"mesh"),path.step(restart,"u.sol"))
     newE=curE
-    coef=0.027
+    coef=0.02
     itstart = restart
     bestE = 6.99e02
     minit = 0
     minE = 5e3
+    nullE = 0.0
 
 
 
@@ -198,7 +209,7 @@ for it in range(itstart,path.MAXIT) :
     
     # Generation of a level set function for $\Omega^n$ on $D$
     print("  Creation of a level set function")
-    lstools.mshdist(curmesh,curphi)
+    extools.mshdist(curmesh,curphi)
     
     print("  Computation of the adjoint state ")
     mechtools.adjoint(curmesh,curu,curp)
@@ -217,13 +228,13 @@ for it in range(itstart,path.MAXIT) :
           
         # Advection of the level set function and smoothing of the resulting LS function
         print("    Level Set advection")
-        lstools.advect(curmesh,curphi,curgrad,coef,newphi) #=> resolution of advection equation knowing descent direction to find new phi
-        # lstools.regls(curmesh,newphi,newphi)
+        extools.advect(curmesh,curphi,curgrad,coef,newphi) #=> resolution of advection equation knowing descent direction to find new phi
+        # extools.regls(curmesh,newphi,newphi)
           
           
         # Creation of a mesh associated to the new shape
         print("Local remeshing")
-        retmmg = mshtools.mmg3d(curmesh,1,newphi,path.HMIN,path.HMAX,path.HAUSD,path.HGRAD,1,newmesh) 
+        retmmg = extools.mmg3d(curmesh,1,newphi,path.HMIN,path.HMAX,path.HAUSD,path.HGRAD,1,newmesh) 
 
         if  not retmmg  :
             print("Error in mmg, end of loop")
@@ -243,7 +254,7 @@ for it in range(itstart,path.MAXIT) :
             coef = min(path.MAXCOEF,1.1*coef)
             print("    Iteration {} - subiteration {} accepted\n".format(it,k))
             break
-        elif ( k == path.MAXITLS-1 ) or ( coef < path.MINCOEF )  :
+        elif ( k == path.MAXITLS-1 ) or ( coef <= path.MINCOEF )  :
             coef = min(path.MINCOEF,1*coef)
             print("    Iteration {} - subiteration {} accepted by default, end of line search\n".format(it,k))
             break
@@ -265,6 +276,10 @@ for it in range(itstart,path.MAXIT) :
         elif  ((newE-minE)>0.1*iniE):
             print("No sufficient improvement have been made compared to initial guess")
             break
+        
+    # ## FOR PROFILING ONLY !!!
+    # if it > 3 :
+    #     break
     
 ###############################################################
 ####################       END PROGRAM      ###################

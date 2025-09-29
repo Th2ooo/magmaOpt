@@ -24,8 +24,12 @@ real yst      = getrParam(EXCHFILE,"Yst");
 real DPs       = getrParam(EXCHFILE,"Pressure") ;
 
 
-//real lm  = E*nu/((1+nu)*(1-2*nu)) ; //lambda lame coeff
-//real mu  = E/2*(1+nu);              //mu lame coeff
+/*
+real lm  = E*nu/((1+nu)*(1-2*nu)) ; //lambda lame coeff
+real mu  = E/2*(1+nu);              //mu lame coeff
+*/
+
+
 
 real lm     = 0.5769;
 real mu     = 0.3846;

@@ -9,7 +9,7 @@ load "iovtk"
 string MESH       = getsParam(EXCHFILE,"MeshName");
 string SOL        = getsParam(EXCHFILE,"DispName");
 string ADJ        = getsParam(EXCHFILE,"AdjName");
-int REFINT          = getiParam(EXCHFILE,"Refint");
+int REFEXT          = getiParam(EXCHFILE,"Refext");
 int REFDIR        = getiParam(EXCHFILE,"Dirichlet");
 int REFUP        = getiParam(EXCHFILE,"Refup");
 
@@ -31,7 +31,7 @@ Vh0 reg = region;
 loadvec3(SOL,ux[],uy[],uz[]);
 
 /* Mesh of the interior part and corresponding FE space */
-mesh3 Thi = trunc(Th,(reg(x,y,z) == REFINT),label=REFINT);
+mesh3 Thi = trunc(Th,(reg(x,y,z) == REFEXT),label=REFEXT);
 fespace Vhi(Thi,P1);
 Vhi uix,uiy,uiz,pix,piy,piz,vix,viy,viz;
 

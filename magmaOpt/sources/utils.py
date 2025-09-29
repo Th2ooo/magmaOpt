@@ -186,12 +186,6 @@ def cart_to_cyl(x,y,z,chx,chy,chz) :
 
 
 
-def LOS_set(heading,inclinaison) :
-    """Setup an LOS conversion function"""
-    hea = heading
-    inc = inclinaison
-    LOS = lambda E,N,U : -np.cos(hea)*np.sin(inc)*E + np.sin(hea)*np.sin(inc)*N + np.cos(inc)*U
-    return LOS
 
 
 
@@ -200,6 +194,12 @@ def LOS_set(heading,inclinaison) :
 
 #### INSAR TOOLS
 
+def LOS_set(heading,inclinaison) :
+    """Setup an LOS conversion function"""
+    hea = heading
+    inc = inclinaison
+    LOS = lambda E,N,U : -np.cos(hea)*np.sin(inc)*E + np.sin(hea)*np.sin(inc)*N + np.cos(inc)*U
+    return LOS
 
 
 def toYearFraction(int_date):
@@ -312,14 +312,13 @@ def down_pt(locs,data,step,method="mean") :
                 wght = inv_dists/norma
                 data_down += [np.sum(cur_speeds*wght)]
             else :
-                raise Exception("Bad method")
-    # print("aaa")
-   
+                raise Exception("Bad method")   
 
     locs_down = np.array(locs_down)
     data_down = np.array(data_down)
     # print(locs_down)
     return locs_down, data_down
+
 
 
 def down_pt_grid(locs,data,step,nneig,method="mean") :

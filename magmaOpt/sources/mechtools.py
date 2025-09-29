@@ -165,6 +165,7 @@ def stats(mesh) :
   
   if ( proc.returncode != 0 ) :
     print("Error in stats calculation; abort.")
+    raise Exception("Error in calculung geometrical statisitics (no source ?)")
     print(proc.returncode)
   
   [vol] = inout.getrAtt(file=path.EXCHFILE,attname="Volume")

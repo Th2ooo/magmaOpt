@@ -87,10 +87,24 @@ def iniWF():
   proc = subprocess.Popen(["rm -rf {folder}*".format(folder=path.RES)],shell=True)
   proc.wait()
   
+  
+  # Copy pah file for debugging and anlysis
+  proc = subprocess.Popen([f"cp {path.SCRIPT}path.py {path.RES}"],shell=True)
+  proc.wait()
+  proc = subprocess.Popen([f"mv  {path.RES}path.py {path.RES}path.data"],shell=True)
+  proc.wait()
+
+  
   # Create and clear ./testdir folder for results depending on the situation
   proc = subprocess.Popen(["mkdir -p {folder}".format(folder=path.TESTDIR)],shell=True)
   proc.wait()
   proc = subprocess.Popen(["rm -rf {folder}*".format(folder=path.TESTDIR)],shell=True)
+  proc.wait()
+  
+  # Create and clear ./testdir folder for results depending on the situation
+  proc = subprocess.Popen(["mkdir -p {folder}".format(folder=path.PLOTS)],shell=True)
+  proc.wait()
+  proc = subprocess.Popen(["rm -rf {folder}*".format(folder=path.PLOTS)],shell=True)
   proc.wait()
 
   # Create exchange file
