@@ -9,6 +9,8 @@ string MESH       = getsParam(EXCHFILE,"MeshName");
 string PHI        = getsParam(EXCHFILE,"PhiName");
 string GRAD       = getsParam(EXCHFILE,"GradName");
 string GRADE     = getsParam(EXCHFILE,"GradEName");
+real meshsiz      = getrParam(EXCHFILE,"MeshSize");
+
 
 /* Load mesh */
 mesh3 Th = readmesh3(MESH);
@@ -34,7 +36,7 @@ ny0 = dy(phi) / norm0;
 nz0 = dz(phi) / norm0;
 
 /* Scalar descent direction */
-g = - thJ ;
+g = - meshsiz*thJ ;
   
 /* Conversion into a vector descent direction */
 /* Extended normal vector as a P1 function over the mesh */

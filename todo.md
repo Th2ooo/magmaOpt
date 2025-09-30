@@ -11,11 +11,13 @@
         - Lenght ?
         - Step size ?
     - Normalizing Error ?
+    - Coeff managment
 
 
 - LOS error
     - working with real data ?
 
+- REGLS regularization nessecary ?
 
 ## Features to add
 
@@ -30,6 +32,9 @@
     2. mmg3d : parmmg (https://github.com/MmgTools/ParMmg/tree/master)
     3. GMSH meshing
 
+- Handle N data sources
+    - InSAR
+    - GNSS
 
 
 

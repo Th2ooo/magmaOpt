@@ -15,23 +15,52 @@ from sources.utils import Extent
 import sources.path as path
 
 
-def build_mesh(out,vizu=False,basic=True,verb=3,debug=0) :
-    """Build initial mesh with magma chamber
-    verbosity=4 => normal gmsh verbosity
-    !! out must be a .mesh file for compatibility with freefem and mmg3d"""
-    
-    ####Paramters
-    
-    xs = path.XS
-    ys = path.YS
-    zs = path.ZS
+def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,basic=True,verb=3,debug=0) :
+    """
+    Build initial mesh with magma chamber
 
-    rx = path.REX #semi axes ellipsoif
-    ry = path.REY
-    rz = path.REZ
+    Parameters
+    ----------
+    out : string
+        output file where the mesh is written (has to be .mesh to be compatible with freefem/mmg)
+    ext : list of floats, optional
+        extent of the domain (X,Y,Z direction). If not provided, values from path are used.
+    psrc : list of floats, optional
+        position of the source (X,Y,Z direction). If not provided, values from path are used
+    rads : list of floats, optional
+        radii of the source (X,Y,Z direction). If not provided, values from path are used
+    vizu : bool, optional
+        Triigers gmsh gui to vizualize the mesh and model. The default is False.
+    basic : bool, optional
+        basic meshing mode = uniform. if false, a coarser mesh is defined far from the source. The default is True.
+    verb : bool, optional
+        verboisity level of gmsh outputs. The default is 3.
+    debug : bool, optional
+        If true, plots and outputs additional steps for debugging purpose. The default is 0.
+
+    Returns
+    -------
+    None.
+
+    """
+   
+    ####Paramters
+    if not ext :
+        ext = [path.XEXT,path.YEXT,path.ZEXT]
+    if not psrc :
+        psrc = [path.XS,path.YS,path.ZS]
+    if not rads :
+        rads = [path.REX,path.REY,path.REZ]
+    xs = psrc[0]
+    ys = psrc[1]
+    zs = psrc[2]
+
+    rx = rads[0] #semi axes ellipsoif
+    ry = rads[1]
+    rz = rads[2]
     
     domex = Extent()
-    domex.init_with_range(path.XEXT,path.YEXT,path.ZEXT)
+    domex.init_with_range(ext[0],ext[1],ext[2])
     if not basic :
         domex.enlarge([10e3,10e3,10e3])
         
@@ -149,10 +178,10 @@ def build_mesh(out,vizu=False,basic=True,verb=3,debug=0) :
     
     
     
-def inimsh(mesh,vizu=False,basic=True,verb=3) :
+def inimsh(mesh,ext=[],psrc=[],rads=[],vizu=False,basic=True,verb=3) :
   
     
-    build_mesh(mesh,vizu,basic,verb)
+    build_mesh(mesh,ext,psrc,rads,vizu,basic,verb)
     print("GMSH meshing done")
 
 

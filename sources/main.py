@@ -90,12 +90,9 @@ if not restart  :
     ## Evaluate initial error 
     
     if path.ERRMOD == 0 or path.ERRMOD == 1 : 
-        #Evaluate the min of error function -> create a mesh with source located at Mogi solution
-        tmp = [path.REX,path.REY,path.REZ,path.XS,path.YS,path.ZS]
-        path.REX = path.RVRAI ; path.REY = path.RVRAI ; path.REZ = path.RVRAI;
-        path.XS = path.XST ; path.YS = path.YST ; path.ZS = -path.DEPTH ;
-        
-        basemesh.inimsh(path.OBJMESH,vizu=0) #creating mesh of the solution
+        #Evaluate the min of error function -> create a mesh with source located at target solution
+        basemesh.inimsh(path.OBJMESH,psrc=[path.XST,path.YST,-path.DEPTH], 
+                        rads=[path.RVRAI]*3,vizu=1) #creating mesh of the solution
         
         #Compute the error of this "best" mesh
         e = mechtools.elasticity(path.OBJMESH,path.OBJDISP) # computing its displacement field
@@ -105,14 +102,11 @@ if not restart  :
         elif path.ERRMOD == 1 : #Best possible error is 0 bc best mesh exists
             bestE = 0.0 
 
-        #Reset the initial parameters 
-        path.REX = tmp[0] ; path.REY = tmp[1] ; path.REZ = tmp[2] ;
-        path.XS = tmp[3] ; path.YS = tmp[4] ;path.ZS = tmp[5];
     
 
     ## Creation of the initial mesh
     print("Creating intial mesh")
-    basemesh.inimsh(path.step(0,"mesh"),vizu=0)
+    basemesh.inimsh(path.step(0,"mesh"),vizu=1)
     
         
     ## Compute Null test of the best solution
@@ -139,7 +133,7 @@ if not restart  :
     print("*** Initialization: Error {}".format(newE))
     
     # Coefficient for time step ( descent direction is scaled with respect to mesh size)
-    coef = 10
+    coef = 1.0
     # Number of refinement steps
     nref = 0
     
@@ -181,6 +175,11 @@ for it in range(itstart,path.MAXIT) :
     #   path.TOL  = path.TOL/2
     #   path.HMIN = path.HMIN/2
     #   print(f"New tol {path.TOL}, New hmin {path.HMIN}")
+    
+    # update best minimum found
+    if newE < minE : #new minimum 
+        minit = it
+        minE = newE
     
     curmesh = path.step(it,"mesh")
     newmesh = path.step(it+1,"mesh")
@@ -249,7 +248,7 @@ for it in range(itstart,path.MAXIT) :
           
         # Decision
         if  retmmg and ( newE < curE+path.TOL*abs(curE) )   :
-            coef = min(path.MAXCOEF,1.1*coef)
+            coef = min(path.MAXCOEF,coef*path.MULTCOEF)
             print("    Iteration {} - subiteration {} accepted\n".format(it,k))
             break
         elif ( k == path.MAXITLS-1 ) or ( coef <= path.MINCOEF )  :
@@ -260,12 +259,9 @@ for it in range(itstart,path.MAXIT) :
             print("    Iteration {} - subiteration {} rejected".format(it,k))
             proc = subprocess.Popen(["rm {nmesh}".format(nmesh=newmesh)],shell=True)
             proc.wait()
-            coef = max(path.MINCOEF,0.6*coef)
+            coef = max(path.MINCOEF,coef/path.MULTCOEF)
         
-    # update best minimum found
-    if newE < minE : #new minimum 
-        minit = it
-        minE = newE
+   
         
     if 0 :
         if  ((it-minit) > 100)   : # end the loop if no improvement have been made in a while
