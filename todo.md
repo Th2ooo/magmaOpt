@@ -21,7 +21,7 @@
 
 ## Features to add
 
--GMSH meshing
+- GMSH meshing
     - inhomogeneous mesh size for larger domains simulation
 
 - Paralellizing option for speed-up
@@ -37,9 +37,12 @@
     - GNSS
 
 
-
 - VTK outputs option in separate folder
 
+- Add more clever step size (coef) managment, using previous error/coef behavior
+    - accelerate if slow descent
+    - stay steady if good descent
+    - slows if flat
 
 - Move path managments  to Pathlib
 

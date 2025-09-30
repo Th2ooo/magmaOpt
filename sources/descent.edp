@@ -66,4 +66,5 @@ gz = g * nz;
 /* Save solution */
 printvec3(GRAD,gx[],gy[],gz[]);
 
-savevtk("gvec.vtu", Th, [gx,gy,gz]);
+// // VTU output for debuging
+// savevtk("gvec.vtu", Th, [gx,gy,gz]);

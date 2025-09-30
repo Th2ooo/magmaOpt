@@ -111,9 +111,9 @@ J = int2d(Th,REFTARG)( (ux-utemx)^2 + (uy-utemy)^2 + (uy-utemy)^2 );
 setrParam(EXCHFILE,"Error",J);
 
 
-savevtk("obj.vtu", ThT, [uxT,uyT,uzT]);
 
-
+// // VTU output for debuging
+// savevtk("obj.vtu", ThT, [uxT,uyT,uzT]);
 // medit("Therr", Th,  (ux-utemx)^2 + (uy-utemy)^2 + (uy-utemy)^2);
 
 

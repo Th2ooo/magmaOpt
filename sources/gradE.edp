@@ -90,9 +90,9 @@ loadsol(PHI,phi[]);
 savevtk("ls.vtu", Th,phi);
 
 
-savevtk("p.vtu", Th, [px,py,pz]);
-
-savevtk("gscal.vtu", Th, g);
+// // VTU outputs for debuging
+// savevtk("p.vtu", Th, [px,py,pz]);
+// savevtk("gscal.vtu", Th, g);
 
 
 

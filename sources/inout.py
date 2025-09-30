@@ -134,7 +134,6 @@ def iniWF():
   setAtt(file=path.EXCHFILE,attname="Dirichlet",attval=path.REFDIR)
   setAtt(file=path.EXCHFILE,attname="Neumann",attval=path.REFNEU)
   setAtt(file=path.EXCHFILE,attname="Regularization",attval=path.ALPHA)
-  setAtt(file=path.EXCHFILE,attname="RegularizationLS",attval=path.ALPHALS)
   setAtt(file=path.EXCHFILE,attname="ReferenceBnd",attval=path.REFISO)
   setAtt(file=path.EXCHFILE,attname="Refint",attval=path.REFINT)
   setAtt(file=path.EXCHFILE,attname="Refext",attval=path.REFEXT)

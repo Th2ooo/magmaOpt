@@ -5,7 +5,11 @@ import os
 import sys
 import numpy as np
 
+
+
+
 #### Files paths
+
 BASE = "/home/th2o/Documents/Cours/magmaOpt_dev/magmaOpt/"
 RES     = "./res/"       # Directory for results
 VID     = "./vid/"       # Directory for outputting truncated meshes
@@ -15,7 +19,11 @@ SCRIPT  = "./sources/"   # Directory for sources
 DATA    = "./data/"      # directory for data folder
 RUNS = "./runs"       # directory for the outputs of the different runs
 
+
+
+
 #### Labels
+
 REFDIR        = 1          # Reference for Dirichlet B.C (bottom)
 REFNEU        = 10 # REFIS ou 9       # Reference for Neumann B.C. (source)
 REFISO        = REFNEU      # Reference for the boundary edges of the shape (source)
@@ -24,12 +32,14 @@ REFINT        = 3    #3  # Reference of the interior domain !!!!!!!!! DONT CHANG
 REFEXT        = 2     #2  # Reference of the exterior domain
 
 
+
 #### Dimensional constants
+
 YOUNG = 10e9 ; #E
 POISS = 0.25 ; #nu
-PRESS = 2000e6 ;  #Pressure change DP (source load)
+PRESS = 20e6 ;  #Pressure change DP (source load)
 
-fact = 50e3 #6e3
+fact = 1 #50e3 #6e3
 
 
 # Initial guess parameters
@@ -40,13 +50,11 @@ REX = 0.1*fact #x semi-axe of intial ellispoidal source
 REY = 0.2*fact #y semi-axe of intial ellispoidal source
 REZ = 0.1*fact #z semi-axe of intial ellispoidal source
 
-
 # Objective source parameters
 XST = 0.3*fact
 YST = 0.3*fact
 DEPTH =  0.2*fact   ; #depth of source (>0)
 RVRAI = 0.1*fact ; # radius of the target analytical spherical source
-
 
 # Extent of the simulated doain
 XEXT          = 1.*fact #extent of domain in X direction
@@ -63,7 +71,9 @@ HAUSD         = 0.007*fact  #mawimum authorized gap between ideal shape and its 
 HGRAD         = 1.8 #max rati allowed between 2 adjascent edges
 
 
+
 #### Optimization parameters
+
 # Error type 
 ERRMOD = 1  
 """ 0 if error is computed with analytic solution, 
@@ -77,16 +87,17 @@ EPS           = 1e-10 # Precision parameter
 EPSP          = 1e-20 # Precision parameter for packing
 
 ALPHA         = 0.07 # Parameter for velocity extension - regularization
-ALPHALS       = 0.01 # Parameter for regularization of LS function
 MAXIT         = 100000   # Maximum number of iterations in the shape optimization process
-MAXITLS       = 20   # Maximum number of iterations in the line search procedure
+MAXITLS       = 10   # Maximum number of iterations in the line search procedure
 TOL           = 0.001  # Tolerance for a slight increase in the ERROR
-MULTCOEF      = 1.5  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
-MINCOEF       = 0.001 # Minimum allowed move between two iterations (in # * MESHSIZ)
-MAXCOEF       = 1000 # Maximum allowed step between two iterations (in # * MESHSIZ)
+MULTCOEF      = 1.2  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
+MINCOEF       = 0.01# Minimum allowed move between two iterations (in # * MESHSIZ)
+MAXCOEF       = 10 # Maximum allowed step between two iterations (in # * MESHSIZ)
+
 
 
 #### InSAR parameters
+
 TCK1 = DATA + "a33.txt"  #1st insar track
 TCK2 = DATA + "d44.txt"  #2nd insar track
 LOS1 = RES +"los1.sol"
@@ -106,6 +117,7 @@ VTARG         =  (voldom-volsrce)/voldom    # Volume target
 
 
 #### Scripts paths
+
 # Call for the executables of external codes
 FREEFEM = "FreeFem++"
 MSHDIST = "mshdist"

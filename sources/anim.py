@@ -4,8 +4,7 @@
 import os
 
 import subprocess
-
-import sys
+from pathlib import Path
 import sources.path as path
 import numpy as np
 import pyvista as pv
@@ -17,7 +16,6 @@ import matplotlib.animation as animation
 from matplotlib import rcParams
 import matplotlib.image as mpimg
 
-import numpy as np
 
 
 content = np.genfromtxt(path.HISTO,delimiter=" ")
@@ -203,7 +201,8 @@ def anim_multiview() :
 
 
 def export_3Dviews(nit=nit):
-    """Export 3D and side view images for each iteration without displaying windows"""
+    """Export 3D and side view images for each iteration without displaying windows
+    MODIFY to add N views"""
     print("**********************************************")
     print("*****  Headless Image Export for Animation *****")
     print("**********************************************")
@@ -213,61 +212,72 @@ def export_3Dviews(nit=nit):
     os.makedirs(path.PLOTS + "side_views/", exist_ok=True)
    
     for it in range(nit):
+        
+        f3D = Path(path.PLOTS + f"3d_views/frame_{it:04d}.png")
+        fsi = Path(path.PLOTS + f"side_views/frame_{it:04d}.png")
+        
+        if f3D.is_file() and fsi.is_file() :
+            print(f"View it {it} already exist, skipped")
+            continue
+        
         print(f"Exporting iteration {it}")
         mshfile = path.step(it, "mesh")  
-        msh = meshio.read(mshfile)
         
-        # Create mesh for PyVista
+        # Create mesh source for PyVista
+        msh = meshio.read(mshfile)
         mk = msh.cell_data["medit:ref"][1] == path.REFISO
         faces = msh.cells[1].data[mk]
         nbs = np.full((faces.shape[0], 1), 3)
         faces = np.hstack((nbs, faces))
         faces = np.ravel(faces)
         mshpv = pv.PolyData(msh.points, faces)
-        
-        # Export 3D view
-        plo_3d = pv.Plotter(off_screen=True, window_size=[800, 800])
-        plo_3d.add_axes(interactive=False, line_width=4)
-        
-        # Add reference objects
+        # Create other objeccts
         sph_vrai = pv.Sphere(radius=path.RVRAI, center=(path.XST, path.YST, -path.DEPTH))
-        plo_3d.add_mesh(sph_vrai, style="surface", color="blue", opacity=0.3)
         dom_box = pv.Box(bounds=(-path.XEXT/2, path.XEXT/2, -path.YEXT/2, path.YEXT/2, -path.ZEXT, 0.0))
-        plo_3d.add_mesh(dom_box, style='wireframe', color="black")
-        
-        # Add main mesh and set camera
-        plo_3d.add_mesh(mshpv, color="orangered", opacity=1)
-        plo_3d.camera_position ="iso"
-        plo_3d.show_grid(xlabel="X", ylabel="Y", zlabel="Z", color='gray')
-        plo_3d.add_text(f"Iteration {it}\nError: {El[it]:.3E}", position="upper_left", color='black', font_size=12)
 
-        # Save 3D view
-        plo_3d.screenshot(path.PLOTS + f"3d_views/frame_{it:04d}.png")
-        plo_3d.close()
+        if not f3D.is_file() :
+            # Export 3D view
+            plo_3d = pv.Plotter(off_screen=True, window_size=[800, 800])
+            plo_3d.add_axes(interactive=False, line_width=4)
+            
+            # Add reference objects
+            plo_3d.add_mesh(sph_vrai, style="surface", color="blue", opacity=0.3)
+            plo_3d.add_mesh(dom_box, style='wireframe', color="black")
+            
+            # Add main mesh and set camera
+            plo_3d.add_mesh(mshpv, color="orangered", opacity=1)
+            plo_3d.camera_position ="iso"
+            plo_3d.show_grid(xlabel="X", ylabel="Y", zlabel="Z", color='gray')
+            plo_3d.add_text(f"Iteration {it}\nError: {El[it]:.3E}", position="upper_left", color='black', font_size=12)
+    
+            # Save 3D view
+            plo_3d.screenshot(f3D)
+            plo_3d.close()
         
-        # Export side view
-        plo_side = pv.Plotter(off_screen=True, window_size=[800, 800])
-        plo_side.add_axes(interactive=False, line_width=4)
-        
-        # Add reference objects (optional - can skip for side view)
-        plo_side.add_mesh(sph_vrai, style="surface", color="blue", opacity=0.3)
-        plo_side.add_mesh(dom_box, style='wireframe', color="black")
-        
-        # Add main mesh and set side camera
-        plo_side.add_mesh(mshpv, color="orangered", opacity=1)
-        plo_side.camera_position = "xy"
-        plo_side.show_grid(xlabel="X", ylabel="Y", zlabel="Z", color='gray')
-
-        
-        # Save side view
-        plo_side.screenshot(path.PLOTS + f"side_views/frame_{it:04d}.png")
-        plo_side.close()
+        if not fsi.is_file() :
+            # Export side view
+            plo_side = pv.Plotter(off_screen=True, window_size=[800, 800])
+            plo_side.add_axes(interactive=False, line_width=4)
+            
+            # Add reference objects (optional - can skip for side view)
+            plo_side.add_mesh(sph_vrai, style="surface", color="blue", opacity=0.3)
+            plo_side.add_mesh(dom_box, style='wireframe', color="black")
+            
+            # Add main mesh and set side camera
+            plo_side.add_mesh(mshpv, color="orangered", opacity=1)
+            plo_side.camera_position = "xy"
+            plo_side.show_grid(xlabel="X", ylabel="Y", zlabel="Z", color='gray')
+    
+            
+            # Save side view
+            plo_side.screenshot(fsi)
+            plo_side.close()
     
     print("Image export completed!")
     
     
 
-def composite_animation(nit=nit,fps=5,pvframes=True) :
+def composite_animation(nit=nit-3,fps=5,pvframes=True) :
     """Create a composite animation with error curve and PyVista views
     times= approximate time in seconds of the movie
     
@@ -279,10 +289,8 @@ def composite_animation(nit=nit,fps=5,pvframes=True) :
     
     print("Creating composite animation...")
     
-    
     # First executeexport pyvista animations if not the case
-    if not pvframes :
-        export_3Dviews(nit-3)
+    export_3Dviews(nit)
         
     # Create figure with 3 subplots
     fig = plt.figure(figsize=(20, 15),layout='constrained')
@@ -354,7 +362,7 @@ def composite_animation(nit=nit,fps=5,pvframes=True) :
     
     # Create animation
     anim = animation.FuncAnimation(
-        fig, update_frame, frames=range(nit-3), 
+        fig, update_frame, frames=range(nit), 
         interval=200, blit=False, repeat=True)
     
 
