@@ -85,15 +85,15 @@ problem velext(g,v,solver=CG) = psreg(g,v)
 velext;
 printsol(GRADE,g[]);
 
-// optional : just to check how level set is dicretised
-loadsol(PHI,phi[]);
-savevtk("ls.vtu", Th,phi);
 
 
-// // VTU outputs for debuging
+
+// // VTU outputs for debuging/*
 // savevtk("p.vtu", Th, [px,py,pz]);
 // savevtk("gscal.vtu", Th, g);
-
+// // optional : just to check how level set is dicretised
+// loadsol(PHI,phi[]);
+// savevtk("ls.vtu", Th,phi);*/
 
 
 cout << "GRADE" << g[] << endl ;

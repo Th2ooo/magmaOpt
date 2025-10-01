@@ -165,10 +165,7 @@ def anim_multiview() :
                 mesh_actor = plo.add_mesh(mshpv, color="orangered", opacity=1)
                 mesh_actors[c].append(mesh_actor)
                 # Add grid to help visualization
-                plo.show_grid(
-                    xlabel="X (m)",
-                    ylabel="Y (m)", 
-                    zlabel="Z (m)",
+                plo.show_grid(xtitle="X", ytitle="Y", ztitle="Z", 
                     grid=True,
                     location='outer',
                     font_size=10,
@@ -247,7 +244,7 @@ def export_3Dviews(nit=nit):
             # Add main mesh and set camera
             plo_3d.add_mesh(mshpv, color="orangered", opacity=1)
             plo_3d.camera_position ="iso"
-            plo_3d.show_grid(xlabel="X", ylabel="Y", zlabel="Z", color='gray')
+            plo_3d.show_grid(xtitle="X", ytitle="Y", ztitle="Z", color='gray')
             plo_3d.add_text(f"Iteration {it}\nError: {El[it]:.3E}", position="upper_left", color='black', font_size=12)
     
             # Save 3D view
@@ -266,7 +263,7 @@ def export_3Dviews(nit=nit):
             # Add main mesh and set side camera
             plo_side.add_mesh(mshpv, color="orangered", opacity=1)
             plo_side.camera_position = "xy"
-            plo_side.show_grid(xlabel="X", ylabel="Y", zlabel="Z", color='gray')
+            plo_side.show_grid(xtitle="X", ytitle="Y", ztitle="Z",  color='gray')
     
             
             # Save side view
@@ -377,9 +374,9 @@ def composite_animation(nit=nit-3,fps=5,pvframes=True) :
     print("Composite animation saved!")
 
 
-composite_animation(fps=12,pvframes=0)
 
 
+composite_animation(fps=5,pvframes=0)
 
 
 print("**********************************************")

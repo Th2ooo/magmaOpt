@@ -13,11 +13,19 @@
     - Normalizing Error ?
     - Coeff managment
 
-
 - LOS error
     - working with real data ?
 
 - REGLS regularization nessecary ?
+
+- Alpha in regularization coeff
+
+- Gradient inn descent should be normalized to avoid inappropriate step size
+
+- Minimize number of scripts
+    - remove artist
+    - remove geographer
+    - merge error and adjoint different scripts
 
 ## Features to add
 
@@ -32,26 +40,29 @@
     2. mmg3d : parmmg (https://github.com/MmgTools/ParMmg/tree/master)
     3. GMSH meshing
 
-- Handle N data sources
+- External data :
+    - Hande N data sources
     - InSAR
-    - GNSS
+        - be able to get data from any cartesian coordinate system (no internal conversion)
+        - automatically compute the center of  the data to optionally input it only
+        - dont interpolate at each iteration in insar func, only do it in error and adjoint
+    - GNSS (pas sur)
 
 
-- VTK outputs option in separate folder
+- Manage inhomogenous element sizes meshes for bigger domain simulation
 
-- Add more clever step size (coef) managment, using previous error/coef behavior
-    - accelerate if slow descent
-    - stay steady if good descent
-    - slows if flat
-
-- Move path managments  to Pathlib
+- Move all path managments  to Pathlib
 
 
 - Clean code
 
-- Remote git repo
 
-
+- Improve Line Search (https://optimization.cbe.cornell.edu/index.php?title=Line_search_methods)
+    - check for better adaptation of step size algorithms
+    - Add more clever step size (coef) managment, using previous error/coef behavior
+    - accelerate if slow descent
+    - stay steady if good descent
+    - slows if flat
 
 ## Done
 
@@ -61,6 +72,7 @@
     - speration line to remove on source (not a big deal, not causing bugs)
     - point alone on the top of the source which stays if steps are not big enough
 
+- Remote git repo
 
 
 

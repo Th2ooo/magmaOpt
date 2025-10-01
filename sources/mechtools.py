@@ -282,8 +282,8 @@ def descent(mesh,phi,E,gE,g) :
   proc.wait()
     
   if ( proc.returncode != 0 ) :
-    print("Error in calculation of descent direction; abort.")
     print(proc.returncode)
+    raise Exception("Error in calculation of descent direction; abort.")
 
 
 #######################################################################################

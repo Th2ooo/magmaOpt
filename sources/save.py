@@ -49,5 +49,5 @@ def save_results(name=None) :
         
         
         
-save_results("fail_descent_meshsize")
+save_results("difficulty_convergence_after_modif_descent")
     

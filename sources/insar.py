@@ -7,6 +7,7 @@ Created on Mon Jun 24 15:04:51 2024
 """
 from sources.utils import *
 from sources.geographer import *
+from sources.artist import Artist
 import meshio
 import sources.path as path
 import os
@@ -42,9 +43,9 @@ def lossol(tckfile,meshfile,outsol,plot=False) :
     mshlos = sc.interpolate.griddata(
         tck[:,:2],tck[:,2],mshloc[mkup][:,:2],
         method="linear",
-        fill_value=-99.0)
+        fill_value=0.0)
     
-    los = np.full(npt, -99.0)
+    los = np.full(npt, 0.0)
     los[mkup] = mshlos
     np.savetxt(outsol, los,
       header=f"MeshVersionFormatted 2\n\nDimension 3\n\nSolAtVertices\n{npt}\n1 1\n",
@@ -52,7 +53,6 @@ def lossol(tckfile,meshfile,outsol,plot=False) :
       fmt='%.15E')
     
     if plot: #plot to check
-        from artist import Artist
         art = Artist(1,2)
         b= art.plot_simple(tck[:,:2],tck[:,2], cmap="turbo") #interpolated
         art.fig.colorbar(b)
@@ -65,13 +65,11 @@ def lossol(tckfile,meshfile,outsol,plot=False) :
 # lossol(path.TCK1,path.step(0,"mesh"),path.LOS1)
 
 if __name__ =="__main__" :
-    #TO Run from spyder
-    os.chdir("/media/th2o/GrosSSD/ARPE_Eyja/shape_optim/magmaOpt")
     HEA1 = (347.1+90) *np.pi/180  #heading 1 (rad)
     INC1 = 33.3 *np.pi/180   #inclinaison 1 (rad)
     a=LOS_set(HEA1, HEA1)
     print(a(1,0,0))
     print(a(0,1,0))
     print(a(0,0,1))
-    a=lossol(path.TCK1, path.step(89,"mesh"), path.LOS1,True)
+    a=lossol(path.TCK1, path.step(1,"mesh"), path.LOS1,True)
 

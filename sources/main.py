@@ -58,10 +58,12 @@ DONE
 
     
 Usefull links :
+    github page : https://github.com/Th2ooo/magmaOpt
     medit doc : https://www.ljll.fr/frey/logiciels/Docmedit.dir/
     sotuto paper : https://dapogny.org/publis/sotuto.pdf
     charles tuto scientific comp : https://dapogny.github.io/sctuto/index.html
     pierre jolivet freefem parralel computing tuto : https://joliv.et/FreeFem-tutorial/
+    GMSH doc : https://gmsh.info/doc/texinfo/gmsh.html
 
 
 """
@@ -92,7 +94,7 @@ if not restart  :
     if path.ERRMOD == 0 or path.ERRMOD == 1 : 
         #Evaluate the min of error function -> create a mesh with source located at target solution
         basemesh.inimsh(path.OBJMESH,psrc=[path.XST,path.YST,-path.DEPTH], 
-                        rads=[path.RVRAI]*3,vizu=1) #creating mesh of the solution
+                        rads=[path.RVRAI]*3,vizu=0) #creating mesh of the solution
         
         #Compute the error of this "best" mesh
         e = mechtools.elasticity(path.OBJMESH,path.OBJDISP) # computing its displacement field
@@ -106,7 +108,7 @@ if not restart  :
 
     ## Creation of the initial mesh
     print("Creating intial mesh")
-    basemesh.inimsh(path.step(0,"mesh"),vizu=1)
+    basemesh.inimsh(path.step(0,"mesh"),vizu=0)
     
         
     ## Compute Null test of the best solution
@@ -221,7 +223,7 @@ for it in range(itstart,path.MAXIT) :
     
     # Line search
     for k in range(0,path.MAXITLS) :
-        print("  Line search k = {}".format(k))
+        print(f"  Line search k = {k}; step size = {coef}")
           
         # Advection of the level set function and smoothing of the resulting LS function
         print("    Level Set advection")
