@@ -65,10 +65,10 @@ ZEXT          = 1.*fact #extent of domain in X direction
 #### Meshing parameters
 MESHSIZ       = 0.05*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
 HMIN          = 0.02*fact #minimum autorized element lenght
-HMAX          = 0.05*fact #maximum authorized element length
+HMAX          = 0.2*fact #maximum authorized element length
 HAUSD         = 0.007*fact  #mawimum authorized gap between ideal shape and its mesh nodes
 HGRAD         = 1.8 #max rati allowed between 2 adjascent edges
-
+DILA          = 3.  #dilataion parameter for the domain size if inhomogeneous meshing is selected
 
 
 #### Optimization parameters
@@ -89,9 +89,9 @@ ALPHA         = 2*MESHSIZ # Parameter for velocity extension - regularization, f
 MAXIT         = 100000   # Maximum number of iterations in the shape optimization process
 MAXITLS       = 10   # Maximum number of iterations in the line search procedure
 TOL           = 0.001  # Tolerance for a slight increase in the ERROR
-MULTCOEF      = 1.2  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
-MINCOEF       = 0.001# Minimum allowed move between two iterations (in # * MESHSIZ)
-MAXCOEF       = 10 # Maximum allowed step between two iterations (in # * MESHSIZ)
+MULTCOEF      = 1.1  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
+MINCOEF       = 0.02 # Minimum allowed move between two iterations (in # * MESHSIZ)
+MAXCOEF       = 5 # Maximum allowed step between two iterations (in # * MESHSIZ)
 
 
 
@@ -148,7 +148,6 @@ DEFMMG       = "./DEFAULT.mmg3d"
 DEFMSHD      = "./DEFAULT.mshdist"
 
 EXCHFILE     = RES + "exch.data"
-EXCHFILEVID  = VID + "exch.data"
 LOGFILE      = RES + "log.data"
 HISTO        = RES + "histo.data"
 STEP         = RES + "step"

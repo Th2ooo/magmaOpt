@@ -40,39 +40,41 @@ class Extent() :
             return None
             
         
-        p_min = np.array(p_min)
-        p_max = np.array(p_max)
+        self.p_min = np.array(p_min)
+        self.p_max = np.array(p_max)
         
         
-        self.xmin = p_min[0]
-        self.ymin = p_min[1]
+        self.xmin = self.p_min[0]
+        self.ymin = self.p_min[1]
         
         
-        self.xmax = p_max[0]
-        self.ymax = p_max[1]
+        self.xmax = self.p_max[0]
+        self.ymax = self.p_max[1]
         
         self.xrange = abs(self.xmax-self.xmin)
         self.yrange = abs(self.ymax-self.ymin)
         
+        self.ranges = [self.xrange,self.yrange]
         
         if len(p_min) == 2 :
             self.zmin = None
             self.zmax = None
             self.depth = None
         else :
-            self.zmin = p_min[2]
-            self.zmax = p_max[2]
+            self.zmin = self.p_min[2]
+            self.zmax = self.p_max[2]
             self.depth = abs(self.zmin)
             self.zrange = abs(self.zmax-self.zmin)
             self.vol = self.xrange*self.yrange*self.zrange
+            self.ranges += [self.zrange]
+        
+        
+        self.ranges = np.array(self.ranges)
         
         
         
         
-        
-        
-        
-        self.diago = np.linalg.norm(p_max-p_min)
+        self.diago = np.linalg.norm(self.p_max-self.p_min)
         
     def __repr__(self):
         ch=f"Extent of range : x{self.xrange}, y{self.yrange},dpth{self.depth}\n"
@@ -113,6 +115,11 @@ class Extent() :
             p_max[2] -= step[2] #not enlarging z direction
         self.__init__(p_min,p_max)
         
+    def dilate(self,coef) :
+        p_min = np.array([self.xmin,self.ymin,self.zmin])*coef
+        p_max = np.array([self.xmax,self.ymax,self.zmax])*coef
+
+        self.__init__(p_min,p_max)
         
     def point_in(self,point) :
         """Return wether if the point is in the extent or not"""
@@ -122,7 +129,9 @@ class Extent() :
             res = res and (point[2] >= self.zmin  and point[2] <= self.zmax)
         return res
          
-        
+    
+    def copy(self) :
+        return Extent(self.p_min,self.p_max)
     # def generate_grid(step) :
         
         

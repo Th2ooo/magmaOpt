@@ -376,7 +376,7 @@ def composite_animation(nit=nit-3,fps=5,pvframes=True) :
 
 
 
-composite_animation(fps=5,pvframes=0)
+composite_animation(fps=15,pvframes=0)
 
 
 print("**********************************************")

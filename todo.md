@@ -5,40 +5,33 @@
 
 ## Things to fix
 
-- Dimensionalization
-    - Small steps when redimensionallizing
-        - Pressure ?
-        - Lenght ?
-        - Step size ?
-    - Normalizing Error ?
-    - Coeff managment
 
 - LOS error
     - working with real data ?
+    - fix adjoint
 
 - REGLS regularization nessecary ?
-
-- Alpha in regularization coeff
-
-- Gradient inn descent should be normalized to avoid inappropriate step size
 
 - Minimize number of scripts
     - remove artist
     - remove geographer
     - merge error and adjoint different scripts
 
+
 ## Features to add
 
-- GMSH meshing
-    - inhomogeneous mesh size for larger domains simulation
 
-- Paralellizing option for speed-up
-    1. Freefem codes : petsc+mpi (https://joliv.et/FreeFem-tutorial/section_8/example8.edp.html)
-        - elasticity
-        - adjoint
-        - gradE
-    2. mmg3d : parmmg (https://github.com/MmgTools/ParMmg/tree/master)
-    3. GMSH meshing
+- Bigger domains simulation for geophysics application
+    - Paralellizing option for speed-up
+        1. Freefem codes : petsc+mpi (https://joliv.et/FreeFem-tutorial/section_8/example8.edp.html)
+            - elasticity
+            - adjoint
+            - gradE
+        2. mmg3d : parmmg (https://github.com/MmgTools/ParMmg/tree/master)
+        3. GMSH meshing
+    - Inhomogeneous mesh size for larger domains simulation (coarse far, fine close source)
+        - Modify GMSH meshing
+        - Test if mmg works well
 
 - External data :
     - Hande N data sources
@@ -64,6 +57,7 @@
     - stay steady if good descent
     - slows if flat
 
+
 ## Done
 
 - Saving outputs of a run in separate folder
@@ -73,6 +67,18 @@
     - point alone on the top of the source which stays if steps are not big enough
 
 - Remote git repo
+
+- Dimensionalization
+    - Small steps when redimensionallizing
+        - Pressure ?
+        - Lenght ?
+        - Step size ?
+    - Normalizing Error ?
+    - Coeff managment
+
+- Alpha in regularization coeff
+
+- Gradient inn descent should be normalized to avoid inappropriate step size
 
 
 

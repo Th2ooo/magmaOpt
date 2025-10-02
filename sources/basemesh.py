@@ -8,14 +8,14 @@ Created on Fri May 24 00:24:58 2024
 import os
 import gmsh 
 import subprocess
-
+import numpy as np
 
 from sources.utils import Extent
 
 import sources.path as path
 
 
-def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,basic=True,verb=3,debug=0) :
+def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,inhom=False,verb=3,debug=0) :
     """
     Build initial mesh with magma chamber
 
@@ -31,8 +31,8 @@ def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,basic=True,verb=3,debug=0) 
         radii of the source (X,Y,Z direction). If not provided, values from path are used
     vizu : bool, optional
         Triigers gmsh gui to vizualize the mesh and model. The default is False.
-    basic : bool, optional
-        basic meshing mode = uniform. if false, a coarser mesh is defined far from the source. The default is True.
+    inhom : bool, optional
+        inhom meshing mode = inhomogeneous, a coarser mesh is defined far from the source. The default is False = uniform meshsize.
     verb : bool, optional
         verboisity level of gmsh outputs. The default is 3.
     debug : bool, optional
@@ -61,8 +61,8 @@ def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,basic=True,verb=3,debug=0) 
     
     domex = Extent()
     domex.init_with_range(ext[0],ext[1],ext[2])
-    if not basic :
-        domex.enlarge([10e3,10e3,10e3])
+    if inhom :
+        domex.dilate(path.DILA) #dilate the domain if inhom to add coars elements
         
     ####Intialization
     
@@ -123,26 +123,45 @@ def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,basic=True,verb=3,debug=0) 
 
     
     ####Meshing
-    
-    if basic : #basic uniform mesh size
+
+    if not inhom : #inhom uniform mesh size
         msh.setSize(mod.getEntities(), path.MESHSIZ)
-    else :   #inhomogeneous mesh size (DOESNT WORK WITH MMG)
-        inex = Extent() #extent of the fine meshed part
-        inex.init_with_range(path.XEXT,path.YEXT,path.ZEXT)
-        tagBox = msh.field.add("Box")
-        msh.field.setNumber(tagBox, "VIn",path.MESHSIZ)
-        msh.field.setNumber(tagBox, "VOut", 3e3)
-        msh.field.setNumber(tagBox, "XMin", inex.xmin)
-        msh.field.setNumber(tagBox, "XMax", inex.xmax)
-        msh.field.setNumber(tagBox, "YMin", inex.ymin)
-        msh.field.setNumber(tagBox, "YMax", inex.ymax)
-        msh.field.setNumber(tagBox, "ZMin", inex.zmin)
-        msh.field.setNumber(tagBox, "ZMax", inex.zmax)
-        msh.field.setNumber(tagBox, "Thickness", 2e3)
-        msh.field.setAsBackgroundMesh(tagBox)
+        
+    else :   #inhomogeneous mesh size  with extension of the domain to have wider domain
+        # Disable options to prevent meshing from other source than mesh field
         gmsh.option.setNumber("Mesh.MeshSizeExtendFromBoundary", 0)
         gmsh.option.setNumber("Mesh.MeshSizeFromPoints", 0)
         gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 0)
+        
+        inex = Extent() #extent of the fine meshed part, domain size
+        inex.init_with_range(ext[0],ext[1],ext[2])
+        
+        # size and distance parameters
+        hmin = path.MESHSIZ
+        hmax = path.HMAX
+        hgrad = path.HGRAD
+        dmin = np.max(inex.ranges)*3**0.5/2 #fine meshed region is about the longest side of the domain's diagonal size -> max*sqrt(3)
+        dmax = 2*(hmax-hmin)/hgrad+dmin #max distance to respect path.HGRAD/2 imposed in mmg
+    
+        
+        # Distance to the initial source field
+        tagDist = msh.field.add("Distance") 
+        msh.field.setNumbers(tagDist, "SurfacesList", [path.REFISO])
+        msh.field.setNumber(tagDist, "Sampling", 100)
+        
+        
+        # Threshold field, for a smooth increase in meshsize
+        tagThres = msh.field.add("Threshold")
+        msh.field.setNumber(tagThres, "Sigmoid", 1)
+        msh.field.setNumber(tagThres, "InField", tagDist)
+        msh.field.setNumber(tagThres, "SizeMin", hmin)
+        msh.field.setNumber(tagThres, "SizeMax", hmax)
+        msh.field.setNumber(tagThres, "DistMin", dmin)
+        msh.field.setNumber(tagThres, "DistMax", dmax)
+        msh.field.setNumber(tagThres, "StopAtDistMax", 0)
+        
+        # print("FIELD LIST2",msh.field.list())
+        msh.field.setAsBackgroundMesh(tagThres) # set as meshsize
         
     # generate the mesh
     msh.generate()
@@ -178,10 +197,10 @@ def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,basic=True,verb=3,debug=0) 
     
     
     
-def inimsh(mesh,ext=[],psrc=[],rads=[],vizu=False,basic=True,verb=3) :
+def inimsh(mesh,ext=[],psrc=[],rads=[],vizu=False,inhom=True,verb=3) :
   
     
-    build_mesh(mesh,ext,psrc,rads,vizu,basic,verb)
+    build_mesh(mesh,ext,psrc,rads,vizu,inhom,verb)
     print("GMSH meshing done")
 
 
@@ -193,7 +212,7 @@ def inimsh(mesh,ext=[],psrc=[],rads=[],vizu=False,basic=True,verb=3) :
     log = open(path.LOGFILE,'a')
 
     # !!! no -nr option to detect the ridges and keep them for the future
-    proc = subprocess.Popen([f"{path.MMG3D} -in {tmpf} -hmin {path.HMIN} -hmax {path.HMAX} -hausd {path.HAUSD} -hgrad {path.HGRAD} -out {tmpf} -rmc"],shell=True,stdout=log)
+    proc = subprocess.Popen([f"{path.MMG3D} -in {tmpf} -hmin {path.HMIN} -hmax {path.HMAX} -hausd {path.HAUSD} -hgrad {path.HGRAD} -optim -out {tmpf} -rmc"],shell=True,stdout=log)
 
     proc.wait()
     log.close()
@@ -208,8 +227,13 @@ def inimsh(mesh,ext=[],psrc=[],rads=[],vizu=False,basic=True,verb=3) :
         return 1
 
 
+
+
+
+
+
+
       
 if  __name__ == "__main__":
-    
-    build_mesh("./res/test.mesh",basic=1,debug=1)
-    # inimsh("./res/test.mesh",1)
+    # build_mesh("./res/test.mesh",inhom=1,debug=1)
+    inimsh("./res/test1.mesh",vizu=1,inhom=1)
