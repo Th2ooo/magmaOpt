@@ -133,6 +133,8 @@ def iniWF():
   # Add global information (e.g. about Dirichlet and Neumann boundaries)
   setAtt(file=path.EXCHFILE,attname="Dirichlet",attval=path.REFDIR)
   setAtt(file=path.EXCHFILE,attname="Neumann",attval=path.REFNEU)
+  setAtt(file=path.EXCHFILE,attname="Refup",attval=path.REFUP)
+
   setAtt(file=path.EXCHFILE,attname="Regularization",attval=path.ALPHA)
   setAtt(file=path.EXCHFILE,attname="ReferenceBnd",attval=path.REFISO)
   setAtt(file=path.EXCHFILE,attname="Refint",attval=path.REFINT)
@@ -140,8 +142,7 @@ def iniWF():
   setAtt(file=path.EXCHFILE,attname="MeshSize",attval=path.MESHSIZ)
   setAtt(file=path.EXCHFILE,attname="VolumeTarget",attval=path.VTARG)
   
-  #rajouté :
-  setAtt(file=path.EXCHFILE,attname="Refup",attval=path.REFUP)
+  # Model parameters
   setAtt(file=path.EXCHFILE,attname="Young",attval=path.YOUNG)
   setAtt(file=path.EXCHFILE,attname="Poisson",attval=path.POISS)
   setAtt(file=path.EXCHFILE,attname="Rvrai",attval=path.RVRAI)
@@ -149,8 +150,21 @@ def iniWF():
   setAtt(file=path.EXCHFILE,attname="Xst",attval=path.XST)
   setAtt(file=path.EXCHFILE,attname="Yst",attval=path.YST)
   setAtt(file=path.EXCHFILE,attname="Pressure",attval=path.PRESS)
+  
+  # Objective files
   setAtt(file=path.EXCHFILE,attname="ObjDisp",attval=path.OBJDISP)
   setAtt(file=path.EXCHFILE,attname="ObjMesh",attval=path.OBJMESH)
+  
+  #  InSAR parameters for all input data files
+  setAtt(file=path.EXCHFILE,attname="Ntracks",attval=path.NTCK)
+  for i in range(path.NTCK) :
+      setAtt(file=path.EXCHFILE,attname=f"Track{i}",attval=path.LOSS[i])
+      setAtt(file=path.EXCHFILE,attname=f"Head1{i}",attval=path.HEAS[i])
+      setAtt(file=path.EXCHFILE,attname=f"Incl{i}",attval=path.INCS[i])
+
+
+      
+  # TORMEOVE    
   setAtt(file=path.EXCHFILE,attname="Track1",attval=path.LOS1)
   setAtt(file=path.EXCHFILE,attname="Track2",attval=path.LOS2)
   setAtt(file=path.EXCHFILE,attname="Head1",attval=path.HEA1)

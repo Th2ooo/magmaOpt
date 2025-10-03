@@ -13,7 +13,7 @@ from datetime import datetime
 
 
 
-def save_results(name=None) :
+def save_results(name="") :
     """
     Save the results after execution
 
@@ -49,5 +49,5 @@ def save_results(name=None) :
         
         
         
-save_results("difficulty_convergence_after_modif_descent")
+save_results("fail convergence deeps source")
     

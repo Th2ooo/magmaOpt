@@ -43,8 +43,8 @@ fact = 20e3 #50e3 #6e3
 
 # Initial guess parameters
 XS = 0. #x coordinate of the center
-YS = 0.0 #y coordinate of the center
-ZS = -0.3*fact #z coordinate of the center
+YS = -0.1*fact #y coordinate of the center
+ZS = -0.2*fact #z coordinate of the center
 REX = 0.1*fact #x semi-axe of intial ellispoidal source
 REY = 0.2*fact #y semi-axe of intial ellispoidal source
 REZ = 0.1*fact #z semi-axe of intial ellispoidal source
@@ -52,34 +52,38 @@ REZ = 0.1*fact #z semi-axe of intial ellispoidal source
 # Objective source parameters
 XST = 0.3*fact
 YST = 0.3*fact
-DEPTH =  0.2*fact   ; #depth of source (>0)
+DEPTH =  0.4*fact   ; #depth of source (>0)
 RVRAI = 0.1*fact ; # radius of the target analytical spherical source
 
 # Extent of the simulated doain
 XEXT          = 1.*fact #extent of domain in X direction
 YEXT          = 1.*fact #extent of domain in X direction
-ZEXT          = 1.*fact #extent of domain in X direction
+ZEXT          = 0.7*fact #extent of domain in X direction
 
 
 
 #### Meshing parameters
-MESHSIZ       = 0.05*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
+MESHSIZ       = 0.04*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
 HMIN          = 0.02*fact #minimum autorized element lenght
-HMAX          = 0.2*fact #maximum authorized element length
+HMAX          = 0.3*fact #maximum authorized element length
 HAUSD         = 0.007*fact  #mawimum authorized gap between ideal shape and its mesh nodes
 HGRAD         = 1.8 #max rati allowed between 2 adjascent edges
-DILA          = 3.  #dilataion parameter for the domain size if inhomogeneous meshing is selected
+INHOM         = False #inhomogenous meshing for wider domains simulation
+DILA          = 3.5  #dilataion parameter for the domain size if inhomogeneous meshing is selected
 
 
 #### Optimization parameters
 
 # Error type 
-ERRMOD = 1  
+ERRMOD = 2  
 """ 0 if error is computed with analytic solution, 
     1 if computed with numeric sol
     2 if computed with real data (bestE = null test)
+    
 """
 OUTANA = 0 #out analytic displacement
+OBJDISP      = RES + "obj.sol" # path of the objective displacement field
+OBJMESH      = RES + "obj.mesh" # path of the mesh associated with the objective field
 
 # Other parameters of the shape opt algo
 EPS           = 1e-10 # Precision parameter
@@ -89,14 +93,25 @@ ALPHA         = 2*MESHSIZ # Parameter for velocity extension - regularization, f
 MAXIT         = 100000   # Maximum number of iterations in the shape optimization process
 MAXITLS       = 10   # Maximum number of iterations in the line search procedure
 TOL           = 0.001  # Tolerance for a slight increase in the ERROR
-MULTCOEF      = 1.1  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
-MINCOEF       = 0.02 # Minimum allowed move between two iterations (in # * MESHSIZ)
+MULTCOEF      = 1.5  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
+MINCOEF       = 0.01 # Minimum allowed move between two iterations (in # * MESHSIZ)
 MAXCOEF       = 5 # Maximum allowed step between two iterations (in # * MESHSIZ)
 
 
 
 #### InSAR parameters
 
+TCKS = [DATA + "a33.txt",DATA + "a33.txt"] #tck data files
+NTCK = len(TCKS) # number of tck files
+LOSS = [OBJDISP.replace("sol",f"los{i}.sol") for i in range(len(TCKS))] #SOL files after interpolation of the data location
+
+HEAS = [347.1 *np.pi/180, 189.7 *np.pi/180]
+INCS = [33.3 *np.pi/180 ,44.7 *np.pi/180]
+
+ORMOD = (2529373,179745)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
+
+
+## TO REMOVE
 TCK1 = DATA + "a33.txt"  #1st insar track
 TCK2 = DATA + "d44.txt"  #2nd insar track
 LOS1 = RES +"los1.sol"
@@ -105,7 +120,6 @@ HEA1 = 347.1 *np.pi/180  #heading 1 (rad)
 INC1 = 33.3 *np.pi/180   #inclinaison 1 (rad)
 HEA2 = 189.7 *np.pi/180
 INC2 = 44.7 *np.pi/180
-ORMOD = [2529373,179745] #local origin of the model relatively to the InSAR track, ISN16
 RAWTOLOS = lambda r : r*0.148*1e-3#speed (mm/yr) converted in displacement (mm), then in m
 
 
@@ -151,8 +165,6 @@ EXCHFILE     = RES + "exch.data"
 LOGFILE      = RES + "log.data"
 HISTO        = RES + "histo.data"
 STEP         = RES + "step"
-OBJDISP      = RES + "uobj.sol"
-OBJMESH      = RES + "uobj.mesh"
 TMPSOL       = "./res/temp.sol"
 TESTMESH     = TESTDIR + "test.mesh"
 TESTPHI      = TESTDIR + "test.phi.sol"

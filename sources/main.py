@@ -42,7 +42,6 @@ import sources.basemesh as basemesh
 """
 TODO BEFORE PUBLISHING
 
-    - solve dimension problem
     - numerical errror 
     - test insar again
 
@@ -54,6 +53,8 @@ DONE
     - null test systematically
     - commmon output folder for results3
     - prevent mmg to move the cube booundaries :
+    - solve dimension problem
+
 
 
     
@@ -108,7 +109,7 @@ if not restart  :
 
     ## Creation of the initial mesh
     print("Creating intial mesh")
-    basemesh.inimsh(path.step(0,"mesh"),vizu=1,inhom=1)
+    basemesh.inimsh(path.step(0,"mesh"),vizu=1,inhom=path.INHOM)
     
         
     ## Compute Null test of the best solution
@@ -121,6 +122,8 @@ if not restart  :
 
         
     if path.ERRMOD == 2 : #if unknow source, null test is the ref
+        import sources.insar as insar
+        insar.init() # tranfer the insar data into the initial mesh 
         bestE = nullE
 
         
@@ -135,7 +138,7 @@ if not restart  :
     print("*** Initialization: Error {}".format(newE))
     
     # Coefficient for time step ( descent direction is scaled with respect to mesh size)
-    coef = 1.0
+    coef = path.MINCOEF
     # Number of refinement steps
     nref = 0
     
@@ -261,7 +264,7 @@ for it in range(itstart,path.MAXIT) :
             print("    Iteration {} - subiteration {} rejected".format(it,k))
             proc = subprocess.Popen(["rm {nmesh}".format(nmesh=newmesh)],shell=True)
             proc.wait()
-            coef = max(path.MINCOEF,coef/path.MULTCOEF)
+            coef = max(path.MINCOEF,coef/(2*path.MULTCOEF))
         
    
         

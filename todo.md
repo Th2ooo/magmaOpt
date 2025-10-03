@@ -18,6 +18,7 @@
     - merge error and adjoint different scripts
 
 
+Fix mmg options to avoid refining mesh on edgs
 ## Features to add
 
 
@@ -29,9 +30,7 @@
             - gradE
         2. mmg3d : parmmg (https://github.com/MmgTools/ParMmg/tree/master)
         3. GMSH meshing
-    - Inhomogeneous mesh size for larger domains simulation (coarse far, fine close source)
-        - Modify GMSH meshing
-        - Test if mmg works well
+
 
 - External data :
     - Hande N data sources
@@ -42,13 +41,16 @@
     - GNSS (pas sur)
 
 
-- Manage inhomogenous element sizes meshes for bigger domain simulation
 
 - Move all path managments  to Pathlib
 
 
 - Clean code
 
+- proper Readme
+    - install instructions
+    - licence
+    - screenshots
 
 - Improve Line Search (https://optimization.cbe.cornell.edu/index.php?title=Line_search_methods)
     - check for better adaptation of step size algorithms
@@ -81,6 +83,8 @@
 - Gradient inn descent should be normalized to avoid inappropriate step size
 
 
-
-
+- Manage inhomogenous element sizes meshes for bigger domain simulation
+    - Inhomogeneous mesh size for larger domains simulation (coarse far, fine close source)
+        - Modify GMSH meshing
+        - Test if mmg works well
 

@@ -99,11 +99,11 @@ def error(mesh,u) :
   inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
   inout.setAtt(file=path.EXCHFILE,attname="DispName",attval=u)
   
-  
-  if path.ERRMOD == 2 : # interpolation of LOS disp at mesh nodes
-      insar.lossol(path.TCK1, mesh, path.LOS1)
-      insar.lossol(path.TCK2, mesh, path.LOS2)
-  elif path.ERRMOD == 0 :
+  # !! TO REMOVE
+  # if path.ERRMOD == 2 : # interpolation of LOS disp at mesh nodes
+  #     insar.los2sol(path.TCK1, mesh, path.LOS1)
+  #     insar.los2sol(path.TCK2, mesh, path.LOS2)
+  if path.ERRMOD == 0 :
       inout.setAtt(file=path.EXCHFILE,attname="OutAna",attval=path.OUTANA)
       
   

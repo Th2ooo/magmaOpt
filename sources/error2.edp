@@ -16,15 +16,23 @@ int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
 // string MSHLOS      = getsParam(EXCHFILE,"MeshLos");
 string LOS1       = getsParam(EXCHFILE,"Track1");
 string LOS2       = getsParam(EXCHFILE,"Track2");
+int ntck        = getiParam(EXCHFILE,"Ntracks");
+string MESHI      = getsParam(EXCHFILE,"ObjMesh");
+
 
 real err;
 // real err1;
-/* Loading mesh */
+/* Loading mesh and insar mesh*/
 mesh3 Th = readmesh3(MESH);
+mesh3 ThI = readmesh3(MESHI);
+
 
 /* Finite element spaces and functions */
 fespace Vh(Th,P1);
+fespace VhI(ThI,P1);
+
 Vh ux,uy,uz,los1,los2,ulos1,ulos2;
+
 
 
 /* Read solution */
@@ -41,7 +49,11 @@ loadvec3(SOL,ux[],uy[],uz[]);
 // //Interpolation on the current mesh
 // los1 = losl1 ;
 // los2 = losl2 ;
+/* WORK IN PROGRESS !!!!!!!!!!!! */
+for (int i = 0; i < ntck; ++i){
 
+    loadsol(LOS1,losl1[]);
+}
 loadsol(LOS1,los1[]);
 loadsol(LOS2,los2[]);
 
@@ -50,7 +62,6 @@ err = int2d(Th,REFUP)(jlos(ux,uy,uz,los1,los2));
 ulos1 = UtoLOS1(ux,uy,uz);
 ulos2 = UtoLOS2(ux,uy,uz);
 
-savevtk("ulos.vtu",Th,[ulos1,ulos2,0]);
 /* Save result */
 setrParam(EXCHFILE,"Error",err);
 cout << "ERROR : " << err << endl ;
@@ -60,3 +71,6 @@ cout << "ERROR : " << err << endl ;
 // cout << "ERROR : " << err1 << endl ;
 
 
+/*VTK output of the LOS for vizu*/
+savevtk("objlos.vtu",Th,[los1,los2,0]); //data
+savevtk("ulos.vtu",Th,[ulos1,ulos2,0]);  // current LOS disp
