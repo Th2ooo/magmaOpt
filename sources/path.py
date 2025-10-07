@@ -36,7 +36,7 @@ YOUNG = 10e9 ; #E
 POISS = 0.25 ; #nu
 PRESS = 20e6 ;  #Pressure change DP (source load)
 
-fact = 1 #20e3 #50e3 #6e3
+fact = 20e3 #50e3 #6e3
 
 
 # Initial guess parameters
