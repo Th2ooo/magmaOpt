@@ -73,10 +73,10 @@ def los2sol(tckfile,meshfile,outsol,origin, plot=False) :
     
     if plot: #plot to check
         art = Artist(1,2)
-        b= art.plot_simple(tck[:,:2],tck[:,2], cmap="turbo") #interpolated
+        b= art.plot_simple(tck[:,:2],tck[:,2], cmap="turbo") #raw
         art.fig.colorbar(b)
         art.switch_ax()
-        a=art.plot_simple(mshloc[mkup][:,:2], mshlos, cmap="turbo",vmin=np.min(mshlos[mshlos!=-99])) #interpolated
+        a=art.plot_simple(mshloc[mkup][:,:2], mshlos, cmap="turbo",vmin=np.min(mshlos)) #interpolated
         art.fig.colorbar(a)
     return mshloc[mkup]
 
@@ -85,14 +85,14 @@ def los2sol(tckfile,meshfile,outsol,origin, plot=False) :
 
 
 
-def init() :
+def init(plot=False) :
     """
     Init the insar field sol files by creating an empty mesh and  interpolating the los data on it
 
     """
     
     # copying the initial mesh as the objective mesh to interpolate insar data
-    interp_mesh = path.step(0,"mesh")
+    interp_mesh = path.step(0,"mesh") #!!!! Maybe change to a custom mesh without source
     shutil.copy2(interp_mesh,path.OBJMESH)
     
     if not path.ORMOD : #if no specific local origin is specified, its the mean of all center of all tracks
@@ -109,7 +109,7 @@ def init() :
             
     # Interpolating all insar tracks on the inital mesh
     for flos,tck in zip(path.LOSS,path.TCKS) :
-        los2sol(tck, interp_mesh, flos, locori)
+        los2sol(tck, interp_mesh, flos, locori,plot)
 
 
     

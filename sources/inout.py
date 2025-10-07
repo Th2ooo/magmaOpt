@@ -159,18 +159,12 @@ def iniWF():
   setAtt(file=path.EXCHFILE,attname="Ntracks",attval=path.NTCK)
   for i in range(path.NTCK) :
       setAtt(file=path.EXCHFILE,attname=f"Track{i}",attval=path.LOSS[i])
-      setAtt(file=path.EXCHFILE,attname=f"Head1{i}",attval=path.HEAS[i])
+      setAtt(file=path.EXCHFILE,attname=f"Head{i}",attval=path.HEAS[i])
       setAtt(file=path.EXCHFILE,attname=f"Incl{i}",attval=path.INCS[i])
-
+      setAtt(file=path.EXCHFILE,attname=f"Weight{i}",attval=path.WEIG[i])
 
       
-  # TORMEOVE    
-  setAtt(file=path.EXCHFILE,attname="Track1",attval=path.LOS1)
-  setAtt(file=path.EXCHFILE,attname="Track2",attval=path.LOS2)
-  setAtt(file=path.EXCHFILE,attname="Head1",attval=path.HEA1)
-  setAtt(file=path.EXCHFILE,attname="Head2",attval=path.HEA2)
-  setAtt(file=path.EXCHFILE,attname="Incl1",attval=path.INC1)
-  setAtt(file=path.EXCHFILE,attname="Incl2",attval=path.INC2)
+
 ##############################################################
 ##############################################################
 

@@ -1,76 +1,75 @@
 /* Calculation of the ERROR of the input structure */
 include "./sources/inout.idp"
 include "./sources/macros.idp"
-include "./sources/insar.idp"
 
 load "msh3"
 load "iovtk"
 
+
+//// Functions
+func real UtoLOSi(real ux, real uy, real uz, int i){
+    /*Conversion to LOS geometry of track i by loading its geometry from exchfile*/
+    real inc        = getrParam(EXCHFILE,"Incl"+i);
+    real hea        = getrParam(EXCHFILE,"Head"+i);
+    return -cos(hea)*sin(inc)*ux + sin(hea)*sin(inc)*uy + cos(inc)*uz ;
+}
+
+
+//// Parameters
 /* Get mesh and sol names, and global parameters */
 string MESH       = getsParam(EXCHFILE,"MeshName");
 string SOL        = getsParam(EXCHFILE,"DispName");
 int REFUP        = getiParam(EXCHFILE,"Refup");
-int REFNEU        = getiParam(EXCHFILE,"Neumann");
-int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
-
-// string MSHLOS      = getsParam(EXCHFILE,"MeshLos");
-string LOS1       = getsParam(EXCHFILE,"Track1");
-string LOS2       = getsParam(EXCHFILE,"Track2");
+string MESHI      = getsParam(EXCHFILE,"ObjMesh"); //mesh on which insar data is interpolated
 int ntck        = getiParam(EXCHFILE,"Ntracks");
-string MESHI      = getsParam(EXCHFILE,"ObjMesh");
-
-
-real err;
-// real err1;
-/* Loading mesh and insar mesh*/
+real err, w;
+string TMPLOS;
+/* Loading current mesh and insar data mesh*/
 mesh3 Th = readmesh3(MESH);
 mesh3 ThI = readmesh3(MESHI);
 
 
+
 /* Finite element spaces and functions */
-fespace Vh(Th,P1);
-fespace VhI(ThI,P1);
+fespace Vh(Th,P1); //Current mesh fespace
+Vh ux,uy,uz,tmplosp,ulosi;
+Vh[int] losdatA(ntck); // fespace array to contain the tracks interpolated on current mesh
 
-Vh ux,uy,uz,los1,los2,ulos1,ulos2;
+fespace VhI(ThI,P1); //Mesh of insar data fespace
+VhI tmplos ; //tmplos los disp to load data
 
 
-
-/* Read solution */
+/* Read current displaement solution */
 loadvec3(SOL,ux[],uy[],uz[]);
 
 
-
-/*Get LOS displacement*/
-// mesh3 Thl = readmesh3(MSHLOS);
-// fespace Vhl(Thl,P1);
-// Vhl losl1,losl2;
-// loadsol(LOS1,losl1[]);
-// loadsol(LOS2,losl2[]);
-// //Interpolation on the current mesh
-// los1 = losl1 ;
-// los2 = losl2 ;
-/* WORK IN PROGRESS !!!!!!!!!!!! */
+/* Loop over the different data tracks for interpolation */
 for (int i = 0; i < ntck; ++i){
-
-    loadsol(LOS1,losl1[]);
+    cout << "Interpolating Track"+i << endl;
+    TMPLOS       = getsParam(EXCHFILE,"Track"+i);
+    loadsol(TMPLOS,tmplos[]); //read insar data
+    tmplosp = tmplos ; // project it on the current mesh
+    losdatA[i] = tmplosp; //save it in the array
 }
-loadsol(LOS1,los1[]);
-loadsol(LOS2,los2[]);
 
-err = int2d(Th,REFUP)(jlos(ux,uy,uz,los1,los2));
 
-ulos1 = UtoLOS1(ux,uy,uz);
-ulos2 = UtoLOS2(ux,uy,uz);
+/*Compute error function for N tracks*/
+err = 0.0 ;
+for (int i = 0; i < ntck; ++i){
+    cout << "Error Track"+i << endl;
+    w   = getrParam(EXCHFILE,"Weight"+i);
+    err = err + w*int2d(Th,REFUP)((UtoLOSi(ux,uy,uz,i)-losdatA[i])^2);
+}
+
 
 /* Save result */
 setrParam(EXCHFILE,"Error",err);
 cout << "ERROR : " << err << endl ;
 
-// check if not skipping -99 terms change => YES
-// err1 = int2d(Th,REFUP)((UtoLOS1(ux,uy,uz)-los1)^2+(UtoLOS2(ux,uy,uz)-los2)^2);
-// cout << "ERROR : " << err1 << endl ;
-
 
 /*VTK output of the LOS for vizu*/
-savevtk("objlos.vtu",Th,[los1,los2,0]); //data
-savevtk("ulos.vtu",Th,[ulos1,ulos2,0]);  // current LOS disp
+// for (int i = 0; i < ntck; ++i){
+//     savevtk("objlos"+i+".vtu", Th,losdatA[i]); // data
+//     ulosi = UtoLOSi(ux,uy,uz,i);
+//     savevtk("ulos"+i+".vtu",Th,ulosi);  // current LOS disp
+// }

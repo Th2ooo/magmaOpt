@@ -38,6 +38,8 @@ import sources.inout as inout
 import sources.extools as extools
 import sources.mechtools as mechtools
 import sources.basemesh as basemesh
+import sources.insar as insar
+
 
 """
 TODO BEFORE PUBLISHING
@@ -90,8 +92,13 @@ if not restart  :
     # Test the links with external C libraries
     # inout.testLib()
     
-    ## Evaluate initial error 
     
+    ## Creation of the initial mesh
+    print("Creating intial mesh")
+    basemesh.inimsh(path.step(0,"mesh"),vizu=1,inhom=path.INHOM)
+    
+    
+    ## Initialize error 
     if path.ERRMOD == 0 or path.ERRMOD == 1 : 
         #Evaluate the min of error function -> create a mesh with source located at target solution
         basemesh.inimsh(path.OBJMESH,psrc=[path.XST,path.YST,-path.DEPTH], 
@@ -105,12 +112,8 @@ if not restart  :
         elif path.ERRMOD == 1 : #Best possible error is 0 bc best mesh exists
             bestE = 0.0 
 
-    
-
-    ## Creation of the initial mesh
-    print("Creating intial mesh")
-
-    basemesh.inimsh(path.step(0,"mesh"),vizu=1,inhom=path.INHOM)
+    elif path.ERRMOD == 2 :
+        insar.init(1) # tranfer the insar data into the initial mesh 
     
         
     ## Compute Null test of the best solution
@@ -123,8 +126,6 @@ if not restart  :
 
         
     if path.ERRMOD == 2 : #if unknow source, null test is the ref
-        import sources.insar as insar
-        insar.init() # tranfer the insar data into the initial mesh 
         bestE = nullE
 
         
@@ -133,6 +134,7 @@ if not restart  :
     
     
     # Calculation of the compliance and the volume of the shape
+    print("Evaluation of intial error")
     newE  = mechtools.error(path.step(0,"mesh"),path.step(0,"u.sol"))
     curE = newE
     print(f"Minimal error reachable {bestE}")

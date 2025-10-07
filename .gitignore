@@ -12,3 +12,5 @@ unshared/
 *.png
 *.vtu
 *.tif
+
+.spyproject/

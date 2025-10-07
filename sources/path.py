@@ -74,7 +74,7 @@ DILA          = 3.5  #dilataion parameter for the domain size if inhomogeneous m
 #### Optimization parameters
 
 # Error type 
-ERRMOD = 1  
+ERRMOD = 2  
 """ 0 if error is computed with analytic solution, 
     1 if computed with numeric sol
     2 if computed with real data (bestE = null test)
@@ -101,25 +101,19 @@ MAXCOEF       = 5 # Maximum allowed step between two iterations (in # * MESHSIZ)
 
 #### InSAR parameters
 
-TCKS = [DATA + "a33.txt",DATA + "a33.txt"] #tck data files
+TCKS = [DATA + "a33.txt",DATA + "d44.txt"] #tck data files
 NTCK = len(TCKS) # number of tck files
 LOSS = [OBJDISP.replace("sol",f"los{i}.sol") for i in range(len(TCKS))] #SOL files after interpolation of the data location
 
 HEAS = [347.1 *np.pi/180, 189.7 *np.pi/180]
 INCS = [33.3 *np.pi/180 ,44.7 *np.pi/180]
-
+WEIG = [1.,1.] #Weights given to the differents insar tracks
+WEIG = np.array(WEIG)
+WEIG = WEIG/np.sum(WEIG) # normalize the weights
 ORMOD = (2529373,179745)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
 
 
-## TO REMOVE
-TCK1 = DATA + "a33.txt"  #1st insar track
-TCK2 = DATA + "d44.txt"  #2nd insar track
-LOS1 = RES +"los1.sol"
-LOS2 = RES +"los2.sol"
-HEA1 = 347.1 *np.pi/180  #heading 1 (rad)
-INC1 = 33.3 *np.pi/180   #inclinaison 1 (rad)
-HEA2 = 189.7 *np.pi/180
-INC2 = 44.7 *np.pi/180
+
 RAWTOLOS = lambda r : r*0.148*1e-3#speed (mm/yr) converted in displacement (mm), then in m
 
 
