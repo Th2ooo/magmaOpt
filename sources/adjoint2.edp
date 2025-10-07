@@ -1,11 +1,13 @@
 /* Calculation of the adjoint state for the stress functional */
 include "./sources/inout.idp"
 include "./sources/macros.idp"
-include "./sources/insar.idp"
 load "medit"
 load "msh3"
 load "iovtk"
-/* Get mesh and sol names, and global parameters */
+
+
+
+/* Get mesh and sol names, define global parameters */
 string MESH       = getsParam(EXCHFILE,"MeshName");
 string SOL        = getsParam(EXCHFILE,"DispName");
 string ADJ        = getsParam(EXCHFILE,"AdjName");
@@ -13,73 +15,96 @@ int REFEXT          = getiParam(EXCHFILE,"Refext");
 int REFDIR        = getiParam(EXCHFILE,"Dirichlet");
 int REFUP        = getiParam(EXCHFILE,"Refup");
 
-// string MSHLOS      = getsParam(EXCHFILE,"MeshLos");
-string LOS1       = getsParam(EXCHFILE,"Track1");
-string LOS2       = getsParam(EXCHFILE,"Track2");
+string MESHI      = getsParam(EXCHFILE,"ObjMesh"); //mesh on which insar data is interpolated
+int ntck        = getiParam(EXCHFILE,"Ntracks");
+string TMPLOS;
+
+//arrays of InSar Parameters
+real[int] heas(ntck), incs(ntck), ws(ntck) ;
+for (int i = 0; i < ntck; ++i){
+    incs[i] = getrParam(EXCHFILE,"Incl"+i);
+    heas[i] = getrParam(EXCHFILE,"Head"+i);
+    ws[i] = getrParam(EXCHFILE,"Weight"+i);
+}
+// LOS geometry conversion
+macro UtoLOSi(ux,uy,uz,i) -cos(heas[i])*sin(incs[i])*ux + sin(heas[i])*sin(incs[i])*uy + cos(incs[i])*uz // End of macro
 
 
-/* Loading mesh */
+/* Loading current mesh and insar data mesh*/
 mesh3 Th = readmesh3(MESH);
+mesh3 ThI = readmesh3(MESHI);
 
 /* Finite element spaces and functions */
 fespace Vh(Th,P1);
 fespace Vh0(Th,P0);
-Vh ux,uy,uz,px,py,pz,los1,los2;
+Vh ux,uy,uz,px,py,pz;
 Vh0 reg = region;
 
-/* Load displacement */
+fespace VhI(ThI,P1); //Mesh of insar data fespace
+VhI tmplosi ; //tmplos los disp to load data
+
+/* Read current displacement */
 loadvec3(SOL,ux[],uy[],uz[]);
 
+
 /* Mesh of the interior part and corresponding FE space */
-mesh3 Thi = trunc(Th,(reg(x,y,z) == REFEXT),label=REFEXT);
-fespace Vhi(Thi,P1);
-Vhi uix,uiy,uiz,pix,piy,piz,vix,viy,viz;
+mesh3 The = trunc(Th,(reg(x,y,z) == REFEXT),label=REFEXT);
+fespace Vhe(The,P1);
+Vhe uex,uey,uez,pex,pey,pez,vex,vey,vez,tmplosp;
+Vhe[int] losdatA(ntck); // fespace array to contain the tracks interpolated on current mesh
 
 
 /* Interpolation of displacement from full to sub mesh */
-uix = ux;
-uiy = uy;
-uiz = uz;
-
-// /*Get LOS displacement*/
-// mesh3 Thl = readmesh3(MSHLOS);
-// fespace Vhl(Thl,P1);
-// Vhl losl1,losl2;
-// loadsol(LOS1,losl1[]);
-// loadsol(LOS2,losl2[]);
-// //Interpolation on the current mesh
-// los1 = losl1 ;
-// los2 = losl2 ;
-
-loadsol(LOS1,los1[]);
-loadsol(LOS2,los2[]);
+uex = ux;
+uey = uy;
+uez = uz;
 
 
 
-// fespace Vh0i(Thi,P0);
-// Vh0i Aevep;
-// //elasticproduct
-// Aevep = mu*(2.0*(dx(vix)*dx(pix)+dy(viy)*dy(piy)+dz(viz)*dz(piz)) //diag 2mu*EPS
-//      + ((dx(viy)+dy(vix))*(dx(piy)+dy(pix)) + (dx(viz)+dz(vix))*(dx(piz)+dz(pix)) + (dy(viz)+dz(viy))*(dy(piz)+dz(piy)))) //sides 2mu*EPS
-//      + lm*(dx(vix)+dy(viy)+dz(viz))*(dx(pix)+dy(piy)+dz(piz)) ;//lm*tr(EPS)*Id
+/* Loop over the different data tracks for interpolation */
+for (int i = 0; i < ntck; ++i){
+    cout << "Interpolating Track"+i << endl;
+    TMPLOS = getsParam(EXCHFILE,"Track"+i);
+    loadsol(TMPLOS,tmplosi[]); //read insar data
+    tmplosp = tmplosi ; // project it on the current mesh
+    losdatA[i] = tmplosp; //save it in the array
+}
+
+
+func real sumbound(real ux, real uy, real uz, int comp){
+    real out = 0.0 ;
+    for (int i = 0; i < ntck; ++i){
+        out = out + ws[i]*(UtoLOSi(ux,ux,ux,i)-losdatA[i]);
+        if (comp ==0){out=out*UtoLOSi(1,0,0,i);}
+        if (comp ==1){out=out*UtoLOSi(0,1,0,i);}
+        if (comp ==2){out=out*UtoLOSi(0,0,1,i);}
+    }
+    return out ;
+}
+
+int i = 0;
 
 
 /* Variational formulation of the problem */
-problem adjoint([pix,piy,piz],[vix,viy,viz],solver=CG) =  int3d(Thi)(mu*(2.0*(dx(vix)*dx(pix)+dy(viy)*dy(piy)+dz(viz)*dz(piz)) + ((dx(viy)+dy(vix))*(dx(piy)+dy(pix)) + (dx(viz)+dz(vix))*(dx(piz)+dz(pix)) + (dy(viz)                          +dz(viy))*(dy(piz)+dz(piy)))) + lm*(dx(vix)+dy(viy)+dz(viz))*(dx(pix)+dy(piy)+dz(piz)))
-            + int2d(Thi,REFUP)(djlosdu1(uix,uiy,uiz,los1)*UtoLOS1(vix,viy,viz)+djlosdu2(uix,uiy,uiz,los2)*UtoLOS2(vix,viy,viz))
-                                              + on(REFDIR,pix=0.0,piy=0.0,piz=0.0);
+problem adjoint([pex,pey,pez],[vex,vey,vez],solver=CG) = int3d(The)(2.0*mu*(dx(pex)*dx(vex)+dy(pey)*dy(vey)+dz(pez)*dz(vez)))
+                                   + int3d(The)(mu*((dx(pey)+dy(pex))*(dx(vey)+dy(vex)) + (dx(pez)+dz(pex))*(dx(vez)+dz(vex)) + (dy(pez)+dz(pey))*(dy(vez)+dz(vey))))
+                                   + int3d(The)(lm*(dx(pex)+dy(pey)+dz(pez))*(dx(vex)+dy(vey)+dz(vez)))
 
-// problem adjoint([pix,piy,piz],[vix,viy,viz]) =  int3d(Thi)(pix*djlosdu(uix,uiy,uiz,0.0,0.0,0.0,x,y));
+                                   + int2d(The,REFUP)(2.0*(vez*sumbound(uex,uey,uez,2)+vey*sumbound(uex,uey,uez,1)+vex*sumbound(uex,uey,uez,0)))
+                                   + on(REFDIR,pex=0.0,pey=0.0,pez=0.0);
+
+
+
 
 /* Solve problem */
 adjoint;
 
 /* Transfer the problem on the full mesh */
-px = pix;
-py = piy;
-pz = piz ;
+px = pex;
+py = pey;
+pz = pez;
 
 /* Save solution */
-printvec3(ADJ,px[],py[],py[]);
+printvec3(ADJ,px[],py[],pz[]);
 
 

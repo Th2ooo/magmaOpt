@@ -1,18 +1,8 @@
 /* Calculation of the ERROR of the input structure */
 include "./sources/inout.idp"
 include "./sources/macros.idp"
-
 load "msh3"
 load "iovtk"
-
-
-//// Functions
-func real UtoLOSi(real ux, real uy, real uz, int i){
-    /*Conversion to LOS geometry of track i by loading its geometry from exchfile*/
-    real inc        = getrParam(EXCHFILE,"Incl"+i);
-    real hea        = getrParam(EXCHFILE,"Head"+i);
-    return -cos(hea)*sin(inc)*ux + sin(hea)*sin(inc)*uy + cos(inc)*uz ;
-}
 
 
 //// Parameters
@@ -28,6 +18,16 @@ string TMPLOS;
 mesh3 Th = readmesh3(MESH);
 mesh3 ThI = readmesh3(MESHI);
 
+//arrays of InSar Parameters
+real[int] heas(ntck), incs(ntck), ws(ntck) ;
+for (int i = 0; i < ntck; ++i){
+    incs[i] = getrParam(EXCHFILE,"Incl"+i);
+    heas[i] = getrParam(EXCHFILE,"Head"+i);
+    ws[i] = getrParam(EXCHFILE,"Weight"+i);
+}
+// LOS geometry conversion
+macro UtoLOSi(ux,uy,uz,i) -cos(heas[i])*sin(incs[i])*ux + sin(heas[i])*sin(incs[i])*uy + cos(incs[i])*uz // End of macro
+
 
 
 /* Finite element spaces and functions */
@@ -39,7 +39,7 @@ fespace VhI(ThI,P1); //Mesh of insar data fespace
 VhI tmplos ; //tmplos los disp to load data
 
 
-/* Read current displaement solution */
+/* Read current displaement */
 loadvec3(SOL,ux[],uy[],uz[]);
 
 

@@ -1,89 +1,3 @@
-// /* Calculation of the adjoint state for the stress functional */
-// include "./sources/inout.idp"
-// include "./sources/macros.idp"
-//
-// load "medit"
-// load "msh3"
-//
-// /* Get mesh and sol names, and global parameters */
-// string MESH       = getsParam(EXCHFILE,"MeshName");
-// string SOL        = getsParam(EXCHFILE,"DispName");
-// string ADJ        = getsParam(EXCHFILE,"AdjName");
-// int REFINT          = getiParam(EXCHFILE,"Refint");
-// int REFEXT        = getiParam(EXCHFILE,"Refext");
-//
-// int REFDIR        = getiParam(EXCHFILE,"Dirichlet");
-// int REFUP        = getiParam(EXCHFILE,"Refup");
-//
-// string OMESH       = getsParam(EXCHFILE,"ObjMesh");
-// string OSOL        = getsParam(EXCHFILE,"ObjDisp");
-//
-// /* Loading mesh */
-// mesh3 Th = readmesh3(MESH);
-//
-// /* Finite element spaces and functions */
-// fespace Vh(Th,P1);
-// fespace Vh0(Th,P0);
-// Vh ux,uy,uz,px,py,pz;
-// Vh0 reg = region;
-//
-// /* Load displacement */
-// loadvec3(SOL,ux[],uy[],uz[]);
-//
-// /* Mesh of the interior part and corresponding FE space */
-// mesh3 Thi = trunc(Th,(reg(x,y,z) == REFEXT),label=REFEXT);
-// fespace Vhi(Thi,P1);
-// Vhi uix,uiy,uiz,pix,piy,piz,vix,viy,viz,uxo,uyo,uzo;;
-//
-//
-// /* Interpolation of displacement from full to sub mesh */
-// uix = ux;
-// uiy = uy;
-// uiz = uz;
-//
-//
-//
-//
-// // Load objective vector field
-// mesh3 Thob = readmesh3(OMESH);
-// fespace Vhob(Thob,P1);
-// Vhob uxob,uyob,uzob;
-// loadvec3(OSOL,uxob[],uyob[],uzob[]);
-// // Project on the current mesh
-// uxo = uxob ;
-// uyo = uyob ;
-// uzo = uzob ;
-//
-//
-// // fespace Vh0i(Thi,P0);
-// // Vh0i Aevep;
-// // //elasticproduct
-// // Aevep = mu*(2.0*(dx(vix)*dx(pix)+dy(viy)*dy(piy)+dz(viz)*dz(piz)) //diag 2mu*EPS
-// //      + ((dx(viy)+dy(vix))*(dx(piy)+dy(pix)) + (dx(viz)+dz(vix))*(dx(piz)+dz(pix)) + (dy(viz)+dz(viy))*(dy(piz)+dz(piy)))) //sides 2mu*EPS
-// //      + lm*(dx(vix)+dy(viy)+dz(viz))*(dx(pix)+dy(piy)+dz(piz)) ;//lm*tr(EPS)*Id
-//
-//
-// /* Variational formulation of the problem */
-// problem adjoint([pix,piy,piz],[vix,viy,viz],solver=CG) =  int3d(Thi)(mu*(2.0*(dx(vix)*dx(pix)+dy(viy)*dy(piy)+dz(viz)*dz(piz)) + ((dx(viy)+dy(vix))*(dx(piy)+dy(pix)) + (dx(viz)+dz(vix))*(dx(piz)+dz(pix)) + (dy(viz)                          +dz(viy))*(dy(piz)+dz(piy)))) + lm*(dx(vix)+dy(viy)+dz(viz))*(dx(pix)+dy(piy)+dz(piz)))
-//                                               + int2d(Thi,REFUP)(2.0*((uix-uxo)*vix+(uiy-uyo)*viy+(uiz-uzo)*viz))
-//                                               + on(REFDIR,pix=0.0,piy=0.0,piz=0.0);
-//
-//
-// /* Solve problem */
-// adjoint;
-//
-// /* Transfer the problem on the full mesh */
-// px = pix;
-// py = piy;
-// pz = piz ;
-//
-// /* Save solution */
-// printvec3(ADJ,px[],py[],py[]);
-//
-
-
-
-
 /* Resolution of the linearized elasticity equation on the input shape */
 include "./sources/inout.idp"
 include "./sources/macros.idp"
@@ -99,7 +13,7 @@ string SOLT       = getsParam(EXCHFILE,"ObjDisp");
 int REFEXT        = getiParam(EXCHFILE,"Refext");
 int REFDIR        = getiParam(EXCHFILE,"Dirichlet");
 int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
-int REFTARG       = getiParam(EXCHFILE,"Refup");
+int REFUP       = getiParam(EXCHFILE,"Refup");
 
 /* Loading mesh */
 mesh3 Th = readmesh3(MESH);
@@ -136,7 +50,7 @@ uetemz = uzT;
 problem adjoint([pex,pey,pez],[vex,vey,vez],solver=CG) = int3d(The)(2.0*mu*(dx(pex)*dx(vex)+dy(pey)*dy(vey)+dz(pez)*dz(vez)))
                                    + int3d(The)(mu*((dx(pey)+dy(pex))*(dx(vey)+dy(vex)) + (dx(pez)+dz(pex))*(dx(vez)+dz(vex)) + (dy(pez)+dz(pey))*(dy(vez)+dz(vey))))
                                    + int3d(The)(lm*(dx(pex)+dy(pey)+dz(pez))*(dx(vex)+dy(vey)+dz(vez)))
-                                   + int2d(The,REFTARG)(2.0*((uex-uetemx)*vex + (uey-uetemy)*vey + (uez-uetemz)*vez))
+                                   + int2d(The,REFUP)(2.0*((uex-uetemx)*vex + (uey-uetemy)*vey + (uez-uetemz)*vez))
                                    + on(REFDIR,pex=0.0,pey=0.0,pez=0.0);
 
 /* Solve problem */

@@ -34,36 +34,43 @@ REFEXT        = 2     #2  # Reference of the exterior domain
 
 YOUNG = 10e9 ; #E
 POISS = 0.25 ; #nu
-PRESS = 20e6 ;  #Pressure change DP (source load)
+PRESS = 2e6 ;  #Pressure change DP (source load)
 
-fact = 20e3 #50e3 #6e3
+fact = 12e3 #50e3 #6e3
 
 
 # Initial guess parameters
+# XS = 0. #x coordinate of the center
+# YS = -0.0*fact #y coordinate of the center
+# ZS = -0.30*fact #z coordinate of the center
+# REX = 0.1*fact #x semi-axe of intial ellispoidal source
+# REY = 0.2*fact #y semi-axe of intial ellispoidal source
+# REZ = 0.2*fact #z semi-axe of intial ellispoidal source
+
 XS = 0. #x coordinate of the center
-YS = -0.0*fact #y coordinate of the center
-ZS = -0.30*fact #z coordinate of the center
-REX = 0.1*fact #x semi-axe of intial ellispoidal source
-REY = 0.2*fact #y semi-axe of intial ellispoidal source
-REZ = 0.2*fact #z semi-axe of intial ellispoidal source
+YS = -0.0 #y coordinate of the center
+ZS = -4e3 #z coordinate of the center
+REX = 3e3 #x semi-axe of intial ellispoidal source
+REY = 3e3 #y semi-axe of intial ellispoidal source
+REZ = 1e3 #z semi-axe of intial ellispoidal source
 
 # Objective source parameters
-XST = 0.3*fact
-YST = 0.3*fact
+XST = 0.2*fact
+YST = 0.2*fact
 DEPTH =  0.2*fact   ; #depth of source (>0)
 RVRAI = 0.1*fact ; # radius of the target analytical spherical source
 
 # Extent of the simulated doain
 XEXT          = 1.*fact #extent of domain in X direction
 YEXT          = 1.*fact #extent of domain in X direction
-ZEXT          = 1.*fact #extent of domain in X direction
+ZEXT          = 0.7*fact #extent of domain in X direction
 
 
 
 #### Meshing parameters
 MESHSIZ       = 0.04*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
 HMIN          = 0.02*fact #minimum autorized element lenght
-HMAX          = 0.1*fact #maximum authorized element length
+HMAX          = 0.05*fact #maximum authorized element length
 HAUSD         = 0.005*fact  #mawimum authorized gap between ideal shape and its mesh nodes
 
 HGRAD         = 1.8 #max rati allowed between 2 adjascent edges
@@ -93,8 +100,8 @@ MAXIT         = 100000   # Maximum number of iterations in the shape optimizatio
 MAXITLS       = 10   # Maximum number of iterations in the line search procedure
 TOL           = 0.01  # Tolerance for a slight increase in the ERROR
 MULTCOEF      = 1.1  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
-MINCOEF       = 0.02 # Minimum allowed move between two iterations (in # * MESHSIZ)
-MAXCOEF       = 5 # Maximum allowed step between two iterations (in # * MESHSIZ)
+MINCOEF       = 0.01 # Minimum allowed move between two iterations (in # * MESHSIZ)
+MAXCOEF       = 2 # Maximum allowed step between two iterations (in # * MESHSIZ)
 
 
 

@@ -141,7 +141,7 @@ if not restart  :
     print("*** Initialization: Error {}".format(newE))
     
     # Coefficient for time step ( descent direction is scaled with respect to mesh size)
-    coef = 1 #path.MINCOEF
+    coef = path.MINCOEF
     # Number of refinement steps
     nref = 0
     
