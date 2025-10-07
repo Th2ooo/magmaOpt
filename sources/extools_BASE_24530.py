@@ -107,8 +107,7 @@ def mmg3d(mesh,ls,phi,hmin,hmax,hausd,hgrad,nr,out) :
     if nr :
       # print("nr+ls in remeshing")
       # !!!! option -optim added to avoid modyfing mesh size but may cause problems
-      proc = subprocess.Popen(["{mmg} {mesh} -ls -sol {sol} -hmin {hmin} -hmax {hmax} -hausd {hausd} -hgrad {hgrad} -nr {res} -rmc".format(mmg=path.MMG3D,mesh=mesh,sol=phi,hmin=hmin,hmax=hmax,hausd=hausd,hgrad=hgrad,res=out)],shell=True,stdout=log)
-
+      proc = subprocess.Popen(["{mmg} {mesh} -ls -sol {sol} -hmin {hmin} -hmax {hmax} -hausd {hausd} -hgrad {hgrad} -nr {res} -optim -rmc".format(mmg=path.MMG3D,mesh=mesh,sol=phi,hmin=hmin,hmax=hmax,hausd=hausd,hgrad=hgrad,res=out)],shell=True,stdout=log)
       proc.wait()
     else :
       proc = subprocess.Popen(["{mmg} {mesh} -ls -sol {sol} -hmin {hmin} -hmax {hmax} -hausd {hausd} -hgrad {hgrad} {res} -rmc".format(mmg=path.MMG3D,mesh=mesh,sol=phi,hmin=hmin,hmax=hmax,hausd=hausd,hgrad=hgrad,res=out)],shell=True,stdout=log)

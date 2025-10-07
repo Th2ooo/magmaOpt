@@ -13,9 +13,9 @@ from matplotlib.colors import LightSource
 from matplotlib.ticker import FormatStrFormatter
 import scipy as sc
 import rasterio
-from utils import Extent
+from sources.utils import Extent
 from pathlib import Path
-from geographer import xISN16,yISN16
+from sources.geographer import xISN16,yISN16
 
 
 

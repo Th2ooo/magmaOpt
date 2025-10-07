@@ -99,11 +99,11 @@ def error(mesh,u) :
   inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
   inout.setAtt(file=path.EXCHFILE,attname="DispName",attval=u)
   
-  
-  if path.ERRMOD == 2 : # interpolation of LOS disp at mesh nodes
-      insar.lossol(path.TCK1, mesh, path.LOS1)
-      insar.lossol(path.TCK2, mesh, path.LOS2)
-  elif path.ERRMOD == 0 :
+  # !! TO REMOVE
+  # if path.ERRMOD == 2 : # interpolation of LOS disp at mesh nodes
+  #     insar.los2sol(path.TCK1, mesh, path.LOS1)
+  #     insar.los2sol(path.TCK2, mesh, path.LOS2)
+  if path.ERRMOD == 0 :
       inout.setAtt(file=path.EXCHFILE,attname="OutAna",attval=path.OUTANA)
       
   
@@ -177,32 +177,7 @@ def stats(mesh) :
 
 
 
-#####################################################################################
-#####################################################################################
 
-#####################################################################################
-#######   Calculate gradient of the compliance functional                     #######
-#######       input:  mesh (string): mesh of the shape                        #######
-#######               disp (string): solution of the elasticity system        #######
-#######       output: grad (string): shape gradient of compliance             #######
-#####################################################################################
-
-def gradCp(mesh,disp,grad) :
-  
-  # Set information in exchange file
-  inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
-  inout.setAtt(file=path.EXCHFILE,attname="DispName",attval=disp)
-  inout.setAtt(file=path.EXCHFILE,attname="GradName",attval=grad)
-
-  # Call to FreeFem
-  proc = subprocess.Popen(["{FreeFem} {gradCp} > /dev/null 2>&1".format(FreeFem=path.FREEFEM,gradCp=path.FFGRADCP)],shell=True)
-  proc.wait()
-  
-  if ( proc.returncode != 0 ) :
-    print("Error in calculation of gradient of compliance; abort.")
-    print(proc.returncode)
-    
-    
 #####################################################################################
 #####################################################################################
 
@@ -233,25 +208,6 @@ def gradE(mesh,disp,adj,grad,phi) :
     
 #####################################################################################
 
-#####################################################################################
-#######   Calculate gradient of the volume function                           #######
-#######       input:  mesh (string): mesh of the shape                        #######
-#######       output: grad (string): shape gradient of volume                 #######
-#####################################################################################
-
-def gradV(mesh,grad) :
-  
-  # Set information in exchange file
-  inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
-  inout.setAtt(file=path.EXCHFILE,attname="GradName",attval=grad)
-
-  # Call to FreeFem
-  proc = subprocess.Popen(["{FreeFem} {gradV} > /dev/null 2>&1".format(FreeFem=path.FREEFEM,gradV=path.FFGRADV)],shell=True)
-  proc.wait()
-  
-  if ( proc.returncode != 0 ) :
-    print("Error in calculation of gradient of volume; abort.")
-    print(proc.returncode)
 
 #####################################################################################
 #####################################################################################

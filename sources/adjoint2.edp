@@ -82,4 +82,4 @@ pz = piz ;
 /* Save solution */
 printvec3(ADJ,px[],py[],py[]);
 
-savevtk("los.vtu",Thi,[los1,los2,0]);
+

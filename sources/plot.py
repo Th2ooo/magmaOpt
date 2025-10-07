@@ -132,8 +132,8 @@ def plot_dmr(it) :
     if path.ERRMOD == 2 : #LOS ERROR PLOT    
         #get Insar data
         #reinterpolate los on the choosen mesh
-        insar.lossol(path.TCK1, path.step(it,"mesh"), path.LOS1)
-        insar.lossol(path.TCK2, path.step(it,"mesh"), path.LOS2)
+        insar.los2sol(path.TCK1, path.step(it,"mesh"), path.LOS1)
+        insar.los2sol(path.TCK2, path.step(it,"mesh"), path.LOS2)
         tcks=[path.LOS1,path.LOS2]
         angles = [(path.HEA1,path.INC1),(path.HEA2,path.INC2)]
         art.fig.suptitle(f"DMR  Plot it {it},best it {bestit}, errmin {El.min()}, nit tot {nit}")

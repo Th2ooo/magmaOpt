@@ -38,10 +38,11 @@ nx0 = dx(phi) / norm0;
 ny0 = dy(phi) / norm0;
 nz0 = dz(phi) / norm0;
 
-/* Scalar descent direction */
-ndes = max(-thJ[].min,thJ[].max); //norm L inf of the descent direction
-g = - thJ*meshsize/(eps^2+ndes) ; // Scalar descent direction normalized to be about 1 mesh element long
-  
+// /* Scalar descent direction */
+// ndes = max(abs(thJ[].min),abs(thJ[].max)); //norm L inf of the descent direction
+// g = - thJ*meshsize/(eps^2+ndes) ; // Scalar descent direction normalized to be about 1 mesh element long
+g = - thJ;
+
 /* Conversion into a vector descent direction */
 /* Extended normal vector as a P1 function over the mesh */
 problem extnx(nx,v,solver=CG) = int3d(Th)(nx*v)
