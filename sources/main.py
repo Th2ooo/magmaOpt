@@ -108,7 +108,7 @@ if not restart  :
 
     ## Creation of the initial mesh
     print("Creating intial mesh")
-    basemesh.inimsh(path.step(0,"mesh"),vizu=1,inhom=1)
+    basemesh.inimsh(path.step(0,"mesh"),vizu=1,inhom=0)
     
         
     ## Compute Null test of the best solution

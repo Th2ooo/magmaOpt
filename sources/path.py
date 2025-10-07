@@ -38,7 +38,7 @@ YOUNG = 10e9 ; #E
 POISS = 0.25 ; #nu
 PRESS = 20e6 ;  #Pressure change DP (source load)
 
-fact = 20e3 #50e3 #6e3
+fact = 1 #20e3 #50e3 #6e3
 
 
 # Initial guess parameters
@@ -65,8 +65,8 @@ ZEXT          = 1.*fact #extent of domain in X direction
 #### Meshing parameters
 MESHSIZ       = 0.05*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
 HMIN          = 0.02*fact #minimum autorized element lenght
-HMAX          = 0.2*fact #maximum authorized element length
-HAUSD         = 0.007*fact  #mawimum authorized gap between ideal shape and its mesh nodes
+HMAX          = 0.1*fact #maximum authorized element length
+HAUSD         = 0.005*fact  #mawimum authorized gap between ideal shape and its mesh nodes
 HGRAD         = 1.8 #max rati allowed between 2 adjascent edges
 DILA          = 3.  #dilataion parameter for the domain size if inhomogeneous meshing is selected
 
@@ -85,10 +85,10 @@ OUTANA = 0 #out analytic displacement
 EPS           = 1e-10 # Precision parameter
 EPSP          = 1e-20 # Precision parameter for packing
 
-ALPHA         = 2*MESHSIZ # Parameter for velocity extension - regularization, few mesh elements (to textend gradient outside of REFISO)
+ALPHA         = 5*MESHSIZ # Parameter for velocity extension - regularization, few mesh elements (to textend gradient outside of REFISO)
 MAXIT         = 100000   # Maximum number of iterations in the shape optimization process
 MAXITLS       = 10   # Maximum number of iterations in the line search procedure
-TOL           = 0.001  # Tolerance for a slight increase in the ERROR
+TOL           = 0.01  # Tolerance for a slight increase in the ERROR
 MULTCOEF      = 1.1  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
 MINCOEF       = 0.02 # Minimum allowed move between two iterations (in # * MESHSIZ)
 MAXCOEF       = 5 # Maximum allowed step between two iterations (in # * MESHSIZ)
