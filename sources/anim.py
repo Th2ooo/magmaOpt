@@ -25,12 +25,12 @@ El = content[:,1] #errors
 col = content[:,3] #
 
 
-
+print("**********************************************")
+print("**********     Source  animation     *********")
+print("**********************************************")
 
 def anim_simple() :
-    print("**********************************************")
-    print("**********     Source  animation  *********")
-    print("**********************************************")
+
     #TODO : add 2d x,y,z  views  
     plo = pv.Plotter(title="Tset") #,off_screen=False,notebook=False)
     plo.open_movie(path.PLOTS+"shape_simple.mp4")
@@ -229,7 +229,8 @@ def export_3Dviews(nit=nit):
         faces = np.ravel(faces)
         mshpv = pv.PolyData(msh.points, faces)
         # Create other objeccts
-        sph_vrai = pv.Sphere(radius=path.RVRAI, center=(path.XST, path.YST, -path.DEPTH))
+        if  path.ERRMOD != 2 :
+            sph_vrai = pv.Sphere(radius=path.RVRAI, center=(path.XST, path.YST, -path.DEPTH))
         dom_box = pv.Box(bounds=(-path.XEXT/2, path.XEXT/2, -path.YEXT/2, path.YEXT/2, -path.ZEXT, 0.0))
 
         if not f3D.is_file() :
@@ -238,7 +239,8 @@ def export_3Dviews(nit=nit):
             plo_3d.add_axes(interactive=False, line_width=4)
             
             # Add reference objects
-            plo_3d.add_mesh(sph_vrai, style="surface", color="blue", opacity=0.3)
+            if  path.ERRMOD != 2 :
+                plo_3d.add_mesh(sph_vrai, style="surface", color="blue", opacity=0.3)
             plo_3d.add_mesh(dom_box, style='wireframe', color="black")
             
             # Add main mesh and set camera
@@ -257,7 +259,8 @@ def export_3Dviews(nit=nit):
             plo_side.add_axes(interactive=False, line_width=4)
             
             # Add reference objects (optional - can skip for side view)
-            plo_side.add_mesh(sph_vrai, style="surface", color="blue", opacity=0.3)
+            if  path.ERRMOD != 2 :
+                plo_side.add_mesh(sph_vrai, style="surface", color="blue", opacity=0.3)
             plo_side.add_mesh(dom_box, style='wireframe', color="black")
             
             # Add main mesh and set side camera
@@ -274,7 +277,7 @@ def export_3Dviews(nit=nit):
     
     
 
-def composite_animation(nit=nit-3,fps=5,pvframes=True) :
+def composite_animation(nit=nit-3,fps=5) :
     """Create a composite animation with error curve and PyVista views
     times= approximate time in seconds of the movie
     
@@ -292,24 +295,21 @@ def composite_animation(nit=nit-3,fps=5,pvframes=True) :
     # Create figure with 3 subplots
     fig = plt.figure(figsize=(20, 15),layout='constrained')
     axs = fig.subplot_mosaic( "AB\nAC")
-    
-    
-    
     fig.suptitle('Shape Optimization Progress', fontsize=16)
     
     # Subplot 1: Error curve
     ax1 = axs['B']
-    ax1.plot(itl, El, 'b-', linewidth=2, label='Error')
+    p1,=  ax1.plot(itl, El, 'b-', linewidth=3, label='Error')
     ax1.set_xlabel('Iteration')
     ax1.set_ylabel('Error')
     ax1.set_yscale('log')  # Use log scale if errors vary widely
     ax1.grid(True, alpha=0.3)
-    ax1.legend()
     
     ax11=ax1.twinx()
     ax11.set_ylabel("Coeff")
-    ax11.plot(itl,col,color="tab:orange")
-    ax11.legend()
+    p11, =ax11.plot(itl,col,color="tab:red")
+    
+    ax1.legend(handles=[p1, p11])
     
     # Vertical line for current iteration (will be updated)
     vline = ax1.axvline(x=0, color='r', linestyle='--', linewidth=2)
@@ -327,7 +327,7 @@ def composite_animation(nit=nit-3,fps=5,pvframes=True) :
     img_side = ax3.imshow(img)
     
     ax2.set_title('3D View')
-    ax3.set_title('Side View')
+    ax3.set_title('Top View')
     ax2.axis('off')
     ax3.axis('off')
     
@@ -374,11 +374,12 @@ def composite_animation(nit=nit-3,fps=5,pvframes=True) :
     print("Composite animation saved!")
 
 
-
-
-composite_animation(fps=6,pvframes=0)
-
-
 print("**********************************************")
-print("**************    End of Plot   **************")
+print("**********    End of animation  **************")
 print("**********************************************")
+
+
+
+if __name__ == "__main__" :
+    composite_animation(fps=15)
+

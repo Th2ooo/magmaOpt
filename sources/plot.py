@@ -1,27 +1,33 @@
 #!/usr/bin/pythonw
 # -*-coding:Utf-8 -*
-#TO Run from spyder
-import os
-# os.chdir("/home/th2o/Documents/Cours/magmaOpt_dev/magmaOpt")
-os.chdir("/media/th2o/GrosSSD/Cours/magmaOpt_dev/magmaOpt")
 
-import subprocess
-
-import sys
 import sources.path as path
 import sources.insar as insar
 import numpy as np
-import matplotlib.pyplot as plt
-import pyvista as pv
 import meshio
 from sources.utils import *
-#from artist import *
 
+
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+
+SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE = 18, 15, 30;
+plt.rcParams.update({
+    'font.family' : 'sans-serif' , 'font.size': MEDIUM_SIZE ,  'axes.titlesize' : MEDIUM_SIZE , 'axes.labelsize' : MEDIUM_SIZE + 2, 
+    'xtick.labelsize' : MEDIUM_SIZE , 'ytick.labelsize' : MEDIUM_SIZE, 'legend.fontsize' : SMALL_SIZE + 1 , 'figure.max_open_warning' : 0,
+    'figure.figsize' : (20, 10)
+});
+
+
+print("**********************************************")
+print("**********       Plot evolution      *********")
+print("**********************************************")
+    
+    
 content = np.genfromtxt(path.HISTO,delimiter=" ")
 nit = content.shape[0] #number of iteration
 itl = content[:,0] #iterations
-El = content[:,1] #errors
-
+errl = content[:,1] #errors
 voll = content[:,2] #volumes
 col = content[:,3] #
 bxl = np.array(content[:,4])
@@ -31,13 +37,23 @@ bzl = np.array(content[:,6])
 
 
 def plot_conv(save=False) :
+    """
+    Multiviews plot of the  convergence of shape optimization procedure
+    Parameters
+    ----------
+    save : TYPE, optional
+        Save the plot in path.PLOTS folder. The default is False.
+
+    Returns
+    -------
+    None.
+
+    """
     ## Convergence plots
-    print("**********************************************")
-    print("**********       Plot histogram      *********")
-    print("**********************************************")
+
     
     # Load histogram
-    bestit = np.argmin(El)
+    bestit = np.argmin(errl)
     
     #Set integer ticker for the x axis
     fig, axs = plt.subplots(2,3,figsize=(40,20),constrained_layout=True)
@@ -47,7 +63,7 @@ def plot_conv(save=False) :
     axs[0].set_xlabel("iterations")
     axs[0].set_ylabel("Error")
     
-    axs[0].plot(itl,El)
+    axs[0].semilogy(itl,errl)
     axs[0].grid()
     
     ax2=axs[0].twinx()
@@ -99,23 +115,18 @@ def plot_conv(save=False) :
         
 
     fig.tight_layout()
-    fig.suptitle(f"Convergence plots, min error found {El[bestit]} found at iteration {bestit} ")
+    fig.suptitle(f"Convergence plots, min error found {errl[bestit]} found at iteration {bestit} ")
     
     if save :
         plt.savefig(path.PLOTS+"convplot.png")
     else :
         plt.show()
 
-
-
-
+        
+        
 
 def plot_dmr(it) :
     """Plot data model residuals"""
-    
-    print("**********************************************")
-    print("**********     Data-model residuals  *********")
-    print("**********************************************")
     
     domex = Extent()
     domex.init_with_range(path.XEXT,path.YEXT,path.ZEXT)
@@ -136,7 +147,7 @@ def plot_dmr(it) :
         insar.los2sol(path.TCK2, path.step(it,"mesh"), path.LOS2)
         tcks=[path.LOS1,path.LOS2]
         angles = [(path.HEA1,path.INC1),(path.HEA2,path.INC2)]
-        art.fig.suptitle(f"DMR  Plot it {it},best it {bestit}, errmin {El.min()}, nit tot {nit}")
+        art.fig.suptitle(f"DMR  Plot it {it},best it {bestit}, errmin {errl.min()}, nit tot {nit}")
         for tck,an in zip(tcks,angles) :
             #plot data
             dat=np.genfromtxt(tck,skip_header=8)[mkup]
@@ -178,13 +189,81 @@ def plot_dmr(it) :
             pass
             
     
+    
 
 
-# TODO : create animation of 
 
-plot_conv(save=1)
+def plot_paper(save=False) :
+    ## Convergence plots
 
+    
+    bestit = np.argmin(errl)
+    
+    fig, ax = plt.subplots(figsize=(20,12))
+    axcol = "blue"
+    p=ax.semilogy(itl,errl,color=axcol,linewidth=2.5, zorder=5, label="Error $J_{LS}$")
+    ax.tick_params(axis='y',colors=axcol)
+    ax.set_ylabel("Error $J_{LS}$ ($m^4$)",color=axcol,labelpad=15)
+    ax.set_xlabel("Iterations")
+    ax.xaxis.set_label_position('top')
+    ax.xaxis.set_major_locator(ticker.FixedLocator(np.arange(0,1300,100)))
+    ax.tick_params(axis="x", bottom=True, top=True, labelbottom=True, labeltop=True)
+
+                    
+    ax1 = ax.twinx()
+    axcol = "red"
+    p1=ax1.plot(itl,col,color=axcol,linewidth=1,label="Step size $\\tau$",zorder=3)
+    ax1.spines['right'].set_visible(False)  # Hide right spine
+    ax1.spines['left'].set_position(('outward', 0))  # Share left spine
+    ax1.tick_params(axis='y',direction="in", pad=-30,colors=axcol)
+    ax1.yaxis.set_label_position('left')
+    ax1.set_ylabel("Step size $\\tau$",color=axcol,labelpad=-60)
+    ax1.yaxis.tick_left()
+
+    
+    ax2 = ax.twinx()
+    axcol = "forestgreen"
+    volobj = 4/3*np.pi*path.RVRAI**3 #volume of objective shape
+    voln = voll/volobj
+    p2=ax2.plot(itl,voln,color=axcol,linewidth=1,ls="--",label="Volume ratio ($V_{\Omega}/V_{obj}$)",zorder=2)
+    ax2.set_ylabel("Volume ratio $V_{\Omega}/V_{obj}$",color=axcol,labelpad=20)
+    ax2.tick_params(axis='y',colors=axcol)
+
+
+    
+    ax3 = ax.twinx()
+    axcol = "slateblue"
+    distn = np.sqrt((bxl-path.XST)**2+(byl-path.YST)**2+(bzl+path.DEPTH)**2)
+    p3=ax3.plot(itl,distn,color=axcol,linewidth=1,ls="--",label="Distance of shapes $||\mathbf{x}_{\Omega}-x_{obj}||$",zorder=1)
+    
+    ax3.spines['left'].set_visible(False)  # Hide right spine
+    ax3.spines['right'].set_position(('outward', 0))  # Share left spine
+    ax3.tick_params(axis='y',direction="in", pad=-40, colors=axcol)
+    ax3.yaxis.set_label_position('right')
+    ax3.set_ylabel("Shape distance $||\mathbf{b}_{\Omega}-\mathbf{b}_{obj}||$ ($m$)",color=axcol,labelpad=-70)
+    
+    
+    ax.grid(alpha=0.5)
+    
+
+
+    
+
+    # ax.legend(handles=p+p1+p2+p3, loc='lower left')
+
+    if save :
+        plt.savefig(path.PLOTS+"paperplot.pdf")
+    else :
+        plt.show()
+        
+        
 
 print("**********************************************")
 print("**************    End of Plot   **************")
 print("**********************************************")
+
+
+if __name__ == "__main__" :
+
+    # plot_conv(save=1)
+    plot_paper(1)

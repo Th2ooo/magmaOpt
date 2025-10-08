@@ -6,19 +6,19 @@
 ## Things to fix
 
 
-- LOS error
-    - working with real data ?
-    - fix adjoint
-
-- REGLS regularization nessecary ?
-
 - Minimize number of scripts
     - remove artist
     - remove geographer
     - merge error and adjoint different scripts
 
 
-Fix mmg options to avoid refining mesh on edgs
+inhomogenous meshing
+    - mmg find good parameters
+    - do tests on convergence
+
+stats.edp give weird results
+
+
 ## Features to add
 
 
@@ -30,15 +30,6 @@ Fix mmg options to avoid refining mesh on edgs
             - gradE
         2. mmg3d : parmmg (https://github.com/MmgTools/ParMmg/tree/master)
         3. GMSH meshing
-
-
-- External data :
-    - Hande N data sources
-    - InSAR
-        - be able to get data from any cartesian coordinate system (no internal conversion)
-        - automatically compute the center of  the data to optionally input it only
-        - dont interpolate at each iteration in insar func, only do it in error and adjoint
-    - GNSS (pas sur)
 
 
 
@@ -60,7 +51,27 @@ Fix mmg options to avoid refining mesh on edgs
     - slows if flat
 
 
+
+
 ## Done
+
+
+- REGLS regularization nessecary ?
+
+
+- LOS error
+    - working with real data ?
+    - fix adjoint
+
+
+- External data :
+    - Hande N data sources
+    - InSAR
+        - be able to get data from any cartesian coordinate system (no internal conversion)
+        - automatically compute the center of  the data to optionally input it only
+        - dont interpolate at each iteration in insar func, only do it in error and adjoint
+
+
 
 - Saving outputs of a run in separate folder
 

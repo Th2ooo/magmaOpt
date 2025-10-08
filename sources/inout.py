@@ -140,7 +140,6 @@ def iniWF():
   setAtt(file=path.EXCHFILE,attname="Refint",attval=path.REFINT)
   setAtt(file=path.EXCHFILE,attname="Refext",attval=path.REFEXT)
   setAtt(file=path.EXCHFILE,attname="MeshSize",attval=path.MESHSIZ)
-  setAtt(file=path.EXCHFILE,attname="VolumeTarget",attval=path.VTARG)
   
   # Model parameters
   setAtt(file=path.EXCHFILE,attname="Young",attval=path.YOUNG)

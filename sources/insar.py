@@ -15,6 +15,7 @@ import numpy as np
 import scipy as sc
 
 
+rawtolos = lambda r : r*0.148*1e-3#speed (mm/yr) converted in displacement (mm), then in m
 
 ##GENERAL INSAR DARA
 
@@ -44,11 +45,17 @@ def los2sol(tckfile,meshfile,outsol,origin, plot=False) :
     ##Get raw insar data
     tck = np.genfromtxt(tckfile)[:,:3]
     # !!!! TOREMOVE below to stay general for any file
-    tck[:,[1, 0]] = tck[:,[0, 1]] #swap columns to have lat lon format
-    tck[:,:2]=WGS84ll_to_ISN16xy(tck[:,:2]) #conversion to isn16 system 
-    tck[:,:2] -= np.array(origin) #shift to be centered at the desired originlocal origin of the model
-    tck[:,2] = path.RAWTOLOS(tck[:,2]) #conversion of speed (mm/yr) in displacement (m)
-    
+    # tck[:,[1, 0]] = tck[:,[0, 1]] #swap columns to have lat lon format
+    # tck[:,:2]=WGS84ll_to_ISN16xy(tck[:,:2]) #conversion to isn16 system 
+    # tck[:,:2] -= np.array(origin) #shift to be centered at the desired originlocal origin of the model
+    # tck[:,2] = path.RAWTOLOS(tck[:,2]) #conversion of speed (mm/yr) in displacement (m)
+    print(tck)
+    tck[:,:2] -= np.array(origin) 
+    x= tck[:,0]
+    y= tck[:,1]
+    LOS = rawtolos(tck[:,2])
+
+    print(tck.shape)
     ##Mesh data
     msh=meshio.read(meshfile)
     
@@ -60,8 +67,8 @@ def los2sol(tckfile,meshfile,outsol,origin, plot=False) :
     
     
     mshlos = sc.interpolate.griddata(
-        tck[:,:2],tck[:,2],mshloc[mkup][:,:2],
-        method="linear",
+        tck[:,:2],LOS,mshloc[mkup][:,:2],
+        method="cubic",
         fill_value=0.0)
     
     los = np.full(npt, 0.0)
@@ -114,13 +121,8 @@ def init(plot=False) :
 
     
 if __name__ =="__main__" :
-    # HEA1 = (347.1+90) *np.pi/180  #heading 1 (rad)
-    # INC1 = 33.3 *np.pi/180   #inclinaison 1 (rad)
-    # a=LOS_set(HEA1, HEA1)
-    # print(a(1,0,0))
-    # print(a(0,1,0))
-    # print(a(0,0,1))
-    # a=los2sol(path.TCK1, path.step(1,"mesh"), path.LOS1,True)
+
     
-    init()
+    los2sol(path.TCKS[0],path.step(0,"mesh"),path.LOSS[0],path.ORMOD, plot=1)
+    # init()
 
