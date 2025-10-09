@@ -5,9 +5,8 @@ Created on Mon Jun 24 15:04:51 2024
 
 @author: th2o
 """
-from sources.utils import *
-from sources.geographer import *
-from sources.artist import Artist
+
+import matplotlib.pyplot as plt
 import meshio
 import sources.path as path
 import shutil
@@ -15,7 +14,6 @@ import numpy as np
 import scipy as sc
 
 
-rawtolos = lambda r : r*0.148*1e-3#speed (mm/yr) converted in displacement (mm), then in m
 
 ##GENERAL INSAR DARA
 
@@ -44,18 +42,11 @@ def los2sol(tckfile,meshfile,outsol,origin, plot=False) :
     print(f"Interpolating LOS from {tckfile} at mesh {meshfile} in {outsol}")
     ##Get raw insar data
     tck = np.genfromtxt(tckfile)[:,:3]
-    # !!!! TOREMOVE below to stay general for any file
-    # tck[:,[1, 0]] = tck[:,[0, 1]] #swap columns to have lat lon format
-    # tck[:,:2]=WGS84ll_to_ISN16xy(tck[:,:2]) #conversion to isn16 system 
-    # tck[:,:2] -= np.array(origin) #shift to be centered at the desired originlocal origin of the model
-    # tck[:,2] = path.RAWTOLOS(tck[:,2]) #conversion of speed (mm/yr) in displacement (m)
-    print(tck)
     tck[:,:2] -= np.array(origin) 
     x= tck[:,0]
     y= tck[:,1]
-    LOS = rawtolos(tck[:,2])
+    LOS = tck[:,2]
 
-    print(tck.shape)
     ##Mesh data
     msh=meshio.read(meshfile)
     
@@ -68,7 +59,7 @@ def los2sol(tckfile,meshfile,outsol,origin, plot=False) :
     
     mshlos = sc.interpolate.griddata(
         tck[:,:2],LOS,mshloc[mkup][:,:2],
-        method="cubic",
+        method="nearest",
         fill_value=0.0)
     
     los = np.full(npt, 0.0)
@@ -79,12 +70,19 @@ def los2sol(tckfile,meshfile,outsol,origin, plot=False) :
       fmt='%.15E')
     
     if plot: #plot to check
-        art = Artist(1,2)
-        b= art.plot_simple(tck[:,:2],tck[:,2], cmap="turbo") #raw
-        art.fig.colorbar(b)
-        art.switch_ax()
-        a=art.plot_simple(mshloc[mkup][:,:2], mshlos, cmap="turbo",vmin=np.min(mshlos)) #interpolated
-        art.fig.colorbar(a)
+        fig,axs = plt.subplots(1,2,figsize=(10,4),layout="constrained")
+        fig.suptitle(f"Track {tckfile}")
+        ax = axs[0]
+        c=ax.scatter(tck[:,0],tck[:,1],c=tck[:,2],marker=".",cmap="jet")
+        ax.set_aspect('equal', adjustable='box')
+        fig.colorbar(c,label="disp (m)")
+        
+        
+        ax = axs[1]
+        c=ax.scatter(mshloc[mkup][:,0],mshloc[mkup][:,1],c=mshlos,marker=".",cmap="jet")
+        ax.set_aspect('equal', adjustable='box')
+        fig.colorbar(c,label="disp (m)")
+
     return mshloc[mkup]
 
 

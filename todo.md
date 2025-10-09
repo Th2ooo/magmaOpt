@@ -21,6 +21,11 @@ stats.edp give weird results
 
 ## Features to add
 
+- InSAR data improvement :
+    instead of nearest neighbor interpolation, hande no data points
+    -> select a no data value and put it in insar.py
+    -> then modify error and adjoint to ignor no data points in integrals
+
 
 - Bigger domains simulation for geophysics application
     - Paralellizing option for speed-up

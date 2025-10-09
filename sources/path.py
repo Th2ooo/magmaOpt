@@ -32,9 +32,9 @@ REFEXT        = 2     #2  # Reference of the exterior domain
 
 #### Physical problem paramaters
 
-YOUNG = 30e9 ; #E
-POISS = 0.25 ; #nu
-PRESS = 1e6 ;  #Pressure change DP (source load)
+YOUNG = 25.4e9 ; #E (from sigmundsson 2024)
+POISS = 0.257;   #nu (from sigmundsson 2024)
+PRESS = 5e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
 
 fact = 10e3 #50e3 #6e3
 
@@ -49,10 +49,10 @@ fact = 10e3 #50e3 #6e3
 
 XS = 0. #x coordinate of the center
 YS = -0.0 #y coordinate of the center
-ZS = -2e3 #z coordinate of the center
-REX = 1e3 #x semi-axe of intial ellispoidal source
-REY = 1e3 #y semi-axe of intial ellispoidal source
-REZ = 0.2e3 #z semi-axe of intial ellispoidal source
+ZS = -4e3 #z coordinate of the center
+REX = 2e3 #x semi-axe of intial ellispoidal source
+REY = 2e3 #y semi-axe of intial ellispoidal source
+REZ = 2e3 #z semi-axe of intial ellispoidal source
 
 # Objective source parameters (for ERRMOD 0 ou 1)
 XST = 0.2*fact
@@ -63,18 +63,18 @@ RVRAI = 0.1*fact ; # radius of the target analytical spherical source
 # Extent of the simulated doain
 XEXT          = 1.*fact #extent of domain in X direction
 YEXT          = 1.*fact #extent of domain in X direction
-ZEXT          = 1*fact #extent of domain in X direction
+ZEXT          = 0.7*fact #extent of domain in X direction
 
 
 
 #### Meshing parameters
-MESHSIZ       = 0.04*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
-HMIN          = 0.02*fact #minimum autorized element lenght
+MESHSIZ       = 0.03*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
+HMIN          = 0.01*fact #minimum autorized element lenght
 HMAX          = 0.1*fact #maximum authorized element length
 HAUSD         = 0.005*fact  #mawimum authorized gap between ideal shape and its mesh nodes
 
 HGRAD         = 2 #max rati allowed between 2 adjascent edges
-INHOM         = True #inhomogenous meshing for wider domains simulation
+INHOM         = False #inhomogenous meshing for wider domains simulation
 DILA          = 2 #dilataion parameter for the domain size if inhomogeneous meshing is selected
 
 
@@ -108,15 +108,21 @@ MAXCOEF       = 2 # Maximum allowed step between two iterations (in # * MESHSIZ)
 
 #### InSAR parameters
 
-TCKS = [DATA + "a33.xyz",DATA + "d44.xyz"] #tck data files
+TCKS = ["t16","t155","a33","d44","t26","t19"] #tck data files
+TCKS = [DATA+tck+".csv" for tck in TCKS]
 NTCK = len(TCKS) # number of tck files
-LOSS = [OBJDISP.replace("sol",f"los{i}.sol") for i in range(len(TCKS))] #SOL files after interpolation of the data location
 
-HEAS = [347.1 *np.pi/180, 189.7 *np.pi/180]
-INCS = [33.3 *np.pi/180 ,44.7 *np.pi/180]
-WEIG = [1.,1.] #Weights given to the differents insar tracks
+LOSS = [OBJDISP.replace("sol",f"los{i}.sol") for i in range(len(TCKS))] #SOL files location after interpolation of the data location
+
+HEAS = [347.4,191.7,347.1,189.7,349.6,195.1] #heading angles associated to the tracks
+HEAS = [h*np.pi/180 for h in HEAS]
+INCS = [34.6,37.6,33.3,44.7,43.2,22.7] #inclinaison angles associated to the tracks
+INCS = [i*np.pi/180 for i in INCS]
+
+WEIG = [1.]*6 #Weights given to the differents insar tracks
 WEIG = np.array(WEIG)
 WEIG = WEIG/np.sum(WEIG) # normalize the weights
+
 ORMOD = (2529373,179745)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
 
 

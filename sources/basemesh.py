@@ -140,7 +140,7 @@ def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,inhom=False,verb=3,debug=0)
         hmin = path.MESHSIZ
         hmax = path.HMAX
         hgrad = path.HGRAD
-        dmin = np.max(inex.ranges)*3**0.5/2 #fine meshed region is about the longest side of the domain's diagonal size -> max*sqrt(3)
+        dmin = np.max(inex.ranges)*3**0.5/4 #fine meshed region is about the longest side of the domain's diagonal size -> max*sqrt(3)
         dmax = 2*(hmax-hmin)/hgrad+dmin #max distance to respect path.HGRAD/2 imposed in mmg
         print(f"Fine zone : dmin {dmin} dmax {dmax}")
         

@@ -71,8 +71,8 @@ cout << "aa : " << a << endl ;
 
 
 /*VTK output of the LOS for vizu*/
-for (int i = 0; i < ntck; ++i){
-    savevtk("objlos"+i+".vtu", Th,losdatA[i]); // data
-    ulosi = UtoLOSi(ux,uy,uz,i);
-    savevtk("ulos"+i+".vtu",Th,ulosi);  // current LOS disp
-}
+// for (int i = 0; i < ntck; ++i){
+//     savevtk("objlos"+i+".vtu", Th,losdatA[i]); // data
+//     ulosi = UtoLOSi(ux,uy,uz,i);
+//     savevtk("ulos"+i+".vtu",Th,ulosi);  // current LOS disp
+// }
