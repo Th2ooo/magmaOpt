@@ -1,5 +1,8 @@
 res/
 res*/
+.spyproject/config/
+.spyproject/
+.spyproject/*
 unshared/
 data/
 *.mp4

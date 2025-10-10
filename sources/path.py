@@ -40,25 +40,25 @@ fact = 10e3 #50e3 #6e3
 
 
 # Initial guess parameters
-# XS = -0.3*fact #x coordinate of the center
-# YS = -0.3*fact #y coordinate of the center
-# ZS = -0.4*fact #z coordinate of the center
-# REX = 0.1*fact #x semi-axe of intial ellispoidal source
-# REY = 0.1*fact #y semi-axe of intial ellispoidal source
-# REZ = 0.1*fact #z semi-axe of intial ellispoidal source
+XS = -0.3*fact #x coordinate of the center
+YS = -0.3*fact #y coordinate of the center
+ZS = -0.4*fact #z coordinate of the center
+REX = 0.1*fact #x semi-axe of intial ellispoidal source
+REY = 0.1*fact #y semi-axe of intial ellispoidal source
+REZ = 0.1*fact #z semi-axe of intial ellispoidal source
 
-XS = 0. #x coordinate of the center
-YS = -0.0 #y coordinate of the center
-ZS = -4e3 #z coordinate of the center
-REX = 2e3 #x semi-axe of intial ellispoidal source
-REY = 2e3 #y semi-axe of intial ellispoidal source
-REZ = 1e3 #z semi-axe of intial ellispoidal source
+# XS = 0. #x coordinate of the center
+# YS = -0.0 #y coordinate of the center
+# ZS = -4e3 #z coordinate of the center
+# REX = 2e3 #x semi-axe of intial ellispoidal source
+# REY = 2e3 #y semi-axe of intial ellispoidal source
+# REZ = 1e3 #z semi-axe of intial ellispoidal source
 
 
 # Objective source parameters (for ERRMOD 0 ou 1)
 XST = 0.0*fact
 YST = 0.0*fact
-DEPTH =  0.4*fact   ; #depth of source (>0)
+DEPTH =  0.5*fact   ; #depth of source (>0)
 RVRAI = 0.1*fact ; # radius of the target analytical spherical source
 
 # Extent of the simulated doain
@@ -83,7 +83,7 @@ DILA          = 2 #dilataion parameter for the domain size if inhomogeneous mesh
 #### Optimization parameters
 
 # Error type 
-ERRMOD = 2  
+ERRMOD = 1  
 """ 0 if error is computed with analytic solution, 
     1 if computed with numeric sol
     2 if computed with real data (bestE = null test)

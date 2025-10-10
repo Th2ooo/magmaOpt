@@ -121,6 +121,7 @@ def init(plot=False) :
 if __name__ =="__main__" :
 
     
-    los2sol(path.TCKS[0],path.step(0,"mesh"),path.LOSS[0],path.ORMOD, plot=1)
+    # los2sol(path.TCKS[0],path.step(0,"mesh"),path.LOSS[0],path.ORMOD, plot=1)
     # init()
 
+    msh = meshio.read(path.step(0,"mesh"))
