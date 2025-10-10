@@ -1,5 +1,4 @@
 res/
-data/
 unshared/
 *.mp4
 *.pyc
@@ -8,6 +7,9 @@ unshared/
 *.data
 *.mesh
 *.sol
+*.tif*
+*.xml
+*.nc
 
 *.png
 *.vtu

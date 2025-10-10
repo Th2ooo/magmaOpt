@@ -206,7 +206,7 @@ def plot_paper(save=False) :
     ax.set_ylabel("Error $J_{LS}$ ($m^4$)",color=axcol,labelpad=15)
     ax.set_xlabel("Iterations")
     ax.xaxis.set_label_position('top')
-    ax.xaxis.set_major_locator(ticker.FixedLocator(np.arange(0,1300,100)))
+    ax.xaxis.set_major_locator(ticker.FixedLocator(np.arange(0,nit,nit//10)))
     ax.tick_params(axis="x", bottom=True, top=True, labelbottom=True, labeltop=True)
 
                     
@@ -265,5 +265,5 @@ print("**********************************************")
 
 if __name__ == "__main__" :
 
-    # plot_conv(save=1)
+    plot_conv(save=1)
     plot_paper(1)

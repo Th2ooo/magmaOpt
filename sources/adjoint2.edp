@@ -72,7 +72,7 @@ for (int i = 0; i < ntck; ++i){
 func real sumbound(real ux, real uy, real uz, int comp){
     real out = 0.0 ;
     for (int i = 0; i < ntck; ++i){
-        real s = ws[i]*(UtoLOSi(ux,uy,uz,i)-losdatA[i]); //term i of the sum
+        real s = ws[i]*abs(UtoLOSi(ux,uy,uz,i)-losdatA[i]); //term i of the sum
         // multiplication by the LOS vector, depending on the component
         if (comp==0){s=s*UtoLOSi(1,0,0,i);}
         if (comp==1){s=s*UtoLOSi(0,1,0,i);}

@@ -32,7 +32,7 @@ macro UtoLOSi(ux,uy,uz,i) -cos(heas[i])*sin(incs[i])*ux + sin(heas[i])*sin(incs[
 
 /* Finite element spaces and functions */
 fespace Vh(Th,P1); //Current mesh fespace
-Vh ux,uy,uz,tmplosp,ulosi;
+Vh ux,uy,uz,tmplosp,ulosi,errfield;
 Vh[int] losdatA(ntck); // fespace array to contain the tracks interpolated on current mesh
 
 fespace VhI(ThI,P1); //Mesh of insar data fespace
@@ -57,8 +57,8 @@ for (int i = 0; i < ntck; ++i){
 err = 0.0 ;
 for (int i = 0; i < ntck; ++i){
     cout << "Error Track"+i << endl;
-    w   = getrParam(EXCHFILE,"Weight"+i);
-    err = err + w*int2d(Th,REFUP)((UtoLOSi(ux,uy,uz,i)-losdatA[i])^2);
+    err = err + ws[i]*int2d(Th,REFUP)((UtoLOSi(ux,uy,uz,i)-losdatA[i])^2);
+    errfield = errfield +  ws[i]*(UtoLOSi(ux,uy,uz,i)-losdatA[i])^2;  //error field for debugging
 }
 
 
@@ -66,8 +66,6 @@ for (int i = 0; i < ntck; ++i){
 setrParam(EXCHFILE,"Error",err);
 cout << "ERROR : " << err << endl ;
 
-real a = UtoLOSi(1,1,1,0) ;
-cout << "aa : " << a << endl ;
 
 
 /*VTK output of the LOS for vizu*/
@@ -76,3 +74,4 @@ for (int i = 0; i < ntck; ++i){
     ulosi = UtoLOSi(ux,uy,uz,i);
     savevtk("ulos"+i+".vtu",Th,ulosi);  // current LOS disp
 }
+savevtk("err2.vtu",Th,errfield) ;

@@ -224,7 +224,7 @@ for it in range(itstart,path.MAXIT) :
     mechtools.gradE(curmesh,curu,curp,curEgrad,curphi)
 
     # Calculation of a descent direction
-    mechtools.descent(curmesh,curphi,curE,curEgrad,curgrad) #crash there when problem with PHI => needs phi to converge
+    mechtools.descent(curmesh,curphi,curE,curEgrad,curgrad) 
     
     
     # Line search
@@ -233,7 +233,7 @@ for it in range(itstart,path.MAXIT) :
           
         # Advection of the level set function and smoothing of the resulting LS function
         print("    Level Set advection")
-        extools.advect(curmesh,curphi,curgrad,coef,newphi) #=> resolution of advection equation knowing descent direction to find new phi
+        extools.advect(curmesh,curphi,curgrad,coef,newphi)
         # extools.regls(curmesh,newphi,newphi)
           
           
