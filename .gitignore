@@ -1,5 +1,7 @@
 res/
+res*/
 unshared/
+data/
 *.mp4
 *.pyc
 
