@@ -207,7 +207,7 @@ def LOS_set(heading,inclinaison) :
     """Setup an LOS conversion function"""
     hea = heading
     inc = inclinaison
-    LOS = lambda E,N,U : -np.cos(hea)*np.sin(inc)*E + np.sin(hea)*np.sin(inc)*N + np.cos(inc)*U
+    LOS = lambda E,N,U : np.cos(hea)*np.sin(inc)*E + np.sin(hea)*np.sin(inc)*N + np.cos(inc)*U
     return LOS
 
 

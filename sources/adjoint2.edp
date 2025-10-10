@@ -5,8 +5,6 @@ load "medit"
 load "msh3"
 load "iovtk"
 
-
-
 /* Get mesh and sol names, define global parameters */
 string MESH       = getsParam(EXCHFILE,"MeshName");
 string SOL        = getsParam(EXCHFILE,"DispName");
@@ -19,14 +17,14 @@ string MESHI      = getsParam(EXCHFILE,"ObjMesh"); //mesh on which insar data is
 int ntck        = getiParam(EXCHFILE,"Ntracks");
 string TMPLOS;
 
-//arrays of InSar Parameters
+//arrays of InSAR parameters
 real[int] heas(ntck), incs(ntck), ws(ntck) ;
 for (int i = 0; i < ntck; ++i){
     incs[i] = getrParam(EXCHFILE,"Incl"+i);
     heas[i] = getrParam(EXCHFILE,"Head"+i);
     ws[i] = getrParam(EXCHFILE,"Weight"+i);
 }
-// LOS geometry conversion
+// LOS geometry conversion, i being the index of the insar track
 macro UtoLOSi(ux,uy,uz,i) -cos(heas[i])*sin(incs[i])*ux + sin(heas[i])*sin(incs[i])*uy + cos(incs[i])*uz // End of macro
 
 
@@ -70,29 +68,27 @@ for (int i = 0; i < ntck; ++i){
     losdatA[i] = tmplosp; //save it in the array
 }
 
-
+/*Function computing the term product with v in integral adjoint top surface*/
 func real sumbound(real ux, real uy, real uz, int comp){
     real out = 0.0 ;
     for (int i = 0; i < ntck; ++i){
-        out = out + ws[i]*(UtoLOSi(ux,ux,ux,i)-losdatA[i]);
-        if (comp ==0){out=out*UtoLOSi(1,0,0,i);}
-        if (comp ==1){out=out*UtoLOSi(0,1,0,i);}
-        if (comp ==2){out=out*UtoLOSi(0,0,1,i);}
+        real s = ws[i]*(UtoLOSi(ux,uy,uz,i)-losdatA[i]); //term i of the sum
+        // multiplication by the LOS vector, depending on the component
+        if (comp==0){s=s*UtoLOSi(1,0,0,i);}
+        if (comp==1){s=s*UtoLOSi(0,1,0,i);}
+        if (comp==2){s=s*UtoLOSi(0,0,1,i);}
+        out = out+s;
     }
     return out ;
 }
-
-int i = 0;
 
 
 /* Variational formulation of the problem */
 problem adjoint([pex,pey,pez],[vex,vey,vez],solver=CG) = int3d(The)(2.0*mu*(dx(pex)*dx(vex)+dy(pey)*dy(vey)+dz(pez)*dz(vez)))
                                    + int3d(The)(mu*((dx(pey)+dy(pex))*(dx(vey)+dy(vex)) + (dx(pez)+dz(pex))*(dx(vez)+dz(vex)) + (dy(pez)+dz(pey))*(dy(vez)+dz(vey))))
                                    + int3d(The)(lm*(dx(pex)+dy(pey)+dz(pez))*(dx(vex)+dy(vey)+dz(vez)))
-
                                    + int2d(The,REFUP)(2.0*(vez*sumbound(uex,uey,uez,2)+vey*sumbound(uex,uey,uez,1)+vex*sumbound(uex,uey,uez,0)))
                                    + on(REFDIR,pex=0.0,pey=0.0,pez=0.0);
-
 
 
 

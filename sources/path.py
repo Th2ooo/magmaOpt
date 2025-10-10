@@ -41,41 +41,43 @@ fact = 10e3 #50e3 #6e3
 
 # Initial guess parameters
 # XS = -0.3*fact #x coordinate of the center
-# YS = -0.0*fact #y coordinate of the center
+# YS = -0.3*fact #y coordinate of the center
 # ZS = -0.4*fact #z coordinate of the center
 # REX = 0.1*fact #x semi-axe of intial ellispoidal source
-# REY = 0.2*fact #y semi-axe of intial ellispoidal source
-# REZ = 0.2*fact #z semi-axe of intial ellispoidal source
+# REY = 0.1*fact #y semi-axe of intial ellispoidal source
+# REZ = 0.1*fact #z semi-axe of intial ellispoidal source
 
 XS = 0. #x coordinate of the center
 YS = -0.0 #y coordinate of the center
 ZS = -4e3 #z coordinate of the center
 REX = 2e3 #x semi-axe of intial ellispoidal source
 REY = 2e3 #y semi-axe of intial ellispoidal source
-REZ = 2e3 #z semi-axe of intial ellispoidal source
+REZ = 1e3 #z semi-axe of intial ellispoidal source
+
 
 # Objective source parameters (for ERRMOD 0 ou 1)
-XST = 0.2*fact
-YST = 0.2*fact
-DEPTH =  0.2*fact   ; #depth of source (>0)
+XST = 0.0*fact
+YST = 0.0*fact
+DEPTH =  0.4*fact   ; #depth of source (>0)
 RVRAI = 0.1*fact ; # radius of the target analytical spherical source
 
 # Extent of the simulated doain
 XEXT          = 1.*fact #extent of domain in X direction
 YEXT          = 1.*fact #extent of domain in X direction
-ZEXT          = 0.7*fact #extent of domain in X direction
+ZEXT          = 1*fact #extent of domain in X direction
 
 
 
 #### Meshing parameters
-MESHSIZ       = 0.03*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
+MESHSIZ       = 0.04*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
 HMIN          = 0.01*fact #minimum autorized element lenght
-HMAX          = 0.1*fact #maximum authorized element length
+HMAX          = 0.08*fact #maximum authorized element length
 HAUSD         = 0.005*fact  #mawimum authorized gap between ideal shape and its mesh nodes
 
 HGRAD         = 2 #max rati allowed between 2 adjascent edges
 INHOM         = False #inhomogenous meshing for wider domains simulation
 DILA          = 2 #dilataion parameter for the domain size if inhomogeneous meshing is selected
+
 
 
 #### Optimization parameters
@@ -99,7 +101,7 @@ ALPHA         = 5*MESHSIZ # Parameter for velocity extension - regularization, f
 MAXIT         = 100000   # Maximum number of iterations in the shape optimization process
 MAXITLS       = 10   # Maximum number of iterations in the line search procedure
 TOL           = 0.01  # Tolerance for a slight increase in the ERROR
-MULTCOEF      = 1.1  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
+MULTCOEF      = 1.2  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
 MINCOEF       = 0.01 # Minimum allowed move between two iterations (in # * MESHSIZ)
 MAXCOEF       = 2 # Maximum allowed step between two iterations (in # * MESHSIZ)
 
@@ -126,6 +128,14 @@ WEIG = WEIG/np.sum(WEIG) # normalize the weights
 ORMOD = (2529373,179745)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
 
 
+# tests with 1 track
+NTCK = 1
+TCKS = [TCKS[0]]
+LOSS = [LOSS[0]]
+HEAS = [HEAS[0]]
+INCS = [INCS[0]]
+WEIG = [WEIG[0]]
+
 
 
 
@@ -145,7 +155,6 @@ FFELAS         = SCRIPT + "elasticity.edp"
 FFERR          = SCRIPT + f"error{ERRMOD}.edp" #error script (one script per error mod)
 FFADJ          = SCRIPT + f"adjoint{ERRMOD}.edp"#adjoint state solving script (one script per error mod)
 FFGRADE        = SCRIPT + "gradE.edp" # grad error script
-FFVOL          = SCRIPT + "volume.edp"
 FFSTATS          = SCRIPT + "stats.edp"
 FFTRUNC        = SCRIPT + "truncvid.edp"
 

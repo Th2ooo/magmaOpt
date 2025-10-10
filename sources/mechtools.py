@@ -113,9 +113,9 @@ def error(mesh,u) :
   proc.wait()
   
   if ( proc.returncode != 0 ) :
-    print("Error in error calculation; abort.")
     print(proc.returncode)
-  
+    raise Exception("Error in error calculation; abort.")
+
   [err] = inout.getrAtt(file=path.EXCHFILE,attname="Error")
   
   return err
@@ -125,32 +125,11 @@ def error(mesh,u) :
 #####################################################################################
 #####################################################################################
 
-#####################################################################################
-#######   Calculate volume                                                    #######
-#######       input: mesh (string): mesh of the shape                         #######
-#####################################################################################
-
-def volume(mesh) :
-  
-  # Set information in exchange file
-  inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
-
-  # Call to FreeFem
-  proc = subprocess.Popen(["{FreeFem} {volume} > /dev/null 2>&1".format(FreeFem=path.FREEFEM,volume=path.FFVOL)],shell=True)
-  proc.wait()
-  
-  if ( proc.returncode != 0 ) :
-    print("Error in compliance calculation; abort.")
-    print(proc.returncode)
-  
-  [vol] = inout.getrAtt(file=path.EXCHFILE,attname="Volume")
-  
-  return vol
 
 
 
 #####################################################################################
-#######   Calculate volume                                                    #######
+#######   Calculate geometrical statistics                                    #######
 #######       input: mesh (string): mesh of the shape                         #######
 #####################################################################################
 
@@ -216,10 +195,7 @@ def gradE(mesh,disp,adj,grad,phi) :
 #####             Calculation of the (normalized) descent direction               #####
 #####      inputs :   mesh: (string for) mesh ;                                   #####
 #####                 phi: (string for) ls function                               #####
-#####                 gCp: (string for) gradient of Compliance                    #####
-#####                 Cp: (real) value of Compliance                              #####
-#####                 gV: (string for) gradient of Volume                         #####
-#####                 vol: (real) value of volume                                 #####
+#####                 gE: (string for) gradient of error                          #####
 #####      Output:    g: (string for) total gradient                              #####
 #######################################################################################
 

@@ -133,7 +133,7 @@ if not restart  :
     mechtools.elasticity(path.step(0,"mesh"),path.step(0,"u.sol"))
     
     
-    # Calculation of the compliance and the volume of the shape
+    # Calculation of the error of the shape
     print("Evaluation of intial error")
     newE  = mechtools.error(path.step(0,"mesh"),path.step(0,"u.sol"))
     curE = newE
@@ -172,7 +172,7 @@ else : ## To restart loop at  a given it
 At the beginning of each iteration, are available:
    - the mesh lT^n of $D$ associated to the current shape Omega^n;
    - the solution to the linear elasticity equation on $Omega^n$ (at the nodes of $D$).
-   - The compliance and volume of the shape
+   - The error of the shape
 """
 
 for it in range(itstart,path.MAXIT) :
@@ -220,7 +220,7 @@ for it in range(itstart,path.MAXIT) :
     mechtools.adjoint(curmesh,curu,curp)
     
     print("  Computation of a descent direction")
-    # Calculation of the gradients of compliance and volume
+    # Calculation of the gradient of error
     mechtools.gradE(curmesh,curu,curp,curEgrad,curphi)
 
     # Calculation of a descent direction
@@ -255,11 +255,15 @@ for it in range(itstart,path.MAXIT) :
 
           
         # Decision
-        if  retmmg and ( newE < curE+path.TOL*abs(curE) )   :
+        if  ( newE < curE )   : # strict improvement in the error
             coef = min(path.MAXCOEF,coef*path.MULTCOEF)
             print("    Iteration {} - subiteration {} accepted\n".format(it,k))
             break
-        elif ( k == path.MAXITLS-1 ) or ( coef <= path.MINCOEF )  :
+        elif ( newE < curE+path.TOL*abs(curE) ) : # slight increase of error accepted
+            coef = coef # no modification of the coe
+            print("    Iteration {} - subiteration {} accepted despite slight increase in error\n".format(it,k))
+            break
+        elif ( k == path.MAXITLS-1 ) or ( coef <= path.MINCOEF )  : # end of LS reached or coeff too low
             coef = min(path.MINCOEF,1*coef)
             print("    Iteration {} - subiteration {} accepted by default, end of line search\n".format(it,k))
             break

@@ -123,6 +123,7 @@ def mmg3d(mesh,ls,phi,hmin,hmax,hausd,hgrad,nr,out) :
   
   log.close()
   if ( proc.returncode != 0 ) :
+    raise Exception("MMG remeshing failed !")
     return 0
   else :
     return 1 
