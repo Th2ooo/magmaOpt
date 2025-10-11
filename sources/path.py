@@ -39,20 +39,20 @@ PRESS = 5e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
 fact = 10e3 #50e3 #6e3
 
 
-# Initial guess parameters
-XS = -0.3*fact #x coordinate of the center
-YS = -0.3*fact #y coordinate of the center
-ZS = -0.4*fact #z coordinate of the center
-REX = 0.1*fact #x semi-axe of intial ellispoidal source
-REY = 0.1*fact #y semi-axe of intial ellispoidal source
-REZ = 0.1*fact #z semi-axe of intial ellispoidal source
+# # Initial guess parameters
+# XS = -0.3*fact #x coordinate of the center
+# YS = -0.3*fact #y coordinate of the center
+# ZS = -0.4*fact #z coordinate of the center
+# REX = 0.1*fact #x semi-axe of intial ellispoidal source
+# REY = 0.1*fact #y semi-axe of intial ellispoidal source
+# REZ = 0.1*fact #z semi-axe of intial ellispoidal source
 
-# XS = 0. #x coordinate of the center
-# YS = -0.0 #y coordinate of the center
-# ZS = -4e3 #z coordinate of the center
-# REX = 2e3 #x semi-axe of intial ellispoidal source
-# REY = 2e3 #y semi-axe of intial ellispoidal source
-# REZ = 1e3 #z semi-axe of intial ellispoidal source
+XS = 0. #x coordinate of the center
+YS = -0.0 #y coordinate of the center
+ZS = -4e3 #z coordinate of the center
+REX = 2e3 #x semi-axe of intial ellispoidal source
+REY = 2e3 #y semi-axe of intial ellispoidal source
+REZ = 2e3 #z semi-axe of intial ellispoidal source
 
 
 # Objective source parameters (for ERRMOD 0 ou 1)
@@ -83,7 +83,7 @@ DILA          = 2 #dilataion parameter for the domain size if inhomogeneous mesh
 #### Optimization parameters
 
 # Error type 
-ERRMOD = 1  
+ERRMOD = 2
 """ 0 if error is computed with analytic solution, 
     1 if computed with numeric sol
     2 if computed with real data (bestE = null test)
@@ -128,13 +128,14 @@ WEIG = WEIG/np.sum(WEIG) # normalize the weights
 ORMOD = (2529373,179745)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
 
 
-# tests with 1 track
-NTCK = 1
-TCKS = [TCKS[0]]
-LOSS = [LOSS[0]]
-HEAS = [HEAS[0]]
-INCS = [INCS[0]]
-WEIG = [WEIG[0]]
+# tests with 2 track
+nums = [2,3]
+NTCK = len(nums)
+TCKS = [TCKS[i] for i in nums]
+LOSS = [LOSS[i] for i in nums]
+HEAS = [HEAS[i] for i in nums]
+INCS = [INCS[i] for i in nums]
+WEIG = [WEIG[i] for i in nums]
 
 
 

@@ -51,5 +51,5 @@ def save_results(name="") :
 if __name__ == "__main__" :
     
     
-      save_results("very_good_testcase1")
+      save_results("insar_test1")
     

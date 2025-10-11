@@ -15,9 +15,11 @@
 inhomogenous meshing
     - mmg find good parameters
     - do tests on convergence
+    - add local parameters mmg with DEFAULT.mmg3d file (https://www.mmgtools.org/tutorials/tutorials_parameter_file.htmls)
 
 stats.edp give weird results
 
+insar interpolation on mesh edges of correct value (no zero)
 
 ## Features to add
 
