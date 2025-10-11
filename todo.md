@@ -1,26 +1,24 @@
 # TODO file for the code **magmaOpt**
 
-
+*author: Théo Perrot*
+*sept-oct 2025*
 
 
 ## Things to fix
 
-
-- Minimize number of scripts
-    - remove artist
-    - remove geographer
-    - merge error and adjoint different scripts
-
+plot_dmr in plots to compare data model residuals of insar
 
 inhomogenous meshing
     - mmg find good parameters
     - do tests on convergence
     - add local parameters mmg with DEFAULT.mmg3d file (https://www.mmgtools.org/tutorials/tutorials_parameter_file.htmls)
 
-stats.edp give weird results
+Insar handle N tracks. either
+    - Fix the FreeFem for loops handling
+    - Modify adjoint2 in inout to add N insar tracks in adjoint2.edp
 
-insar interpolation on mesh edges of correct value (no zero)
 
+TO compute the null test, use a synthetic null dispacement field (as in insar interp) instead of solving elasticity
 ## Features to add
 
 - InSAR data improvement :
@@ -62,6 +60,15 @@ insar interpolation on mesh edges of correct value (no zero)
 
 ## Done
 
+
+- Minimize number of scripts
+    - remove artist
+    - remove geographer
+
+
+stats.edp give weird results
+
+insar interpolation on mesh edges of correct value (no zero)
 
 - REGLS regularization nessecary ?
 

@@ -10,7 +10,7 @@ from sources.utils import *
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-
+import mpltern #optional, used for ternary plot
 SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE = 18, 15, 30;
 plt.rcParams.update({
     'font.family' : 'sans-serif' , 'font.size': MEDIUM_SIZE ,  'axes.titlesize' : MEDIUM_SIZE , 'axes.labelsize' : MEDIUM_SIZE + 2, 
@@ -24,15 +24,15 @@ print("**********       Plot evolution      *********")
 print("**********************************************")
     
     
-content = np.genfromtxt(path.HISTO,delimiter=" ")
-nit = content.shape[0] #number of iteration
-itl = content[:,0] #iterations
-errl = content[:,1] #errors
-voll = content[:,2] #volumes
-col = content[:,3] #
-bxl = np.array(content[:,4])
-byl = np.array(content[:,5])
-bzl = np.array(content[:,6])
+histo = np.genfromtxt(path.HISTO,delimiter=" ")
+nit = histo.shape[0] #number of iteration
+itl = histo[:,0] #iterations
+errl = histo[:,1] #errors
+voll = histo[:,2] #volumes
+col = histo[:,3] #
+bxl = np.array(histo[:,4])
+byl = np.array(histo[:,5])
+bzl = np.array(histo[:,6])
 
 
 
@@ -223,24 +223,38 @@ def plot_paper(save=False) :
     
     ax2 = ax.twinx()
     axcol = "forestgreen"
-    volobj = 4/3*np.pi*path.RVRAI**3 #volume of objective shape
-    voln = voll/volobj
-    p2=ax2.plot(itl,voln,color=axcol,linewidth=1,ls="--",label="Volume ratio ($V_{\Omega}/V_{obj}$)",zorder=2)
-    ax2.set_ylabel("Volume ratio $V_{\Omega}/V_{obj}$",color=axcol,labelpad=20)
+    if path.ERRMOD != 2:
+        volobj = 4/3*np.pi*path.RVRAI**3 #volume of objective shape
+        voln = voll/volobj
+        ax2.set_ylabel("Volume ratio $V_{\Omega}/V_{obj}$",color=axcol,labelpad=20)
+    else :
+        voln = voll
+        ax2.set_ylabel("Volume $V_{\Omega}$",color=axcol,labelpad=20)
+        
+    p2=ax2.plot(itl,voln,color=axcol,linewidth=1,ls="--",zorder=2)
     ax2.tick_params(axis='y',colors=axcol)
 
 
     
     ax3 = ax.twinx()
-    axcol = "slateblue"
-    distn = np.sqrt((bxl-path.XST)**2+(byl-path.YST)**2+(bzl+path.DEPTH)**2)
+    axcol = "darkorange"
+    if path.ERRMOD != 2 :
+        distn = np.sqrt((bxl-path.XST)**2+(byl-path.YST)**2+(bzl+path.DEPTH)**2)
+        ax3.set_ylabel("Shapes distance $||\mathbf{b}_{\Omega}-\mathbf{b}_{obj}||$ ($m$)",color=axcol,labelpad=-70)
+
+    else :
+        distn = np.sqrt((bxl-path.XEXT/2)**2+(byl-path.YEXT/2)**2+(bzl+path.ZEXT/2)**2)
+        ax3.set_ylabel("Shape distance to center of the domain $||\mathbf{b}_{\Omega}-\mathbf{b}_{D}||$ ($m$)",color=axcol,labelpad=-70)
+
+
+    
+    
     p3=ax3.plot(itl,distn,color=axcol,linewidth=1,ls="--",label="Distance of shapes $||\mathbf{x}_{\Omega}-x_{obj}||$",zorder=1)
     
     ax3.spines['left'].set_visible(False)  # Hide right spine
     ax3.spines['right'].set_position(('outward', 0))  # Share left spine
     ax3.tick_params(axis='y',direction="in", pad=-40, colors=axcol)
     ax3.yaxis.set_label_position('right')
-    ax3.set_ylabel("Shape distance $||\mathbf{b}_{\Omega}-\mathbf{b}_{obj}||$ ($m$)",color=axcol,labelpad=-70)
     
     
     ax.grid(alpha=0.5)
@@ -257,6 +271,57 @@ def plot_paper(save=False) :
         plt.show()
         
         
+        
+def plot_traj(save=False) :
+    """
+    Ternary plot to vizualize the trajectory of the barycenter as well as the volume change
+
+    Returns
+    -------
+    None.
+
+    """
+    # Convert 3D coordinates to ternary coordinates (sum to 1)
+    def to_ternary(x, y, z):
+        bxlt,bylt,bzlt = x+path.XEXT/2,y+path.YEXT/2,z+path.ZEXT
+        bxlt,bylt,bzlt = bxlt/path.XEXT,bylt/path.YEXT,bzlt/path.ZEXT
+        return bxlt,bylt,bzlt
+    
+    fig = plt.figure(figsize=(10,10),layout="constrained")
+    ax = fig.add_subplot(projection="ternary")
+    
+    # Convert data to ternary coordinates
+    bxl_tern, byl_tern, bzl_tern = to_ternary(np.array(bxl), np.array(byl), np.array(bzl))
+    
+    ax.set_tlim(0.2, 0.8)    # X limits
+    ax.set_llim(0.2, 0.8)    # Y limits  
+    ax.set_rlim(0.2, 0.8)    # Z limits (focus on high Z)
+    
+    # Plot the converted data
+    ax.plot(bxl_tern, byl_tern, bzl_tern)
+    c = ax.scatter(bxl_tern, byl_tern, bzl_tern, c=voll, s=20, edgecolor="none", cmap="inferno",label="Succesive position of the shape")
+    fig.colorbar(c, label="Volume of the shape ($m^3$)")
+    
+    ax.set_tlabel("X (m)")
+    ax.set_llabel("Y (m)") 
+    ax.set_rlabel("Z (m)")
+    
+    if path.ERRMOD != 2 :
+        xst_tern, yst_tern, zst_tern = to_ternary(
+            np.array([path.XST]), 
+            np.array([path.YST]), 
+            np.array([-path.DEPTH])
+        )
+        ax.scatter(xst_tern, yst_tern, zst_tern, marker='x', c="red", s=100,label="Objective source position")
+        
+    ax.legend()
+
+    
+    if save :
+        plt.savefig(path.PLOTS+"tern_traj.pdf")
+    else :
+        plt.show()
+
 
 print("**********************************************")
 print("**************    End of Plot   **************")
@@ -267,3 +332,6 @@ if __name__ == "__main__" :
 
     plot_conv(save=1)
     plot_paper(1)
+    plot_traj(1)
+    
+    

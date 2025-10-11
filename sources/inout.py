@@ -6,8 +6,9 @@ import sources.path as path
 import subprocess
 import os
 import sys
-import numpy
-
+import numpy as np
+import sources.mechtools as mechtools
+from pathlib import Path
 ##############################################################
 ######          Set the field attname in file          #######
 ##############################################################
@@ -118,17 +119,19 @@ def iniWF():
   # Create histo file
   ff = open(path.HISTO,'w')
   ff.close()
-  
-  # Create DEFAULT.mmg3d file: mmg removes components disconnected from bdy path.REFDIR
-  # ff = open(path.DEFMMG,'w')
-  # ff.write("LSBaseReferences\n1\n\n{refdir}".format(refdir=path.REFDIR))
-  # ff.close()
-  
+
   # Create DEFAULT.mshdist file: to make sure the level set is computed from the good interior
   ff = open(path.DEFMSHD,'w')
   ff.write(f"InteriorDomains\n1\n\n{path.REFINT}")
   ff.close()
   
+  
+  # Create DEFAULT.mmg3d file: for local refining of the uper surface
+  if path.FINEUP :
+      ff = open(path.DEFMMG,'w')
+      ff.write(f"Parameters\n1\n\n{path.REFUP} Triangles {path.HAUSD} {path.MESHSIZ} {path.HMIN}")
+      ff.close()
+      
   
   # Add global information (e.g. about Dirichlet and Neumann boundaries)
   setAtt(file=path.EXCHFILE,attname="Dirichlet",attval=path.REFDIR)
@@ -243,10 +246,9 @@ def testLib():
 ##############################################################################
 
 #################################################################################
-######        Fill history file with compliance and volume values          ######
+######        Fill history file with error value          ######
 ######            Inputs: it (int) number of the iteration                 ######
-######                    Cp (real) value of compliance                    ######
-######                    vol (real) value of volume                       ######
+######                    Er (real) value of error                    ######
 #################################################################################
 
 def printHisto(*args):
@@ -257,3 +259,47 @@ def printHisto(*args):
       char += f"{a} "
   print(char,file=histo)
   histo.close()
+
+
+
+
+def recomp_histo() :
+    """
+    Function to recompute the histo.data file
+
+    Parameters
+    ----------
+    resdir : TYPE, optional
+        DESCRIPTION. The default is path.RES.
+
+    Returns
+    -------
+    None.
+
+    """
+    resdir = Path(path.RES)
+    oldhist = np.genfromtxt(resdir/"histo.data",delimiter=" ")
+    nit = oldhist.shape[0] #number of iteration
+    newhist = np.zeros(oldhist.shape)
+    
+    for it in range(0,nit) :
+        print("it",it)
+        curmesh = path.step(it,"mesh")
+        curu    = path.step(it,"u.sol")
+        
+        #Compute stats of the current domain
+        vol,barx,bary,barz = mechtools.stats(curmesh)
+        
+        # xompute current error
+        curE = mechtools.error(curmesh,curu)
+
+
+        # get old coef state
+        coef = oldhist[it,3]
+        
+        # save new values
+        newhist[it,:] = (it,curE,vol,coef,barx,bary,barz)
+ 
+    np.savetxt(resdir/"histo.data",delimiter=" ")
+
+      

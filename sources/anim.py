@@ -312,7 +312,7 @@ def composite_animation(nit=nit-3,fps=5) :
     ax1.legend(handles=[p1, p11])
     
     # Vertical line for current iteration (will be updated)
-    vline = ax1.axvline(x=0, color='r', linestyle='--', linewidth=2)
+    vline = ax1.axvline(x=0, color='r', linestyle='--', linewidth=2,label="Current iteration")
     iteration_text = ax1.text(0.02, 0.98, '', transform=ax1.transAxes, verticalalignment='top')
     
     ax2 = axs['A']
@@ -381,5 +381,5 @@ print("**********************************************")
 
 
 if __name__ == "__main__" :
-    composite_animation(fps=15)
+    composite_animation(fps=30)
 

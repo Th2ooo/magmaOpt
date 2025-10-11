@@ -48,11 +48,11 @@ fact = 10e3 #50e3 #6e3
 # REZ = 0.1*fact #z semi-axe of intial ellispoidal source
 
 XS = 0. #x coordinate of the center
-YS = -0.0 #y coordinate of the center
-ZS = -4e3 #z coordinate of the center
-REX = 2e3 #x semi-axe of intial ellispoidal source
+YS = +2e3 #y coordinate of the center
+ZS = -5e3 #z coordinate of the center
+REX = 1e3 #x semi-axe of intial ellispoidal source
 REY = 2e3 #y semi-axe of intial ellispoidal source
-REZ = 2e3 #z semi-axe of intial ellispoidal source
+REZ = 1e3 #z semi-axe of intial ellispoidal source
 
 
 # Objective source parameters (for ERRMOD 0 ou 1)
@@ -71,13 +71,13 @@ ZEXT          = 1*fact #extent of domain in X direction
 #### Meshing parameters
 MESHSIZ       = 0.04*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
 HMIN          = 0.01*fact #minimum autorized element lenght
-HMAX          = 0.08*fact #maximum authorized element length
+HMAX          = 0.1*fact #maximum authorized element length
 HAUSD         = 0.005*fact  #mawimum authorized gap between ideal shape and its mesh nodes
 
 HGRAD         = 2 #max rati allowed between 2 adjascent edges
 INHOM         = False #inhomogenous meshing for wider domains simulation
-DILA          = 2 #dilataion parameter for the domain size if inhomogeneous meshing is selected
-
+DILA          = 1.5 #dilataion parameter for the domain size if inhomogeneous meshing is selected
+FINEUP        = True #implement refinement on  upper boundary with mmg 
 
 
 #### Optimization parameters

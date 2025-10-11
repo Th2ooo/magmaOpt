@@ -70,8 +70,8 @@ cout << "ERROR : " << err << endl ;
 
 /*VTK output of the LOS for vizu*/
 for (int i = 0; i < ntck; ++i){
-    savevtk("objlos"+i+".vtu", Th,losdatA[i]); // data
+    // savevtk("objlos"+i+".vtu", Th,losdatA[i]); // data
     ulosi = UtoLOSi(ux,uy,uz,i);
     savevtk("ulos"+i+".vtu",Th,ulosi);  // current LOS disp
 }
-savevtk("err2.vtu",Th,errfield) ;
+// savevtk("err2.vtu",Th,errfield) ;
