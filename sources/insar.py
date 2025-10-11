@@ -51,19 +51,26 @@ def los2sol(tckfile,meshfile,outsol,origin, plot=False) :
     msh=meshio.read(meshfile)
     
     npt = msh.points.shape[0]
-    mshloc = msh.points
+    mshloc = msh.points #coordinates of the mesh points
     
-    mkup = msh.point_data["medit:ref"]==path.REFUP #criterion with label
+    
+    
+    # create mask to get all the points located on upper surface from cells
+    maskcells = msh.cell_data["medit:ref"][1]==path.REFUP #get triangulars cells on REFUP
+    ptslab_up = msh.cells[1].data[maskcells] #points labels from triangular cells on refup 
+    ptslab_up = np.unique(ptslab_up.flatten()) # remvoe the subarrray structure and points mentionned severaltimes
+   
+    # mkup = msh.point_data["medit:ref"]==path.REFUP #criterion with label
     # mkup = mshloc[:,2]==0.0 #criterion with alt
     
     
     mshlos = sc.interpolate.griddata(
-        tck[:,:2],LOS,mshloc[mkup][:,:2],
+        tck[:,:2],LOS,mshloc[ptslab_up][:,:2],
         method="nearest",
         fill_value=0.0)
     
     los = np.full(npt, 0.0)
-    los[mkup] = mshlos
+    los[ptslab_up] = mshlos
     np.savetxt(outsol, los,
       header=f"MeshVersionFormatted 2\n\nDimension 3\n\nSolAtVertices\n{npt}\n1 1\n",
       comments="",
@@ -79,11 +86,11 @@ def los2sol(tckfile,meshfile,outsol,origin, plot=False) :
         
         
         ax = axs[1]
-        c=ax.scatter(mshloc[mkup][:,0],mshloc[mkup][:,1],c=mshlos,marker=".",cmap="jet")
+        c=ax.scatter(mshloc[ptslab_up][:,0],mshloc[ptslab_up][:,1],c=mshlos,marker=".",cmap="jet")
         ax.set_aspect('equal', adjustable='box')
         fig.colorbar(c,label="disp (m)")
 
-    return mshloc[mkup]
+    return mshloc[ptslab_up]
 
 
 
@@ -124,4 +131,5 @@ if __name__ =="__main__" :
     # los2sol(path.TCKS[0],path.step(0,"mesh"),path.LOSS[0],path.ORMOD, plot=1)
     # init()
 
-    msh = meshio.read(path.step(0,"mesh"))
+    los2sol(path.TCKS[0],path.step(0,"mesh"),"res/atestsol.sol",path.ORMOD, plot=1)
+    # msh = meshio.read(path.step(0,"mesh"))
