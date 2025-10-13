@@ -158,12 +158,16 @@ def iniWF():
   setAtt(file=path.EXCHFILE,attname="ObjMesh",attval=path.OBJMESH)
   
   #  InSAR parameters for all input data files
-  setAtt(file=path.EXCHFILE,attname="Ntracks",attval=path.NTCK)
-  for i in range(path.NTCK) :
-      setAtt(file=path.EXCHFILE,attname=f"Track{i}",attval=path.LOSS[i])
-      setAtt(file=path.EXCHFILE,attname=f"Head{i}",attval=path.HEAS[i])
-      setAtt(file=path.EXCHFILE,attname=f"Incl{i}",attval=path.INCS[i])
-      setAtt(file=path.EXCHFILE,attname=f"Weight{i}",attval=path.WEIG[i])
+  if path.ERRMOD == 2 :
+      setAtt(file=path.EXCHFILE,attname="Ntracks",attval=path.NTCK)
+      for i in range(path.NTCK) :
+          setAtt(file=path.EXCHFILE,attname=f"Track{i}",attval=path.LOSS[i])
+          setAtt(file=path.EXCHFILE,attname=f"Head{i}",attval=path.HEAS[i])
+          setAtt(file=path.EXCHFILE,attname=f"Incl{i}",attval=path.INCS[i])
+          setAtt(file=path.EXCHFILE,attname=f"Weight{i}",attval=path.WEIG[i])
+          
+      ini_adjoint2() #initialize adjoint script
+     
 
       
 
@@ -304,3 +308,69 @@ def recomp_histo() :
     np.savetxt(resdir/"histo.data",newhist,delimiter=" ", fmt='%.6e')
 
       
+
+def ini_adjoint2() :
+    """
+    Function to automatize sum wrtiting of adjoint state in adjoint2.edp to 
+    handle N insar tracks
+    (very ugly but adjoint2_N.edp does not work)
+
+    """
+    if path.ERRMOD != 2 :
+        print("Wrong error mode, abort")
+        return None
+    
+    ntck = path.NTCK
+    f = open(path.FFADJ.replace("2", "2_modl"))
+    lfs = f.readlines()
+    f.close()
+    
+    louts = []
+    
+    for l in lfs :
+        l = l.rstrip()
+        
+        louts.append(l)
+        if l == "///LOSDATADECL" :
+            nl = "Vhe "
+            for i in range(ntck) :
+                nl += f"losdata{i},"
+            nl = nl[:-1]+";\n"
+            louts.append(nl)
+            
+        elif l == "///LOSDATAGET" :
+            nls = []
+            for i in range(ntck) :
+                louts += [f"LOSD = getsParam(EXCHFILE,\"Track{i}\");"]
+                louts += [f"loadsol(LOSD,tmplos[]);"]
+                louts += [f"losdata{i} = tmplos;"]
+                louts += [""]
+                
+        elif l == "///LOSADJCOMPSUM" :
+            #z comp
+            nl = "2.0*vez*("
+            for i in range(ntck) :
+                nl += f"UtoLOSi(0,0,1,{i})*ws[{i}]*(UtoLOSi(uex,uey,uez,{i})-losdata{i})+"
+            nl = nl[:-1]+")+"
+            # y comp
+            nl += "2.0*vey*("
+            for i in range(ntck) :
+                nl += f"UtoLOSi(0,1,0,{i})*ws[{i}]*(UtoLOSi(uex,uey,uez,{i})-losdata{i})+"
+            nl = nl[:-1]+")+"
+            # x comp
+            nl += "2.0*vex*("
+            for i in range(ntck) :
+                nl += f"UtoLOSi(1,0,0,{i})*ws[{i}]*(UtoLOSi(uex,uey,uez,{i})-losdata{i})+"
+            nl = nl[:-1]+"))"
+            louts.append(nl)
+            
+    with open(path.FFADJ, 'w') as f:
+        for l in louts:
+            f.write(f"{l}\n")
+        
+            
+            
+if __name__ == "__main__" :
+    pass
+    
+    

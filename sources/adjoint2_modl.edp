@@ -52,8 +52,6 @@ fespace Vhe(The,P1);
 Vhe uex,uey,uez,pex,pey,pez,vex,vey,vez;
 
 ///LOSDATADECL
-Vhe losdata0,losdata1,losdata2,losdata3,losdata4,losdata5;
-
 
 
 /* Interpolation of displacement from full to sub mesh */
@@ -64,30 +62,6 @@ uez = uz;
 
 
 ///LOSDATAGET
-LOSD = getsParam(EXCHFILE,"Track0");
-loadsol(LOSD,tmplos[]);
-losdata0 = tmplos;
-
-LOSD = getsParam(EXCHFILE,"Track1");
-loadsol(LOSD,tmplos[]);
-losdata1 = tmplos;
-
-LOSD = getsParam(EXCHFILE,"Track2");
-loadsol(LOSD,tmplos[]);
-losdata2 = tmplos;
-
-LOSD = getsParam(EXCHFILE,"Track3");
-loadsol(LOSD,tmplos[]);
-losdata3 = tmplos;
-
-LOSD = getsParam(EXCHFILE,"Track4");
-loadsol(LOSD,tmplos[]);
-losdata4 = tmplos;
-
-LOSD = getsParam(EXCHFILE,"Track5");
-loadsol(LOSD,tmplos[]);
-losdata5 = tmplos;
-
 
 
 
@@ -97,7 +71,6 @@ problem adjoint([pex,pey,pez],[vex,vey,vez],solver=CG) = int3d(The)(2.0*mu*(dx(p
                                    + int3d(The)(lm*(dx(pex)+dy(pey)+dz(pez))*(dx(vex)+dy(vey)+dz(vez)))
                                    +int2d(The,REFUP)(
 ///LOSADJCOMPSUM
-2.0*vez*(UtoLOSi(0,0,1,0)*ws[0]*(UtoLOSi(uex,uey,uez,0)-losdata0)+UtoLOSi(0,0,1,1)*ws[1]*(UtoLOSi(uex,uey,uez,1)-losdata1)+UtoLOSi(0,0,1,2)*ws[2]*(UtoLOSi(uex,uey,uez,2)-losdata2)+UtoLOSi(0,0,1,3)*ws[3]*(UtoLOSi(uex,uey,uez,3)-losdata3)+UtoLOSi(0,0,1,4)*ws[4]*(UtoLOSi(uex,uey,uez,4)-losdata4)+UtoLOSi(0,0,1,5)*ws[5]*(UtoLOSi(uex,uey,uez,5)-losdata5))+2.0*vey*(UtoLOSi(0,1,0,0)*ws[0]*(UtoLOSi(uex,uey,uez,0)-losdata0)+UtoLOSi(0,1,0,1)*ws[1]*(UtoLOSi(uex,uey,uez,1)-losdata1)+UtoLOSi(0,1,0,2)*ws[2]*(UtoLOSi(uex,uey,uez,2)-losdata2)+UtoLOSi(0,1,0,3)*ws[3]*(UtoLOSi(uex,uey,uez,3)-losdata3)+UtoLOSi(0,1,0,4)*ws[4]*(UtoLOSi(uex,uey,uez,4)-losdata4)+UtoLOSi(0,1,0,5)*ws[5]*(UtoLOSi(uex,uey,uez,5)-losdata5))+2.0*vex*(UtoLOSi(1,0,0,0)*ws[0]*(UtoLOSi(uex,uey,uez,0)-losdata0)+UtoLOSi(1,0,0,1)*ws[1]*(UtoLOSi(uex,uey,uez,1)-losdata1)+UtoLOSi(1,0,0,2)*ws[2]*(UtoLOSi(uex,uey,uez,2)-losdata2)+UtoLOSi(1,0,0,3)*ws[3]*(UtoLOSi(uex,uey,uez,3)-losdata3)+UtoLOSi(1,0,0,4)*ws[4]*(UtoLOSi(uex,uey,uez,4)-losdata4)+UtoLOSi(1,0,0,5)*ws[5]*(UtoLOSi(uex,uey,uez,5)-losdata5)))
                                    + on(REFDIR,pex=0.0,pey=0.0,pez=0.0);
 
 

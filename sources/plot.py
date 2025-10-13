@@ -5,7 +5,8 @@ import sources.path as path
 import sources.insar as insar
 import numpy as np
 import meshio
-from sources.utils import *
+import os 
+from utils import Extent,LOS_set
 
 
 import matplotlib.pyplot as plt
@@ -34,7 +35,7 @@ bxl = np.array(histo[:,4])
 byl = np.array(histo[:,5])
 bzl = np.array(histo[:,6])
 
-
+bestit=np.argmin(errl)
 
 def plot_conv(save=False) :
     """
@@ -126,13 +127,31 @@ def plot_conv(save=False) :
         
         
 
-def plot_dmr(it) :
-    """Plot data model residuals"""
+def plot_dmr(it=nit-2,ntplot=None,save=True) :
+    """
+    Plot data model residuals
+
+    Parameters
+    ----------
+    it : TYPE, optional
+        DESCRIPTION. The default is bestit.
+    ntplot : TYPE, optional
+        DESCRIPTION. The default is None.
+    save : TYPE, optional
+        DESCRIPTION. The default is True.
+
+    Returns
+    -------
+    None.
+
+    """
+    nan_val =-999.9
     
-    domex = Extent()
-    domex.init_with_range(path.XEXT,path.YEXT,path.ZEXT)
-    art = Artist(2,3,extent=domex,fonts=10)
-    # art.init_topo(100,path=svartDEM,ori=path.ORMOD)
+    if not ntplot :
+        fig,axs = plt.subplots(path.NTCK,3,figsize=(14,3.5*path.NTCK),layout="constrained")
+    else :
+        fig,axs = plt.subplots(1,3,figsize=(10,8),layout="constrained")
+        axs = [axs]
     
     msh=meshio.read(path.step(it,"mesh"))
     mkup = msh.point_data["medit:ref"]==path.REFUP
@@ -141,65 +160,68 @@ def plot_dmr(it) :
     #modeled disp
     modu = np.genfromtxt(path.step(it,"u.sol"),skip_header=8,skip_footer=1)[mkup]
     
-    if path.ERRMOD == 2 : #LOS ERROR PLOT    
-        #get Insar data
-        #reinterpolate los on the choosen mesh
-        insar.los2sol(path.TCK1, path.step(it,"mesh"), path.LOS1)
-        insar.los2sol(path.TCK2, path.step(it,"mesh"), path.LOS2)
-        tcks=[path.LOS1,path.LOS2]
-        angles = [(path.HEA1,path.INC1),(path.HEA2,path.INC2)]
-        art.fig.suptitle(f"DMR  Plot it {it},best it {bestit}, errmin {errl.min()}, nit tot {nit}")
-        for tck,an in zip(tcks,angles) :
-            #plot data
-            dat=np.genfromtxt(tck,skip_header=8)[mkup]
-            mkout = dat!=-99.0
-            vmin = np.min(dat[mkout])
-            vmax = np.max(dat[mkout])
-            # art.plot_shaded_dem()
-            cm=art.plot_simple(loc[mkout], dat[mkout],cmap="turbo",vmin=vmin,vmax=vmax)
-            art.plot_LOS_arrows(an[0])
-            art.ax.set_title(f"Data {tck}")
-            art.switch_ax()
-            
-            #plot model
-            losf = LOS_set(an[0],an[1])
-            modlos = losf(modu[:,0],modu[:,1],modu[:,2])
-            # art.plot_shaded_dem()
-            art.plot_simple(loc[mkout], modlos[mkout] ,cmap="turbo",vmin=vmin,vmax=vmax)
-            art.ax.set_title("Model")
-            art.switch_ax()
-            
-            #plot residuals
-            cm=art.plot_simple(loc[mkout], dat[mkout]-modlos[mkout],cmap="turbo",vmin=vmin,vmax=vmax)
-            # art.plot_shaded_dem()
-            art.fig.colorbar(cm,label="LOS (mm)",location="right")
-            art.ax.set_title("Residuals")
-            art.switch_ax()
-            
+    if path.ERRMOD != 2 : #LOS ERROR PLOT 
+        print("Not implemented for this ERRMOD")
+        # return None    
         
-    elif path.ERRMOD == 1: #SYNTHETIC DATA ERROR PLOT
-        # get synthetic data
-        tmp = path.OUTANA
-        path.OUTANA = 0
-        mechtools.error(path.step(it,"mesh"),path.step(it,"u.sol"))
-        path.OUTANA=tmp
-        #modeled disp
-        obju = np.genfromtxt(path.OBJDISP,skip_header=8,skip_footer=1)[mkup]
-        ncomp = ["X","Y","Z"]
-        for comp in range(3) :
-            pass
+    #get Insar data
+    outtmp = path.PLOTS+"tmplos/"
+    os.makedirs(outtmp,exist_ok=True)
+ 
+    for i,(tck,hea,inc) in enumerate(zip(path.TCKS,path.HEAS,path.INCS)) :
+        if ntplot :
+            if i != ntplot : continue
+        
+        #reinterpolate los on the choosen mesh
+        solf = outtmp+f"losu_it{it}_{i}.sol"
+        insar.los2sol(tck, path.step(it,"mesh"), solf,path.ORMOD)
+
+        #plot data
+        dat=np.genfromtxt(solf,skip_header=8)[mkup]
+        mkout = np.round(dat,1)  != nan_val 
+        vmin = np.min(dat[mkout])
+        vmax = np.max(dat[mkout])            
+
+        ax = axs[i,0]
+        ax.scatter(loc[mkout][:,0],loc[mkout][:,1],c=dat[mkout],marker=".",cmap="jet",vmin=vmin,vmax=vmax)
+        ax.set_aspect('equal', adjustable='box')
+        scale = path.XEXT/20
+        ax.arrow(ax.get_xbound()[0]+4*scale,ax.get_ybound()[1]-4*scale,
+                 scale*2*np.sin(hea),scale*2*np.cos(hea),color="black",lw=5)
+        ax.arrow(ax.get_xbound()[0]+4*scale,ax.get_ybound()[1]-4*scale,
+                 (scale*0.9)*np.sin(hea-np.pi/2),(scale*0.9)*np.cos(hea-np.pi/2),color="black",lw=5)
+        if not ntplot :
+            ax.set_title(f"Data track {tck}")
+        else : 
+            ax.set_title("Data")
+        
+        #plot model
+        ax = axs[i,1]
+        losf = LOS_set(hea,inc)
+        modlos = losf(modu[:,0],modu[:,1],modu[:,2])
+        ax.scatter(loc[mkout][:,0],loc[mkout][:,1],c=modlos[mkout],marker=".",cmap="jet",vmin=vmin,vmax=vmax)
+        ax.set_aspect('equal', adjustable='box')
+        ax.set_title("Model")
+
+        #plot residuals
+        ax = axs[i,2]
+        cm=ax.scatter(loc[mkout][:,0],loc[mkout][:,1],c=dat[mkout]-modlos[mkout],marker=".",cmap="jet",vmin=vmin,vmax=vmax)
+        ax.set_aspect('equal', adjustable='box')
+        ax.set_title("Residuals")
+        
+        fig.colorbar(cm,label="LOS (mm)",location="right")
+  
+        if save :
+            plt.savefig(path.PLOTS+"DMRplot.pdf")
+        else :
+            plt.show()
             
-    
     
 
 
 
 def plot_paper(save=False) :
-    ## Convergence plots
-
-    
-    bestit = np.argmin(errl)
-    
+    ## Convergence plots    
     fig, ax = plt.subplots(figsize=(20,12))
     axcol = "blue"
     p=ax.semilogy(itl,errl,color=axcol,linewidth=2.5, zorder=5, label="Error $J_{LS}$")
@@ -244,7 +266,7 @@ def plot_paper(save=False) :
         ax3.set_ylabel("Shapes distance $||\mathbf{b}_{\Omega}-\mathbf{b}_{obj}||$ ($m$)",color=axcol,labelpad=-70)
 
     else :
-        distn = np.sum((np.column_stack([bxl,byl,bzl])-np.array([0,0,-path.ZEXT/2])[:,np.newaxis])**2,axis=1)**0.5
+        distn = np.sum((np.column_stack([bxl,byl,bzl])-np.array([0,0,-path.ZEXT/2])[np.newaxis,:])**2,axis=1)**0.5
         ax3.set_ylabel("Shape distance to center of the domain $||\mathbf{b}_{\Omega}-\mathbf{b}_{D}||$ ($m$)",color=axcol,labelpad=-70)
 
 
@@ -334,5 +356,5 @@ if __name__ == "__main__" :
     plot_conv(save=1)
     plot_paper(1)
     plot_traj(1)
-    
-    
+    plot_dmr(save=1)
+        

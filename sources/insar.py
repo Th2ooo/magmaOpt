@@ -18,7 +18,7 @@ import scipy as sc
 ##GENERAL INSAR DARA
 
 
-def los2sol(tckfile,meshfile,outsol,origin, plot=False) :
+def los2sol(tckfile,meshfile,outsol,origin,plot=False) :
     """
     Interpolate the LOS displacement data files of tckfile on the nodes of meshfile
     Save the result in sol format at outsol

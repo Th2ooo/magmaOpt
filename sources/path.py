@@ -36,23 +36,26 @@ YOUNG = 25.4e9 ; #E (from sigmundsson 2024)
 POISS = 0.257;   #nu (from sigmundsson 2024)
 PRESS = 5e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
 
-fact = 10e3 #50e3 #6e3
+fact = 12e3 #50e3 #6e3
 
 # Initial guess parameters
-# X0 = [0.,2e3,-3e3] #xyz coordinates of the center (it 0)
-# R0 = [1e3,1e3,1e3] #rx ry rz radii of the source
-X0 = np.array([0.0,0.0,-0.2])*fact #centers
-R0 = np.array([0.1,0.1,0.1])*fact   #radii
+X0 = [0.,0.0,-3e3] #xyz coordinates of the center (it 0)
+R0 = [1e3,1e3,1e3] #rx ry rz radii of the source
+# X0 = np.array([0.0,0.0,-0.2])*fact #centers
+# R0 = np.array([0.1,0.1,0.1])*fact   #radii
 
 # Objective / target source(s) parameters (for ERRMOD 0 ou 1) 
 XTs = np.array([[0.2,0.2,-0.4], [-0.2,-0.2,-0.3]])*fact #centers
 RTs = np.array([[0.1,0.2,0.1], [0.1,0.1,0.1]])*fact   #radii
 
 # Extent of the simulated doain
-XEXT          = 1.*fact #extent of domain in X direction
-YEXT          = 1.*fact #extent of domain in X direction
-ZEXT          = 1*fact #extent of domain in X direction
-EXT = [XEXT,YEXT,ZEXT]
+# XEXT          = 1.*fact #extent of domain in X direction
+# YEXT          = 1.*fact #extent of domain in X direction
+# ZEXT          = 0.7*fact #extent of domain in X direction
+XEXT          = 14e3 #extent of domain in X direction
+YEXT          = 12e3 #extent of domain in X direction
+ZEXT          = 9e3 #extent of domain in X direction
+
 
 
 #### Meshing parameters
@@ -70,7 +73,7 @@ FINEUP        = True #implement refinement on  upper boundary with mmg
 #### Optimization parameters
 
 # Error type 
-ERRMOD = 1
+ERRMOD = 2
 """ 0 if error is computed with analytic solution, 
     1 if computed with numeric sol
     2 if computed with real data (bestE = null test)
@@ -87,8 +90,8 @@ EPSP          = 1e-20 # Precision parameter for packing
 ALPHA         = 5*MESHSIZ # Parameter for velocity extension - regularization, few mesh elements (to textend gradient outside of REFISO)
 MAXIT         = 100000   # Maximum number of iterations in the shape optimization process
 MAXITLS       = 10   # Maximum number of iterations in the line search procedure
-TOL           = 0.01  # Tolerance for a slight increase in the ERROR
-MULTCOEF      = 1.2  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
+TOL           = 0.02  # Tolerance for a slight increase in the ERROR
+MULTCOEF      = 1.3  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
 MINCOEF       = 0.01 # Minimum allowed move between two iterations (in # * MESHSIZ)
 MAXCOEF       = 2 # Maximum allowed step between two iterations (in # * MESHSIZ)
 
@@ -112,17 +115,17 @@ WEIG = [1.]*6 #Weights given to the differents insar tracks
 WEIG = np.array(WEIG)
 WEIG = WEIG/np.sum(WEIG) # normalize the weights
 
-ORMOD = (2529373,179745)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
+ORMOD = (2530000,180000)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
 
 
 # tests with 2 track
-nums = [2,3]
-NTCK = len(nums)
-TCKS = [TCKS[i] for i in nums]
-LOSS = [LOSS[i] for i in nums]
-HEAS = [HEAS[i] for i in nums]
-INCS = [INCS[i] for i in nums]
-WEIG = [WEIG[i] for i in nums]
+# nums = [2,3]
+# NTCK = len(nums)
+# TCKS = [TCKS[i] for i in nums]
+# LOSS = [LOSS[i] for i in nums]
+# HEAS = [HEAS[i] for i in nums]
+# INCS = [INCS[i] for i in nums]
+# WEIG = [WEIG[i] for i in nums]
 
 
 

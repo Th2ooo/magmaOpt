@@ -71,7 +71,7 @@ Usefull links :
 
 """
 
-restart = 73 #Restart iteration
+restart = 0 #Restart iteration
 verb = 0 #Verbosity level
 #%% #### Initialization
 ###############################################################
@@ -254,7 +254,7 @@ for it in range(itstart,path.MAXIT) :
 
           
         # Decision
-        if  ( newE <  curE+path.TOL*abs(curE) )   : # strict improvement in the error
+        if  ( newE <  curE+ path.TOL*abs(curE))   : # strict improvement in the error
             coef = min(path.MAXCOEF,coef*path.MULTCOEF)
             print("    Iteration {} - subiteration {} accepted\n".format(it,k))
             break
