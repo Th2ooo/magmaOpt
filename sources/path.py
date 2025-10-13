@@ -44,7 +44,7 @@ fact = 10e3 #50e3 #6e3
 X0 = np.array([0.0,0.0,-0.2])*fact #centers
 R0 = np.array([0.1,0.1,0.1])*fact   #radii
 
-# Objective source(s) parameters (for ERRMOD 0 ou 1)
+# Objective / target source(s) parameters (for ERRMOD 0 ou 1) 
 XTs = np.array([[0.2,0.2,-0.4], [-0.2,-0.2,-0.3]])*fact #centers
 RTs = np.array([[0.1,0.2,0.1], [0.1,0.1,0.1]])*fact   #radii
 

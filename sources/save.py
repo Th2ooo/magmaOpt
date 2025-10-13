@@ -59,5 +59,5 @@ def save_results(name="") :
 if __name__ == "__main__" :
     
     
-      save_results("insar_test3_best")
+      save_results("fail_2sources")
     

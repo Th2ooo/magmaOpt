@@ -9,8 +9,11 @@ string SOL        = getsParam(EXCHFILE,"DispName");
 int REFINT        = getiParam(EXCHFILE,"Refint");
 int REFNEU        = getiParam(EXCHFILE,"Neumann");
 
+bool compDV = false; //compute volume change
+
 /* Loading mesh */
 mesh3 Th = readmesh3(MESH);
+
 
 /* Calculate volume */
 real vol = int3d(Th,REFINT)(1.0);
@@ -27,6 +30,16 @@ real barx = int3d(Th,REFINT)(x)/vol;
 real bary = int3d(Th,REFINT)(y)/vol;
 real barz = int3d(Th,REFINT)(z)/vol;
 
+
+/*Calculate volume change of source*/
+if (compDV){
+    fespace Vh(Th,P1);
+    Vh ux,uy,uz;
+    loadvec3(SOL,ux[],uy[],uz[]);
+
+    real  DV = int2d(Th,REFNEU)(ux*N.x+uy*N.y+uz*N.z) ;
+    cout << "Volume change : "<< DV << endl ;
+}
 
 
 /* Save result */

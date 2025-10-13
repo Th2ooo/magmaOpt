@@ -229,8 +229,11 @@ def export_3Dviews(nit=nit):
         faces = np.ravel(faces)
         mshpv = pv.PolyData(msh.points, faces)
         # Create other objeccts
+        sph_T = []
         if  path.ERRMOD != 2 :
-            sph_vrai = pv.Sphere(radius=path.RVRAI, center=(path.XST, path.YST, -path.DEPTH))
+            for rs,xs in zip(path.RTs,path.XTs) :
+                sph_T += [pv.ParametricEllipsoid(rs[0],rs[1],rs[2])]  #sphere at the objective source loc
+                sph_T[-1].translate(xs,inplace=True)
         dom_box = pv.Box(bounds=(-path.XEXT/2, path.XEXT/2, -path.YEXT/2, path.YEXT/2, -path.ZEXT, 0.0))
 
         if not f3D.is_file() :
@@ -240,7 +243,8 @@ def export_3Dviews(nit=nit):
             
             # Add reference objects
             if  path.ERRMOD != 2 :
-                plo_3d.add_mesh(sph_vrai, style="surface", color="blue", opacity=0.3)
+                for sph in sph_T :
+                    plo_3d.add_mesh(sph, style="surface", color="blue", opacity=0.3)
             plo_3d.add_mesh(dom_box, style='wireframe', color="black")
             
             # Add main mesh and set camera
@@ -260,7 +264,8 @@ def export_3Dviews(nit=nit):
             
             # Add reference objects (optional - can skip for side view)
             if  path.ERRMOD != 2 :
-                plo_side.add_mesh(sph_vrai, style="surface", color="blue", opacity=0.3)
+                for sph in sph_T :
+                    plo_side.add_mesh(sph, style="surface", color="blue", opacity=0.3)
             plo_side.add_mesh(dom_box, style='wireframe', color="black")
             
             # Add main mesh and set side camera
@@ -312,7 +317,7 @@ def composite_animation(nit=nit-3,fps=5) :
     ax1.legend(handles=[p1, p11])
     
     # Vertical line for current iteration (will be updated)
-    vline = ax1.axvline(x=0, color='r', linestyle='--', linewidth=2,label="Current iteration")
+    vline = ax1.axvline(x=0, color='darkorange', linestyle='--', linewidth=2,label="Current iteration")
     iteration_text = ax1.text(0.02, 0.98, '', transform=ax1.transAxes, verticalalignment='top')
     
     ax2 = axs['A']
@@ -381,5 +386,5 @@ print("**********************************************")
 
 
 if __name__ == "__main__" :
-    composite_animation(fps=30)
+    composite_animation(fps=20)
 

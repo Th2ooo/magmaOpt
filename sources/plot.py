@@ -77,12 +77,13 @@ def plot_conv(save=False) :
     axs[1].set_xlabel("iterations")
     axs[1].set_ylabel("Volume")
     axs[1].plot(itl,voll,label="V")
-    if path.ERRMOD == 0 :
-        axs[1].hlines(4/3*np.pi*path.RVRAI**3,0,nit,linestyles="dashed",label="V obj")
     axs[1].legend()
+
+
+    if path.ERRMOD in [0,1] :
+        axs[1].hlines(4/3*np.pi*np.prod(path.RTs[0]),0,nit,linestyles="dashed",label="V obj")
     
-    if path.ERRMOD == 0 :
-        axs[2].plot(itl,np.sqrt(bxl**2+byl**2+(bzl+path.DEPTH)**2))
+        axs[2].plot(itl,np.sum((np.column_stack([bxl,byl,bzl])-path.XTs[0][np.newaxis,:])**2,axis=1)**0.5)
         axs[2].set_title("Evolution of distance",fontsize=10)
         axs[2].set_xlabel("iterations")
         axs[2].set_ylabel("Distance to objective (m)")
@@ -224,7 +225,7 @@ def plot_paper(save=False) :
     ax2 = ax.twinx()
     axcol = "forestgreen"
     if path.ERRMOD != 2:
-        volobj = 4/3*np.pi*path.RVRAI**3 #volume of objective shape
+        volobj = 4/3*np.pi*np.prod(path.RTs[0]) #volume of objective shape
         voln = voll/volobj
         ax2.set_ylabel("Volume ratio $V_{\Omega}/V_{obj}$",color=axcol,labelpad=20)
     else :
@@ -239,11 +240,11 @@ def plot_paper(save=False) :
     ax3 = ax.twinx()
     axcol = "darkorange"
     if path.ERRMOD != 2 :
-        distn = np.sqrt((bxl-path.XST)**2+(byl-path.YST)**2+(bzl+path.DEPTH)**2)
+        distn = np.sum((np.column_stack([bxl,byl,bzl])-path.XTs[0][np.newaxis,:])**2,axis=1)**0.5
         ax3.set_ylabel("Shapes distance $||\mathbf{b}_{\Omega}-\mathbf{b}_{obj}||$ ($m$)",color=axcol,labelpad=-70)
 
     else :
-        distn = np.sqrt((bxl-path.XEXT/2)**2+(byl-path.YEXT/2)**2+(bzl+path.ZEXT/2)**2)
+        distn = np.sum((np.column_stack([bxl,byl,bzl])-np.array([0,0,-path.ZEXT/2])[:,np.newaxis])**2,axis=1)**0.5
         ax3.set_ylabel("Shape distance to center of the domain $||\mathbf{b}_{\Omega}-\mathbf{b}_{D}||$ ($m$)",color=axcol,labelpad=-70)
 
 
@@ -308,9 +309,9 @@ def plot_traj(save=False) :
     
     if path.ERRMOD != 2 :
         xst_tern, yst_tern, zst_tern = to_ternary(
-            np.array([path.XST]), 
-            np.array([path.YST]), 
-            np.array([-path.DEPTH])
+            np.array([path.XTs[0][0]]), 
+            np.array([path.XTs[0][1]]), 
+            np.array([path.XTs[0][2]])
         )
         ax.scatter(xst_tern, yst_tern, zst_tern, marker='x', c="red", s=100,label="Objective source position")
         

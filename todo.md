@@ -24,7 +24,6 @@ TO compute the null test, use a synthetic null dispacement field (as in insar in
 
 ## Features to add
 
-Compute the volume change of the shape
 
 
 - General option to activate/deactivate vtu outputs
@@ -70,6 +69,9 @@ Compute the volume change of the shape
 
 
 ## Done
+
+- Compute the volume change of the shape
+
 
 - Synthetic test with 2sources
 
