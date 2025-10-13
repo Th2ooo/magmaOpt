@@ -19,7 +19,16 @@ Insar handle N tracks. either
 
 
 TO compute the null test, use a synthetic null dispacement field (as in insar interp) instead of solving elasticity
+
+
+
 ## Features to add
+
+Compute the volume change of the shape
+
+
+- General option to activate/deactivate vtu outputs
+
 
 - InSAR data improvement :
     instead of nearest neighbor interpolation, hande no data points
@@ -42,6 +51,10 @@ TO compute the null test, use a synthetic null dispacement field (as in insar in
 
 
 - Clean code
+    -remove usless funcs or scripts
+    -documentation for functions
+        -remove charles way of documenting
+    -comment
 
 - proper Readme
     - install instructions
@@ -56,9 +69,9 @@ TO compute the null test, use a synthetic null dispacement field (as in insar in
     - slows if flat
 
 
-
-
 ## Done
+
+- Synthetic test with 2sources
 
 
 - Minimize number of scripts

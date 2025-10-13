@@ -71,7 +71,7 @@ Usefull links :
 
 """
 
-restart = 0 #Restart iteration
+restart = 73 #Restart iteration
 verb = 0 #Verbosity level
 #%% #### Initialization
 ###############################################################
@@ -95,14 +95,13 @@ if not restart  :
     
     ## Creation of the initial mesh
     print("Creating intial mesh")
-    basemesh.inimsh(path.step(0,"mesh"),vizu=1,inhom=path.INHOM)
+    basemesh.build_mesh(path.step(0,"mesh"),[path.X0],[path.R0],inhom=path.INHOM,mmg=True,vizu=1)
     
     
     ## Initialize error 
     if path.ERRMOD == 0 or path.ERRMOD == 1 : 
         #Evaluate the min of error function -> create a mesh with source located at target solution
-        basemesh.inimsh(path.OBJMESH,psrc=[path.XST,path.YST,-path.DEPTH], 
-                        rads=[path.RVRAI]*3,vizu=1,inhom=0) #creating mesh of the solution
+        basemesh.build_mesh(path.OBJMESH,path.XTs,path.RTs,inhom=0,mmg=True,vizu=1) #creating mesh of the solution
         
         #Compute the error of this "best" mesh
         e = mechtools.elasticity(path.OBJMESH,path.OBJDISP) # computing its displacement field

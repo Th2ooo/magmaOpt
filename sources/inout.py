@@ -147,10 +147,10 @@ def iniWF():
   # Model parameters
   setAtt(file=path.EXCHFILE,attname="Young",attval=path.YOUNG)
   setAtt(file=path.EXCHFILE,attname="Poisson",attval=path.POISS)
-  setAtt(file=path.EXCHFILE,attname="Rvrai",attval=path.RVRAI)
-  setAtt(file=path.EXCHFILE,attname="Depth",attval=path.DEPTH)
-  setAtt(file=path.EXCHFILE,attname="Xst",attval=path.XST)
-  setAtt(file=path.EXCHFILE,attname="Yst",attval=path.YST)
+  setAtt(file=path.EXCHFILE,attname="Rvrai",attval=path.RTs[0][0])
+  setAtt(file=path.EXCHFILE,attname="Xst",attval=path.XTs[0][0])
+  setAtt(file=path.EXCHFILE,attname="Yst",attval=path.XTs[0][1])
+  setAtt(file=path.EXCHFILE,attname="Depth",attval=-path.XTs[0][2])
   setAtt(file=path.EXCHFILE,attname="Pressure",attval=path.PRESS)
   
   # Objective files
@@ -299,7 +299,8 @@ def recomp_histo() :
         
         # save new values
         newhist[it,:] = (it,curE,vol,coef,barx,bary,barz)
+        
  
-    np.savetxt(resdir/"histo.data",delimiter=" ")
+    np.savetxt(resdir/"histo.data",newhist,delimiter=" ", fmt='%.6e')
 
       

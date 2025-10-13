@@ -38,34 +38,21 @@ PRESS = 5e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
 
 fact = 10e3 #50e3 #6e3
 
+# Initial guess parameters
+# X0 = [0.,2e3,-3e3] #xyz coordinates of the center (it 0)
+# R0 = [1e3,1e3,1e3] #rx ry rz radii of the source
+X0 = np.array([0.0,0.0,-0.2])*fact #centers
+R0 = np.array([0.1,0.1,0.1])*fact   #radii
 
-# # Initial guess parameters
-# XS = -0.3*fact #x coordinate of the center
-# YS = -0.3*fact #y coordinate of the center
-# ZS = -0.4*fact #z coordinate of the center
-# REX = 0.1*fact #x semi-axe of intial ellispoidal source
-# REY = 0.1*fact #y semi-axe of intial ellispoidal source
-# REZ = 0.1*fact #z semi-axe of intial ellispoidal source
-
-XS = 0. #x coordinate of the center
-YS = +2e3 #y coordinate of the center
-ZS = -5e3 #z coordinate of the center
-REX = 1e3 #x semi-axe of intial ellispoidal source
-REY = 2e3 #y semi-axe of intial ellispoidal source
-REZ = 1e3 #z semi-axe of intial ellispoidal source
-
-
-# Objective source parameters (for ERRMOD 0 ou 1)
-XST = 0.0*fact
-YST = 0.0*fact
-DEPTH =  0.5*fact   ; #depth of source (>0)
-RVRAI = 0.1*fact ; # radius of the target analytical spherical source
+# Objective source(s) parameters (for ERRMOD 0 ou 1)
+XTs = np.array([[0.2,0.2,-0.4], [-0.2,-0.2,-0.3]])*fact #centers
+RTs = np.array([[0.1,0.2,0.1], [0.1,0.1,0.1]])*fact   #radii
 
 # Extent of the simulated doain
 XEXT          = 1.*fact #extent of domain in X direction
 YEXT          = 1.*fact #extent of domain in X direction
 ZEXT          = 1*fact #extent of domain in X direction
-
+EXT = [XEXT,YEXT,ZEXT]
 
 
 #### Meshing parameters
@@ -83,7 +70,7 @@ FINEUP        = True #implement refinement on  upper boundary with mmg
 #### Optimization parameters
 
 # Error type 
-ERRMOD = 2
+ERRMOD = 1
 """ 0 if error is computed with analytic solution, 
     1 if computed with numeric sol
     2 if computed with real data (bestE = null test)

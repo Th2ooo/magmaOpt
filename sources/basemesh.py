@@ -7,6 +7,7 @@ Created on Fri May 24 00:24:58 2024
 """
 import os
 import gmsh 
+import meshio
 import subprocess
 import numpy as np
 
@@ -15,7 +16,7 @@ from sources.utils import Extent
 import sources.path as path
 
 
-def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,inhom=False,verb=3,debug=0) :
+def build_mesh(out,poss,rads,ext=[],inhom=False,mmg=True,verb=3,debug=0,vizu=False) :
     """
     Build initial mesh with magma chamber
 
@@ -23,16 +24,18 @@ def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,inhom=False,verb=3,debug=0)
     ----------
     out : string
         output file where the mesh is written (has to be .mesh to be compatible with freefem/mmg)
+    poss : list of list of floats
+        position of the source (X,Y,Z direction)
+    rads : list of list of floats
+        radii of the source (X,Y,Z direction)
     ext : list of floats, optional
-        extent of the domain (X,Y,Z direction). If not provided, values from path are used.
-    psrc : list of floats, optional
-        position of the source (X,Y,Z direction). If not provided, values from path are used
-    rads : list of floats, optional
-        radii of the source (X,Y,Z direction). If not provided, values from path are used
+        extent of the domain (X,Y,Z direction), if not provided, values from the path are used
     vizu : bool, optional
         Triigers gmsh gui to vizualize the mesh and model. The default is False.
     inhom : bool, optional
         inhom meshing mode = inhomogeneous, a coarser mesh is defined far from the source. The default is False = uniform meshsize.
+    mmg : bool, optional
+        Post gmsh remeshing with mmg3d (prevent domains edge to be remeshed). default True
     verb : bool, optional
         verboisity level of gmsh outputs. The default is 3.
     debug : bool, optional
@@ -44,21 +47,14 @@ def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,inhom=False,verb=3,debug=0)
 
     """
    
+    # COMMENTS ON GMSH
+    # when saving to mesh formmat, physical groups are not preserved, only geometrical ones
+    # possibiliy to rename with meshio
+    
+    
     ####Paramters
     if not ext :
         ext = [path.XEXT,path.YEXT,path.ZEXT]
-    if not psrc :
-        psrc = [path.XS,path.YS,path.ZS]
-    if not rads :
-        rads = [path.REX,path.REY,path.REZ]
-    xs = psrc[0]
-    ys = psrc[1]
-    zs = psrc[2]
-
-    rx = rads[0] #semi axes ellipsoif
-    ry = rads[1]
-    rz = rads[2]
-    
     domex = Extent()
     domex.init_with_range(ext[0],ext[1],ext[2])
     if inhom :
@@ -76,50 +72,61 @@ def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,inhom=False,verb=3,debug=0)
     msh = mod.mesh
     
     ####Geometry
-    
-    # Intial dimTags for the box and the source
-    volboxdt = (3,111)
-    volsrcdt = (3,112)
 
     # add the box domain
+    volboxdt = (3,111) # Intial dimTags for the box
     occ.addBox(domex.xmin, domex.ymin, domex.zmin,
                domex.xrange, domex.yrange, domex.zrange,tag=volboxdt[1])
     
-    # add the source domain and stretch it to llatch the correct dimensionts
-    occ.addSphere(xs, ys, zs, 1,tag=volsrcdt[1])
-    occ.dilate([volsrcdt],xs,ys,zs,rx,ry,rz)
+    # add the sources domains and stretch it to match the correct dimensions
+    volsrcdts = [] #intial dimtags for the sources
+    for i,(pos,rad) in enumerate(zip(poss,rads)) :
+        volsrcdts += [(3,1000+i)]
+        xs,ys,zs = pos[0],pos[1],pos[2] # center positions
+        rx,ry,rz = rad[0],rad[1],rad[2] #radii of ellispod
+        occ.addSphere(xs, ys, zs, 1,tag=volsrcdts[i][1])
+        occ.dilate([volsrcdts[i]],xs,ys,zs,rx,ry,rz)
     
+        
     if debug : 
         occ.synchronize()
         gmsh.fltk.run()
 
-    # fragment the domain in 2 distincts subdomains, the interior of the source and the exterior
-    (volsrcdt,volboxdt), _ = occ.fragment([volboxdt], [volsrcdt],removeObject=True, removeTool=True) 
+    # fragment the domain in distincts subdomains, the interior of the source and the exterior 
+    # fragment does "intersects all volumes in a conformal manner (without creating duplicate interfaces)" (gmsh doc)
+    newdts, _ = occ.fragment([volboxdt], volsrcdts, removeObject=True, removeTool=True) 
     
+    volboxdt = newdts[-1] # new box dt
     # remove anyduplicated entitires
     occ.removeAllDuplicates() 
     occ.synchronize()
     
     # get the identity of the generated surfaces
-    surfsrcdt= mod.getBoundary([volsrcdt])[0]
+    surfsrcdts= mod.getBoundary(volsrcdts)
     surfboxdts = mod.getBoundary([volboxdt])
     
     if debug :
-        print("BBB",volsrcdt,volboxdt,surfsrcdt,surfboxdts)
+        print("BBB",volsrcdts,volboxdt,surfsrcdts,surfboxdts)
         print("after generation",mod.getEntities())
+        
 
     ## Retag with the correct labels according to pathfile    
     mod.setTag(2,12,path.REFDIR) #bottom surface = dirichlet boundary (blocked)
     mod.setTag(2,10,path.REFUP) #top surface = surface for error calculation
-    mod.setTag(2,surfsrcdt[1],path.REFISO) #source surface = neumann surface = iso surface (loaded)
     mod.setTag(3,volboxdt[1],path.REFEXT) #interior of the domain = Text
-    mod.setTag(3,volsrcdt[1],path.REFINT) #interior of the source = Tint
-
+    # mod.setTag(3,volsrcdt[1],path.REFINT) #interior of the source = Tint
+    # mod.setTag(2,surfsrcdt[1],path.REFISO) #source surface = neumann surface = iso surface (loaded)
+    
+    
+    # gmsh.option.setNumber("Mesh.SaveAll", 1)
     if debug :
         print("FINAL tags",mod.getEntities())
         gmsh.fltk.run()
 
-
+    # get the sources boundaries to delete them after mesh gen (lines and points useless)
+    bad_ents = mod.getBoundary(surfsrcdts,oriented=False,recursive=False) #lines
+    bad_ents += mod.getBoundary(surfsrcdts,oriented=False,recursive=True) #points
+    print("ents to remove",bad_ents)
 
     
     ####Meshing
@@ -166,11 +173,8 @@ def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,inhom=False,verb=3,debug=0)
     # generate the mesh
     msh.generate()
     
-    # remove the elements attached to the extra curve on the source generated by occ (creates labels problems after)
-    undesired_dt = [(1,14),(0,14),(0,9)]
-    # linesUP = [(1,abs(dt[1])) for dt in mod.getBoundary([(2,path.REFUP)])] #lines surrounding upper surface
-    # undesired_dt += linesUP
-    for dt in undesired_dt : 
+    # remove the elements attached to the extra curve on the sources generated by occ (creates labels problems after)
+    for dt in bad_ents : 
         msh.removeElements(dt[0],dt[1])
     msh.reclassifyNodes()
         
@@ -188,9 +192,61 @@ def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,inhom=False,verb=3,debug=0)
     else:
         print("No write permission in this directory!")
     
-    
     # Close gmsh
     gmsh.finalize()
+    
+    
+    
+    #### Renaming 
+    
+    mshmed=meshio.read(out) #load with meshio
+    
+    dt_rename = volsrcdts+surfsrcdts #dim tags of entities to rename
+    ## Rename  volume elements
+    for d,t in dt_rename :        
+        if d == 3 :
+            newlab = path.REFINT #interior elts with ref REFINT
+        elif d == 2 :
+            newlab = path.REFISO #surface elts with REFISIO
+        else :
+            print("wriong dim",d,"no renaming")
+        maskcells = mshmed.cell_data["medit:ref"][d-1]==t #get tetra cells in t 
+        ptslab = mshmed.cells[d-1].data[maskcells] #points labels from tetra cells in t 
+        ptslab = np.unique(ptslab.flatten()) # remvoe the subarrray structure and points mentionned severaltimes
+       
+        # rename filtered points
+        mshmed.point_data["medit:ref"][ptslab] = newlab
+        mshmed.cell_data["medit:ref"][d-1][maskcells] = newlab
+        
+    mshmed.write(out) # save
+    print("Elements renaming done")
+    
+    
+    #### MMG Remeshing
+    
+    if mmg :
+
+        # rename temporaly the mesh for the remeshing
+        tmpf = out.replace(".mesh",".tmp.mesh")
+        os.rename(out, tmpf)
+        
+        # Call to mmg3d for remeshing the background mesh
+        log = open(path.LOGFILE,'a')
+
+        # !!! no -nr option to detect the ridges and keep them for the future
+        proc = subprocess.Popen([f"{path.MMG3D} -in {tmpf} -hmin {path.HMIN} -hmax {path.HMAX} -hausd {path.HAUSD} -hgrad {path.HGRAD} -optim -out {tmpf} -rmc"],shell=True,stdout=log)
+
+        proc.wait()
+        log.close()
+        
+        if ( proc.returncode != 0 ) :
+            raise Exception(f"MMG remeshing failed, code {proc.returncode}")
+        else :
+            os.rename(tmpf,out) #rename to the correct name
+            # print(os.listdir("./res/"))
+            print("mmg remeshing done")
+
+
 
     
 
@@ -199,34 +255,11 @@ def build_mesh(out,ext=[],psrc=[],rads=[],vizu=False,inhom=False,verb=3,debug=0)
     
     
     
-def inimsh(mesh,ext=[],psrc=[],rads=[],vizu=False,inhom=True,verb=3) :
+def inimsh(mesh,psrc,rads,ext=[],vizu=False,inhom=True,verb=3) :
   
     
     build_mesh(mesh,ext,psrc,rads,vizu,inhom,verb)
-    print("GMSH meshing done")
 
-
-    # rename temporaly the mesh for the remeshing
-    tmpf = mesh.replace(".mesh",".tmp.mesh")
-    os.rename(mesh, tmpf)
-    
-    # Call to mmg3d for remeshing the background mesh
-    log = open(path.LOGFILE,'a')
-
-    # !!! no -nr option to detect the ridges and keep them for the future
-    proc = subprocess.Popen([f"{path.MMG3D} -in {tmpf} -hmin {path.HMIN} -hmax {path.HMAX} -hausd {path.HAUSD} -hgrad {path.HGRAD} -optim -out {tmpf} -rmc"],shell=True,stdout=log)
-
-    proc.wait()
-    log.close()
-    
-    if ( proc.returncode != 0 ) :
-        raise Exception("MMG remeshing failed")
-        return 0
-    else :
-        os.rename(tmpf,mesh) #rename to the correct name
-        # print(os.listdir("./res/"))
-        print("mmg remeshing done")
-        return 1
 
 
 
@@ -239,3 +272,4 @@ def inimsh(mesh,ext=[],psrc=[],rads=[],vizu=False,inhom=True,verb=3) :
 if  __name__ == "__main__":
     # build_mesh("./res/test.mesh",inhom=1,debug=1)
     inimsh("./res/test1.mesh",vizu=1,inhom=1)
+    
