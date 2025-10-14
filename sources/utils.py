@@ -16,7 +16,6 @@ from datetime import datetime as dt
 import time
 import scipy as sc
 from pathlib import Path
-from sources.geographer import *
 
 
 
@@ -174,7 +173,25 @@ class McTigueSol :
         self.Uz = lambda x,y : fTiCte(x,y)*dpth/fTiR(x,y)**3
 
         
-        
+
+
+def dist(pt1,pt2) :
+    "distance between two points as str"
+    pt1 = np.asarray(pt1.split(" "),dtype=float)
+    pt2 = np.asarray(pt2.split(" "),dtype=float)
+    distn = np.sum((pt1-pt2)**2)**0.5
+    return distn
+
+def dipangle(pt1,pt2) :
+    "angle to vertical for two points defined as str"
+    pt1 = np.asarray(pt1.split(" "),dtype=float)
+    pt2 = np.asarray(pt2.split(" "),dtype=float)
+    norm = np.sum((pt2-pt1)**2)**0.5
+    vec = (pt2-pt1)/norm
+    ang = np.acos(vec[2])
+    ang *= 180/np.pi
+    return ang
+    
         
         
 ###Usefull functions for computations        
@@ -207,7 +224,9 @@ def LOS_set(heading,inclinaison) :
     """Setup an LOS conversion function"""
     hea = heading
     inc = inclinaison
-    LOS = lambda E,N,U : np.cos(hea)*np.sin(inc)*E + np.sin(hea)*np.sin(inc)*N + np.cos(inc)*U
+    LOS = lambda E,N,U : -np.cos(hea)*np.sin(inc)*E + np.sin(hea)*np.sin(inc)*N + np.cos(inc)*U
+    # LOS = lambda E,N,U : np.cos(hea)*np.sin(inc)*N - np.sin(hea)*np.sin(inc)*E + np.cos(inc)*U CACA
+
     return LOS
 
 

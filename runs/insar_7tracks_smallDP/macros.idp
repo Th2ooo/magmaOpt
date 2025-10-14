@@ -1,0 +1,46 @@
+/* General macros ansd global parameters for shape and topology optimization */
+/* File for communication of data with python */
+string EXCHFILE   = "./res/exch.data";
+/* Get magmatic source problem parameters */
+real E         = getrParam(EXCHFILE,"Young");
+real nu        = getrParam(EXCHFILE,"Poisson");
+real Rs        = getrParam(EXCHFILE,"Rvrai");
+real dpth      = getrParam(EXCHFILE,"Depth");
+real xst      = getrParam(EXCHFILE,"Xst");
+real yst      = getrParam(EXCHFILE,"Yst");
+
+
+real DPs       = getrParam(EXCHFILE,"Pressure") ;
+
+// // Compute lame coeffs
+real lm  = E*nu/((1+nu)*(1-2*nu)) ; //lambda lame coeff
+real mu  = E/(2*(1+nu));              //mu lame coeff
+
+
+
+/* Inner product for extension / regularization */
+real alpha        = getrParam(EXCHFILE,"Regularization");
+/*Standard Extenstion regularisation*/
+macro psreg(u,v) ( int3d(Th)(alpha^2*(dx(u)*dx(v)+dy(u)*dy(v)+dz(u)*dz(v)) + u*v) )//EOM
+
+
+
+
+/*Elastic extension regularisation
+ * (!!u,v are scalars -> has to be computed after extension on vectorial fields
+  * Not relevant in our case */
+// macro psreg(u,v) ( int3d(Th)( mu*(2.0*(dx(u)*dx(v)+dy(u)*dy(v)+dz(u)*dz(v))     + ((dx(u)+dy(u))*(dx(v)+dy(v)) + (dx(u)+dz(u))*(dx(v)+dz(v)) + (dy(u)+dz(u))*(dy(v)+dz(v))))      + lm*(dx(u)+dy(u)+dz(u))*(dx(v)+dy(v)+dz(v)) + (u*v) )    )//EOM
+
+
+
+
+
+
+
+
+
+
+/* Charles test case modulii : (coressponds to E=1 et nu=0.3) */
+// real DPs = 2.0;
+// real lm     = 0.5769;
+// real mu     = 0.3846;

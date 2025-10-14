@@ -165,8 +165,8 @@ def iniWF():
           setAtt(file=path.EXCHFILE,attname=f"Head{i}",attval=path.HEAS[i])
           setAtt(file=path.EXCHFILE,attname=f"Incl{i}",attval=path.INCS[i])
           setAtt(file=path.EXCHFILE,attname=f"Weight{i}",attval=path.WEIG[i])
-          
-      ini_adjoint2() #initialize adjoint script
+      # FOR NOW WE WORK WITH 2TCKS ONLYY
+      # ini_adjoint2() #initialize adjoint script
      
 
       

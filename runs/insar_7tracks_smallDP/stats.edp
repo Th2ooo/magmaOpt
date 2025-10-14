@@ -1,0 +1,48 @@
+/* Calculation of relevant geometric parameters of the magma chamber */
+include "./inout.idp"
+load "msh3"
+
+/* Get mesh and sol names, and global parameters */
+string MESH       = "step.21.mesh";
+string SOL        = "step.21.sol";
+int REFINT        = 3;
+int REFNEU        = 10;
+
+bool compDV = true; //compute volume change
+
+/* Loading mesh */
+mesh3 Th = readmesh3(MESH);
+
+
+/* Calculate volume */
+real vol = int3d(Th,REFINT)(1.0);
+
+/* Calculate surface*/
+real surf = int2d(Th,REFNEU)(1.0);
+
+/*Calculate barycenter coordinates*/
+real barxs = int2d(Th,REFNEU)(x)/surf ;
+real barys = int2d(Th,REFNEU)(y)/surf ;
+real barzs = int2d(Th,REFNEU)(z)/surf ;
+
+real barx = int3d(Th,REFINT)(x)/vol;
+real bary = int3d(Th,REFINT)(y)/vol;
+real barz = int3d(Th,REFINT)(z)/vol;
+
+
+/*Calculate volume change of source*/
+if (compDV){
+    fespace Vh(Th,P1);
+    Vh ux,uy,uz;
+    loadvec3(SOL,ux[],uy[],uz[]);
+
+    real  DV = int2d(Th,REFNEU)(ux*N.x+uy*N.y+uz*N.z) ;
+    cout << "Volume change : "<< DV << endl ;
+}
+
+
+/* Save result */
+
+cout << "Vol : "<< vol << endl ;
+cout << "Bar coor volu : " << barx <<" " << bary <<" " << barz << endl ;
+cout << "Bar coor surf : " << barxs <<" " << barys <<" " << barzs << endl ;

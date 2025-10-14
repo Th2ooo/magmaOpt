@@ -1,5 +1,4 @@
 /* Calculation of the adjoint state for the stress functional */
-//// !!!! this  file has markers for automatic writng in by inout.py
 include "./sources/inout.idp"
 include "./sources/macros.idp"
 load "medit"
@@ -16,7 +15,7 @@ int REFUP        = getiParam(EXCHFILE,"Refup");
 
 string MESHI      = getsParam(EXCHFILE,"ObjMesh"); //mesh on which insar data is interpolated
 int ntck        = getiParam(EXCHFILE,"Ntracks");
-string LOSD ;
+string LOS0,LOS1;
 
 //arrays of InSAR parameters
 real[int] heas(ntck), incs(ntck), ws(ntck) ;
@@ -40,7 +39,7 @@ Vh ux,uy,uz,px,py,pz;
 Vh0 reg = region;
 
 fespace VhI(ThI,P1); //Mesh of insar data fespace
-VhI tmplos ; //tmplos los disp to load data
+VhI tmplos0,tmplos1 ; //tmplos los disp to load data
 
 /* Read current displacement */
 loadvec3(SOL,ux[],uy[],uz[]);
@@ -49,10 +48,7 @@ loadvec3(SOL,ux[],uy[],uz[]);
 /* Mesh of the interior part and corresponding FE space */
 mesh3 The = trunc(Th,(reg(x,y,z) == REFEXT),label=REFEXT);
 fespace Vhe(The,P1);
-Vhe uex,uey,uez,pex,pey,pez,vex,vey,vez;
-
-///LOSDATADECL
-Vhe losdata0,losdata1,losdata2,losdata3,losdata4,losdata5;
+Vhe uex,uey,uez,pex,pey,pez,vex,vey,vez,losdata0,losdata1;
 
 
 
@@ -63,30 +59,14 @@ uez = uz;
 
 
 
-///LOSDATAGET
-LOSD = getsParam(EXCHFILE,"Track0");
-loadsol(LOSD,tmplos[]);
-losdata0 = tmplos;
 
-LOSD = getsParam(EXCHFILE,"Track1");
-loadsol(LOSD,tmplos[]);
-losdata1 = tmplos;
+LOS0 = getsParam(EXCHFILE,"Track"+0);
+loadsol(LOS0,tmplos0[]); //read insar data
+losdata0 = tmplos0 ; // project it on the current mesh
 
-LOSD = getsParam(EXCHFILE,"Track2");
-loadsol(LOSD,tmplos[]);
-losdata2 = tmplos;
-
-LOSD = getsParam(EXCHFILE,"Track3");
-loadsol(LOSD,tmplos[]);
-losdata3 = tmplos;
-
-LOSD = getsParam(EXCHFILE,"Track4");
-loadsol(LOSD,tmplos[]);
-losdata4 = tmplos;
-
-LOSD = getsParam(EXCHFILE,"Track5");
-loadsol(LOSD,tmplos[]);
-losdata5 = tmplos;
+LOS1 = getsParam(EXCHFILE,"Track"+1);
+loadsol(LOS1,tmplos1[]); //read insar data
+losdata1 = tmplos1 ; // project it on the current mesh
 
 
 
@@ -95,9 +75,7 @@ losdata5 = tmplos;
 problem adjoint([pex,pey,pez],[vex,vey,vez],solver=CG) = int3d(The)(2.0*mu*(dx(pex)*dx(vex)+dy(pey)*dy(vey)+dz(pez)*dz(vez)))
                                    + int3d(The)(mu*((dx(pey)+dy(pex))*(dx(vey)+dy(vex)) + (dx(pez)+dz(pex))*(dx(vez)+dz(vex)) + (dy(pez)+dz(pey))*(dy(vez)+dz(vey))))
                                    + int3d(The)(lm*(dx(pex)+dy(pey)+dz(pez))*(dx(vex)+dy(vey)+dz(vez)))
-                                   +int2d(The,REFUP)(
-///LOSADJCOMPSUM
-2.0*vez*(UtoLOSi(0,0,1,0)*ws[0]*(UtoLOSi(uex,uey,uez,0)-losdata0)+UtoLOSi(0,0,1,1)*ws[1]*(UtoLOSi(uex,uey,uez,1)-losdata1)+UtoLOSi(0,0,1,2)*ws[2]*(UtoLOSi(uex,uey,uez,2)-losdata2)+UtoLOSi(0,0,1,3)*ws[3]*(UtoLOSi(uex,uey,uez,3)-losdata3)+UtoLOSi(0,0,1,4)*ws[4]*(UtoLOSi(uex,uey,uez,4)-losdata4)+UtoLOSi(0,0,1,5)*ws[5]*(UtoLOSi(uex,uey,uez,5)-losdata5))+2.0*vey*(UtoLOSi(0,1,0,0)*ws[0]*(UtoLOSi(uex,uey,uez,0)-losdata0)+UtoLOSi(0,1,0,1)*ws[1]*(UtoLOSi(uex,uey,uez,1)-losdata1)+UtoLOSi(0,1,0,2)*ws[2]*(UtoLOSi(uex,uey,uez,2)-losdata2)+UtoLOSi(0,1,0,3)*ws[3]*(UtoLOSi(uex,uey,uez,3)-losdata3)+UtoLOSi(0,1,0,4)*ws[4]*(UtoLOSi(uex,uey,uez,4)-losdata4)+UtoLOSi(0,1,0,5)*ws[5]*(UtoLOSi(uex,uey,uez,5)-losdata5))+2.0*vex*(UtoLOSi(1,0,0,0)*ws[0]*(UtoLOSi(uex,uey,uez,0)-losdata0)+UtoLOSi(1,0,0,1)*ws[1]*(UtoLOSi(uex,uey,uez,1)-losdata1)+UtoLOSi(1,0,0,2)*ws[2]*(UtoLOSi(uex,uey,uez,2)-losdata2)+UtoLOSi(1,0,0,3)*ws[3]*(UtoLOSi(uex,uey,uez,3)-losdata3)+UtoLOSi(1,0,0,4)*ws[4]*(UtoLOSi(uex,uey,uez,4)-losdata4)+UtoLOSi(1,0,0,5)*ws[5]*(UtoLOSi(uex,uey,uez,5)-losdata5)))
+                                   +int2d(The,REFUP)(2.0*vez*(UtoLOSi(0,0,1,0)*ws[0]*(UtoLOSi(uex,uey,uez,0)-losdata0)+ UtoLOSi(0,0,1,1)*ws[1]*(UtoLOSi(uex,uey,uez,1)-losdata1)) +                                       2.0*vey*(UtoLOSi(0,1,0,0)*ws[0]*(UtoLOSi(uex,uey,uez,0)-losdata0)+ UtoLOSi(0,1,0,1)*ws[1]*(UtoLOSi(uex,uey,uez,1)-losdata1)) +                                    2.0*vex*(UtoLOSi(1,0,0,0)*ws[0]*(UtoLOSi(uex,uey,uez,0)-losdata0)+ UtoLOSi(1,0,0,1)*ws[1]*(UtoLOSi(uex,uey,uez,1)-losdata1)))
                                    + on(REFDIR,pex=0.0,pey=0.0,pez=0.0);
 
 
@@ -112,5 +90,4 @@ pz = pez;
 
 /* Save solution */
 printvec3(ADJ,px[],py[],pz[]);
-
 

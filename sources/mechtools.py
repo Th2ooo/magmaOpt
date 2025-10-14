@@ -84,8 +84,9 @@ def adjoint(mesh,u,p) :
   proc.wait()
 
   if ( proc.returncode != 0 ) :
-    print("Error in numerical solver for adjoint equation; abort.")
     print(proc.returncode)
+    raise Exception("Error in numerical solver for adjoint equation; abort.")
+
     
 #####################################################################################
 #######   Calculate error data-model                                        #######

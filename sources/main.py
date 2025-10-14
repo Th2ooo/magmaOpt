@@ -140,7 +140,7 @@ if not restart  :
     print("*** Initialization: Error {}".format(newE))
     
     # Coefficient for time step ( descent direction is scaled with respect to mesh size)
-    coef = path.MINCOEF
+    coef = 1 #path.MINCOEF
     # Number of refinement steps
     nref = 0
     
@@ -226,9 +226,9 @@ for it in range(itstart,path.MAXIT) :
     mechtools.descent(curmesh,curphi,curE,curEgrad,curgrad) 
     
     
-    # Line search
+    #### Line search
     for k in range(0,path.MAXITLS) :
-        print(f"  Line search k = {k}; step size = {coef:.2f}")
+        print(f"  Line search k = {k}; step size = {coef:.3f}")
           
         # Advection of the level set function and smoothing of the resulting LS function
         print("    Level Set advection")
@@ -254,7 +254,7 @@ for it in range(itstart,path.MAXIT) :
 
           
         # Decision
-        if  ( newE <  curE+ path.TOL*abs(curE))   : # strict improvement in the error
+        if  ( newE <  curE)   : # strict improvement in the error
             coef = min(path.MAXCOEF,coef*path.MULTCOEF)
             print("    Iteration {} - subiteration {} accepted\n".format(it,k))
             break
@@ -270,7 +270,7 @@ for it in range(itstart,path.MAXIT) :
             print("    Iteration {} - subiteration {} rejected".format(it,k))
             proc = subprocess.Popen(["rm {nmesh}".format(nmesh=newmesh)],shell=True)
             proc.wait()
-            coef = max(path.MINCOEF,coef/(2*path.MULTCOEF))
+            coef = max(path.MINCOEF,coef/path.MULTCOEF)
         
    
         

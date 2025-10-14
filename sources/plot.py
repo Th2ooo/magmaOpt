@@ -6,7 +6,7 @@ import sources.insar as insar
 import numpy as np
 import meshio
 import os 
-from utils import Extent,LOS_set
+from utils import LOS_set
 
 
 import matplotlib.pyplot as plt
@@ -37,7 +37,7 @@ bzl = np.array(histo[:,6])
 
 bestit=np.argmin(errl)
 
-def plot_conv(save=False) :
+def plot_conv_mult(save=False) :
     """
     Multiviews plot of the  convergence of shape optimization procedure
     Parameters
@@ -120,7 +120,7 @@ def plot_conv(save=False) :
     fig.suptitle(f"Convergence plots, min error found {errl[bestit]} found at iteration {bestit} ")
     
     if save :
-        plt.savefig(path.PLOTS+"convplot.png")
+        plt.savefig(path.PLOTS+"plot_conv_mult.pdf")
     else :
         plt.show()
 
@@ -145,14 +145,22 @@ def plot_dmr(it=nit-2,ntplot=None,save=True) :
     None.
 
     """
-    nan_val =-999.9
     
-    if not ntplot :
+    if path.ERRMOD != 2 : #LOS ERROR PLOT 
+        print("Not implemented for this ERRMOD = ",path.ERRMOD)
+        return None    
+        
+    mono = False
+    if isinstance(ntplot,int) :
+        mono = True
+    
+        
+    if not mono :
         fig,axs = plt.subplots(path.NTCK,3,figsize=(14,3.5*path.NTCK),layout="constrained")
     else :
-        fig,axs = plt.subplots(1,3,figsize=(10,8),layout="constrained")
-        axs = [axs]
-    
+        fig,axs = plt.subplots(1,3,figsize=(14,3.5),layout="constrained")
+        axs = axs[np.newaxis,:]
+    print(axs)
     msh=meshio.read(path.step(it,"mesh"))
     mkup = msh.point_data["medit:ref"]==path.REFUP
     loc = msh.points[mkup]
@@ -160,17 +168,16 @@ def plot_dmr(it=nit-2,ntplot=None,save=True) :
     #modeled disp
     modu = np.genfromtxt(path.step(it,"u.sol"),skip_header=8,skip_footer=1)[mkup]
     
-    if path.ERRMOD != 2 : #LOS ERROR PLOT 
-        print("Not implemented for this ERRMOD")
-        # return None    
-        
+
     #get Insar data
     outtmp = path.PLOTS+"tmplos/"
     os.makedirs(outtmp,exist_ok=True)
  
     for i,(tck,hea,inc) in enumerate(zip(path.TCKS,path.HEAS,path.INCS)) :
-        if ntplot :
+        print("Ploting",tck)
+        if mono :
             if i != ntplot : continue
+            else : i=0
         
         #reinterpolate los on the choosen mesh
         solf = outtmp+f"losu_it{it}_{i}.sol"
@@ -178,18 +185,18 @@ def plot_dmr(it=nit-2,ntplot=None,save=True) :
 
         #plot data
         dat=np.genfromtxt(solf,skip_header=8)[mkup]
-        mkout = np.round(dat,1)  != nan_val 
-        vmin = np.min(dat[mkout])
-        vmax = np.max(dat[mkout])            
+  
+        vmin = np.min(dat)
+        vmax = np.max(dat)            
 
         ax = axs[i,0]
-        ax.scatter(loc[mkout][:,0],loc[mkout][:,1],c=dat[mkout],marker=".",cmap="jet",vmin=vmin,vmax=vmax)
+        ax.scatter(loc[:,0],loc[:,1],c=dat,marker=".",cmap="jet",vmin=vmin,vmax=vmax)
         ax.set_aspect('equal', adjustable='box')
         scale = path.XEXT/20
         ax.arrow(ax.get_xbound()[0]+4*scale,ax.get_ybound()[1]-4*scale,
                  scale*2*np.sin(hea),scale*2*np.cos(hea),color="black",lw=5)
         ax.arrow(ax.get_xbound()[0]+4*scale,ax.get_ybound()[1]-4*scale,
-                 (scale*0.9)*np.sin(hea-np.pi/2),(scale*0.9)*np.cos(hea-np.pi/2),color="black",lw=5)
+                 (scale*0.9)*np.sin(hea+np.pi/2),(scale*0.9)*np.cos(hea+np.pi/2),color="black",lw=5)
         if not ntplot :
             ax.set_title(f"Data track {tck}")
         else : 
@@ -199,28 +206,28 @@ def plot_dmr(it=nit-2,ntplot=None,save=True) :
         ax = axs[i,1]
         losf = LOS_set(hea,inc)
         modlos = losf(modu[:,0],modu[:,1],modu[:,2])
-        ax.scatter(loc[mkout][:,0],loc[mkout][:,1],c=modlos[mkout],marker=".",cmap="jet",vmin=vmin,vmax=vmax)
+        ax.scatter(loc[:,0],loc[:,1],c=modlos,marker=".",cmap="jet") #,vmin=vmin,vmax=vmax)
         ax.set_aspect('equal', adjustable='box')
         ax.set_title("Model")
 
         #plot residuals
         ax = axs[i,2]
-        cm=ax.scatter(loc[mkout][:,0],loc[mkout][:,1],c=dat[mkout]-modlos[mkout],marker=".",cmap="jet",vmin=vmin,vmax=vmax)
+        cm=ax.scatter(loc[:,0],loc[:,1],c=dat-modlos,marker=".",cmap="jet",vmin=vmin,vmax=vmax)
         ax.set_aspect('equal', adjustable='box')
         ax.set_title("Residuals")
         
         fig.colorbar(cm,label="LOS (mm)",location="right")
   
-        if save :
-            plt.savefig(path.PLOTS+"DMRplot.pdf")
-        else :
-            plt.show()
+    if save :
+        plt.savefig(path.PLOTS+"DMRplot.pdf")
+    else :
+        plt.show()
             
     
 
 
 
-def plot_paper(save=False) :
+def plot_conv_mono(save=False) :
     ## Convergence plots    
     fig, ax = plt.subplots(figsize=(20,12))
     axcol = "blue"
@@ -289,7 +296,7 @@ def plot_paper(save=False) :
     # ax.legend(handles=p+p1+p2+p3, loc='lower left')
 
     if save :
-        plt.savefig(path.PLOTS+"paperplot.pdf")
+        plt.savefig(path.PLOTS+"plot_conv_mono.pdf")
     else :
         plt.show()
         
@@ -321,9 +328,8 @@ def plot_traj(save=False) :
     ax.set_rlim(0.2, 0.8)    # Z limits (focus on high Z)
     
     # Plot the converted data
-    ax.plot(bxl_tern, byl_tern, bzl_tern)
-    c = ax.scatter(bxl_tern, byl_tern, bzl_tern, c=voll, s=20, edgecolor="none", cmap="inferno",label="Succesive position of the shape")
-    fig.colorbar(c, label="Volume of the shape ($m^3$)")
+    c = ax.scatter(bxl_tern, byl_tern, bzl_tern, c=itl, edgecolor="none", cmap="turbo",label="Succesive position of the shape")
+    fig.colorbar(c, label="Iteration number")
     
     ax.set_tlabel("X (m)")
     ax.set_llabel("Y (m)") 
@@ -352,9 +358,12 @@ print("**********************************************")
 
 
 if __name__ == "__main__" :
-
-    plot_conv(save=1)
-    plot_paper(1)
+    plot_conv_mult(save=1)
+    plot_conv_mono(1)
     plot_traj(1)
-    plot_dmr(save=1)
+    plot_dmr(it=bestit,save=1)
+    plot_dmr(save=0,)
+    
+    print(f"CURRENT IT {nit-2}, BESTIT {bestit}")
+
         
