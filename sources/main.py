@@ -254,7 +254,7 @@ for it in range(itstart,path.MAXIT) :
 
           
         # Decision
-        if  ( newE <  curE)   : # strict improvement in the error
+        if  ( newE <  curE )   : # strict improvement in the error
             coef = min(path.MAXCOEF,coef*path.MULTCOEF)
             print("    Iteration {} - subiteration {} accepted\n".format(it,k))
             break

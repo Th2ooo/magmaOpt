@@ -1,5 +1,6 @@
 res/
 res*/
+runs/
 .spyproject/config/
 .spyproject/
 .spyproject/*
