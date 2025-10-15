@@ -93,7 +93,7 @@ TOL           = 0.01  # Tolerance for a slight increase in the ERROR
 MULTCOEF      = 1.5  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
 MINCOEF       = 0.005 # Minimum allowed move between two iterations (in # * MESHSIZ)
 MAXCOEF       = 2. # Maximum allowed step between two iterations (in # * MESHSIZ)
-
+INICOEF = MINCOEF # initial step size 
 
 
 
