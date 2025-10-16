@@ -311,15 +311,17 @@ def composite_animation(nit=nit-3,fps=5) :
     ax1.grid(True, alpha=0.3)
     
     ax11=ax1.twinx()
-    ax11.set_ylabel("Coeff")
-    p11, =ax11.plot(itl,col,color="tab:red")
+    ax11.set_ylabel("Step size")
+    p11, =ax11.plot(itl,col,color="tab:red",label="Step size")
     
-    ax1.legend(handles=[p1, p11])
     
     # Vertical line for current iteration (will be updated)
     vline = ax1.axvline(x=0, color='darkorange', linestyle='--', linewidth=2,label="Current iteration")
     iteration_text = ax1.text(0.02, 0.98, '', transform=ax1.transAxes, verticalalignment='top')
     
+    ax1.legend(handles=[p1, p11,vline])
+
+
     ax2 = axs['A']
     ax3 = axs['C']
     
@@ -386,5 +388,6 @@ print("**********************************************")
 
 
 if __name__ == "__main__" :
+    # export_3Dviews()
     composite_animation(fps=20)
 

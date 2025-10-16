@@ -33,13 +33,6 @@ macro psreg(u,v) ( int3d(Th)(alpha^2*(dx(u)*dx(v)+dy(u)*dy(v)+dz(u)*dz(v)) + u*v
 
 
 
-
-
-
-
-
-
-
 /* Charles test case modulii : (coressponds to E=1 et nu=0.3) */
 // real DPs = 2.0;
 // real lm     = 0.5769;

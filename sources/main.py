@@ -70,6 +70,9 @@ Usefull links :
 
 
 """
+go = input("ARE YOU SURE YOU WANT TO RUN ??? ")
+if go != "y":
+    raise Exception("CACA")
 
 restart = 0 #Restart iteration
 verb = 0 #Verbosity level
@@ -99,7 +102,7 @@ if not restart  :
     
     
     ## Initialize error 
-    if path.ERRMOD == 0 or path.ERRMOD == 1 : 
+    if path.ERRMOD == 0 or path.ERRMOD == 1 or path.ERRMOD == 3 : 
         #Evaluate the min of error function -> create a mesh with source located at target solution
         basemesh.build_mesh(path.OBJMESH,path.XTs,path.RTs,inhom=0,mmg=True,vizu=1) #creating mesh of the solution
         
@@ -108,7 +111,7 @@ if not restart  :
         
         if path.ERRMOD == 0 : #Analytical error against mogi soultion of best mesh possible
             bestE = mechtools.error(path.OBJMESH,path.OBJDISP) 
-        elif path.ERRMOD == 1 : #Best possible error is 0 bc best mesh exists
+        elif path.ERRMOD == 1 or path.ERRMOD == 3 : #Best possible error is 0 bc best mesh exists
             bestE = 0.0 
 
     elif path.ERRMOD == 2 :
@@ -254,7 +257,7 @@ for it in range(itstart,path.MAXIT) :
 
           
         # Decision
-        if  ( newE <  curE )   : # strict improvement in the error
+        if  ( newE <  curE+path.TOL*abs(curE) )   : # strict improvement in the error
             coef = min(path.MAXCOEF,coef*path.MULTCOEF)
             print("    Iteration {} - subiteration {} accepted\n".format(it,k))
             break
@@ -270,7 +273,7 @@ for it in range(itstart,path.MAXIT) :
             print("    Iteration {} - subiteration {} rejected".format(it,k))
             proc = subprocess.Popen(["rm {nmesh}".format(nmesh=newmesh)],shell=True)
             proc.wait()
-            coef = max(path.MINCOEF,coef/path.MULTCOEF)
+            coef = max(path.MINCOEF,0.5*coef/path.MULTCOEF)
         
    
         

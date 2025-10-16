@@ -301,7 +301,7 @@ def plot_conv_mono(save=False) :
         plt.show()
         
         
-        
+#!!!! TERNARY DOES NOT WORK FOR INDEPENDANT VARIABLES
 def plot_traj(save=False) :
     """
     Ternary plot to vizualize the trajectory of the barycenter as well as the volume change

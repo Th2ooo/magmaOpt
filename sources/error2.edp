@@ -26,7 +26,7 @@ for (int i = 0; i < ntck; ++i){
     ws[i] = getrParam(EXCHFILE,"Weight"+i);
 }
 // LOS geometry conversion
-macro UtoLOSi(ux,uy,uz,i) -cos(heas[i])*sin(incs[i])*ux + sin(heas[i])*sin(incs[i])*uy + cos(incs[i])*uz // End of macro
+macro UtoLOSi(ux,uy,uz,i) (-cos(heas[i])*sin(incs[i])*ux + sin(heas[i])*sin(incs[i])*uy + cos(incs[i])*uz) // End of macro
 
 
 

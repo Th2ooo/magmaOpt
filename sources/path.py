@@ -38,8 +38,8 @@ PRESS = 1e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
 fact = 10e3 #50e3 #6e3
 
 # Initial guess parameters
-X0 = [0.,-1e3,-5e3] #xyz coordinates of the center (it 0)
-R0 = [6e3,0.5e3,0.5e3] #rx ry rz radii of the source
+X0 = [0.,0,-3e3] #xyz coordinates of the center (it 0)
+R0 = [2e3,2e3,2e3] #rx ry rz radii of the source
 # X0 = np.array([0.0,0.0,-0.3])*fact #center
 # R0 = np.array([0.1,0.1,0.1])*fact   #radius
 
@@ -75,7 +75,8 @@ FINEUP        = True #implement refinement on  upper boundary with mmg
 ERRMOD = 2
 """ 0 if error is computed with analytic solution, 
     1 if computed with numeric sol
-    2 if computed with real data (bestE = null test)
+    2 if computed with InSAR real data (bestE = null test)
+    3 if computed with synthetic InSAR data (to debug)
     
 """
 OUTANA = 0 #out analytic displacement
@@ -90,7 +91,7 @@ ALPHA         = 5*MESHSIZ # Parameter for velocity extension - regularization, f
 MAXIT         = 10000   # Maximum number of iterations in the shape optimization process
 MAXITLS       = 15   # Maximum number of iterations in the line search procedure
 TOL           = 0.01  # Tolerance for a slight increase in the ERROR
-MULTCOEF      = 1.5  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
+MULTCOEF      = 1.2  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
 MINCOEF       = 0.005 # Minimum allowed move between two iterations (in # * MESHSIZ)
 MAXCOEF       = 2. # Maximum allowed step between two iterations (in # * MESHSIZ)
 INICOEF = MINCOEF # initial step size 

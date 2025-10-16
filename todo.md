@@ -20,6 +20,7 @@ Insar handle N tracks. either
 
 TO compute the null test, use a synthetic null dispacement field (as in insar interp) instead of solving elasticity
 
+FIX INSAR BUG BAD CONVERGENCE
 
 
 ## Features to add
