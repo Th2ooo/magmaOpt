@@ -388,6 +388,6 @@ print("**********************************************")
 
 
 if __name__ == "__main__" :
-    # export_3Dviews()
+    export_3Dviews()
     composite_animation(fps=20)
 

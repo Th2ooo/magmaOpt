@@ -186,9 +186,10 @@ def dipangle(pt1,pt2) :
     "angle to vertical for two points defined as str"
     pt1 = np.asarray(pt1.split(" "),dtype=float)
     pt2 = np.asarray(pt2.split(" "),dtype=float)
-    norm = np.sum((pt2-pt1)**2)**0.5
-    vec = (pt2-pt1)/norm
-    ang = np.acos(vec[2])
+    vec = (pt2-pt1)
+    norm = np.sum(vec**2)**0.5
+    
+    ang = np.asin(abs(vec[2]/norm)) #sin=vertical/norm vector
     ang *= 180/np.pi
     return ang
     

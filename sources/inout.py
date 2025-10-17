@@ -166,7 +166,7 @@ def iniWF():
           setAtt(file=path.EXCHFILE,attname=f"Incl{i}",attval=path.INCS[i])
           setAtt(file=path.EXCHFILE,attname=f"Weight{i}",attval=path.WEIG[i])
       # FOR NOW WE WORK WITH 2TCKS ONLYY
-      # ini_adjoint2() #initialize adjoint script
+      ini_adjoint2() #initialize adjoint script
      
 
       
@@ -321,7 +321,7 @@ def ini_adjoint2() :
         return None
     
     ntck = path.NTCK
-    f = open(path.FFADJ.replace("2", "2_modl"))
+    f = open(path.SCRIPT + "adjoint2_template.edp")
     lfs = f.readlines()
     f.close()
     

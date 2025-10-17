@@ -36,6 +36,8 @@ byl = np.array(histo[:,5])
 bzl = np.array(histo[:,6])
 
 bestit=np.argmin(errl)
+lastit = int(itl[-1])
+
 
 def plot_conv_mult(save=False) :
     """
@@ -156,14 +158,15 @@ def plot_dmr(it=nit-2,ntplot=None,save=True) :
     
         
     if not mono :
-        fig,axs = plt.subplots(path.NTCK,3,figsize=(14,3.5*path.NTCK),layout="constrained")
+        fig,axs = plt.subplots(path.NTCK,3,figsize=(13,4.5*path.NTCK),layout="constrained")
     else :
-        fig,axs = plt.subplots(1,3,figsize=(14,3.5),layout="constrained")
+        fig,axs = plt.subplots(1,3,figsize=(13,4.5),layout="constrained")
         axs = axs[np.newaxis,:]
     print(axs)
     msh=meshio.read(path.step(it,"mesh"))
     mkup = msh.point_data["medit:ref"]==path.REFUP
     loc = msh.points[mkup]
+    loc[:,0:2] += path.ORMOD #readjust the plots to local coordinates
     
     #modeled disp
     modu = np.genfromtxt(path.step(it,"u.sol"),skip_header=8,skip_footer=1)[mkup]
@@ -193,10 +196,18 @@ def plot_dmr(it=nit-2,ntplot=None,save=True) :
         ax.scatter(loc[:,0],loc[:,1],c=dat,marker=".",cmap="jet",vmin=vmin,vmax=vmax)
         ax.set_aspect('equal', adjustable='box')
         scale = path.XEXT/20
-        ax.arrow(ax.get_xbound()[0]+4*scale,ax.get_ybound()[1]-4*scale,
-                 scale*2*np.sin(hea),scale*2*np.cos(hea),color="black",lw=5)
-        ax.arrow(ax.get_xbound()[0]+4*scale,ax.get_ybound()[1]-4*scale,
-                 (scale*0.9)*np.sin(hea+np.pi/2),(scale*0.9)*np.cos(hea+np.pi/2),color="black",lw=5)
+        ax.arrow(ax.get_xbound()[0] + 4*scale, ax.get_ybound()[1] - 5*scale,
+                 scale*3*np.sin(hea), scale*3*np.cos(hea), 
+                 color="black", lw=3,  # Thinner line (was lw=5)
+                 head_width=0.6*scale, head_length=1*scale,  # Bigger head
+                 length_includes_head=True)
+        ax.arrow(ax.get_xbound()[0] + 4*scale, ax.get_ybound()[1] - 5*scale,
+                 (scale*2)*np.sin(hea+np.pi/2), (scale*2)*np.cos(hea+np.pi/2),
+                 color="black", lw=3,  # Thinner line (was lw=5)
+                 head_width=0.6*scale, head_length=1*scale,  # Bigger head
+                 length_includes_head=True) 
+        ax.ticklabel_format(style='sci',scilimits=(0,0), useMathText=True)
+
         if not ntplot :
             ax.set_title(f"Data track {tck}")
         else : 
@@ -208,6 +219,7 @@ def plot_dmr(it=nit-2,ntplot=None,save=True) :
         modlos = losf(modu[:,0],modu[:,1],modu[:,2])
         ax.scatter(loc[:,0],loc[:,1],c=modlos,marker=".",cmap="jet") #,vmin=vmin,vmax=vmax)
         ax.set_aspect('equal', adjustable='box')
+        ax.ticklabel_format(style='sci',scilimits=(0,0), useMathText=True)
         ax.set_title("Model")
 
         #plot residuals
@@ -215,8 +227,10 @@ def plot_dmr(it=nit-2,ntplot=None,save=True) :
         cm=ax.scatter(loc[:,0],loc[:,1],c=dat-modlos,marker=".",cmap="jet",vmin=vmin,vmax=vmax)
         ax.set_aspect('equal', adjustable='box')
         ax.set_title("Residuals")
+        ax.ticklabel_format(style='sci',scilimits=(0,0), useMathText=True)
+
         
-        fig.colorbar(cm,label="LOS (mm)",location="right")
+        fig.colorbar(cm,label="LOS (m)",location="right")
   
     if save :
         plt.savefig(path.PLOTS+"DMRplot.pdf")
@@ -242,7 +256,7 @@ def plot_conv_mono(save=False) :
                     
     ax1 = ax.twinx()
     axcol = "red"
-    p1=ax1.plot(itl,col,color=axcol,linewidth=1,label="Step size $\\tau$",zorder=3)
+    p1=ax1.plot(itl,col,color=axcol,linewidth=1,label="Step size $\\tau$",zorder=1)
     ax1.spines['right'].set_visible(False)  # Hide right spine
     ax1.spines['left'].set_position(('outward', 0))  # Share left spine
     ax1.tick_params(axis='y',direction="in", pad=-30,colors=axcol)
@@ -261,36 +275,28 @@ def plot_conv_mono(save=False) :
         voln = voll
         ax2.set_ylabel("Volume $V_{\Omega}$",color=axcol,labelpad=20)
         
-    p2=ax2.plot(itl,voln,color=axcol,linewidth=1,ls="--",zorder=2)
+    p2=ax2.plot(itl,voln,color=axcol,linewidth=1,ls="--",zorder=1)
     ax2.tick_params(axis='y',colors=axcol)
 
 
     
-    ax3 = ax.twinx()
     axcol = "darkorange"
     if path.ERRMOD != 2 :
+        ax3 = ax.twinx()
         distn = np.sum((np.column_stack([bxl,byl,bzl])-path.XTs[0][np.newaxis,:])**2,axis=1)**0.5
         ax3.set_ylabel("Shapes distance $||\mathbf{b}_{\Omega}-\mathbf{b}_{obj}||$ ($m$)",color=axcol,labelpad=-70)
-
-    else :
-        distn = np.sum((np.column_stack([bxl,byl,bzl])-np.array([0,0,-path.ZEXT/2])[np.newaxis,:])**2,axis=1)**0.5
-        ax3.set_ylabel("Shape distance to center of the domain $||\mathbf{b}_{\Omega}-\mathbf{b}_{D}||$ ($m$)",color=axcol,labelpad=-70)
-
-
     
-    
-    p3=ax3.plot(itl,distn,color=axcol,linewidth=1,ls="--",label="Distance of shapes $||\mathbf{x}_{\Omega}-x_{obj}||$",zorder=1)
-    
-    ax3.spines['left'].set_visible(False)  # Hide right spine
-    ax3.spines['right'].set_position(('outward', 0))  # Share left spine
-    ax3.tick_params(axis='y',direction="in", pad=-40, colors=axcol)
-    ax3.yaxis.set_label_position('right')
+        p3=ax3.plot(itl,distn,color=axcol,linewidth=1,ls="--",label="Distance of shapes $||\mathbf{x}_{\Omega}-x_{obj}||$",zorder=1)
+
+        ax3.spines['left'].set_visible(False)  # Hide right spine
+        ax3.spines['right'].set_position(('outward', 0))  # Share left spine
+        ax3.tick_params(axis='y',direction="in", pad=-40, colors=axcol)
+        ax3.yaxis.set_label_position('right')
     
     
     ax.grid(alpha=0.5)
     
-
-
+    
     
 
     # ax.legend(handles=p+p1+p2+p3, loc='lower left')
@@ -299,6 +305,7 @@ def plot_conv_mono(save=False) :
         plt.savefig(path.PLOTS+"plot_conv_mono.pdf")
     else :
         plt.show()
+        
         
         
 #!!!! TERNARY DOES NOT WORK FOR INDEPENDANT VARIABLES
@@ -361,8 +368,8 @@ if __name__ == "__main__" :
     plot_conv_mult(save=1)
     plot_conv_mono(1)
     plot_traj(1)
-    plot_dmr(it=bestit,save=1)
-    plot_dmr(save=0,)
+    plot_dmr(it=min(bestit,lastit-2),save=1)
+    plot_dmr(it=lastit-2,save=0)
     
     print(f"CURRENT IT {nit-2}, BESTIT {bestit}")
 

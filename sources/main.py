@@ -154,13 +154,14 @@ if not restart  :
     
 
 else : ## To restart loop at  a given it
-    curE = mechtools.error(path.step(restart,"mesh"),path.step(restart,"u.sol"))
-    newE=curE
-    coef=0.02
     itstart = restart
-    bestE = 6.99e02
-    minit = 0
-    minE = 5e3
+    curE = mechtools.error(path.step(restart,"mesh"),path.step(restart,"u.sol"))
+    histo = np.genfromtxt(path.HISTO,delimiter=" ")
+    newE=curE
+    coef = histo[restart,3]
+    minE = np.min(histo[:,0])
+    minit=np.argmin(histo[:,0])
+    bestE = 0.0
     nullE = 0.0
 
 
@@ -257,7 +258,7 @@ for it in range(itstart,path.MAXIT) :
 
           
         # Decision
-        if  ( newE <  curE+path.TOL*abs(curE) )   : # strict improvement in the error
+        if  ( newE <  curE )   : # strict improvement in the error
             coef = min(path.MAXCOEF,coef*path.MULTCOEF)
             print("    Iteration {} - subiteration {} accepted\n".format(it,k))
             break
@@ -273,7 +274,7 @@ for it in range(itstart,path.MAXIT) :
             print("    Iteration {} - subiteration {} rejected".format(it,k))
             proc = subprocess.Popen(["rm {nmesh}".format(nmesh=newmesh)],shell=True)
             proc.wait()
-            coef = max(path.MINCOEF,0.5*coef/path.MULTCOEF)
+            coef = max(path.MINCOEF,coef/path.MULTCOEF)
         
    
         

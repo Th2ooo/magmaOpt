@@ -59,5 +59,5 @@ def save_results(name="") :
 if __name__ == "__main__" :
     
     
-      save_results("insar_5_minimal_ex_work")
+      save_results("testcase_insar_6tck_5MPa")
     
