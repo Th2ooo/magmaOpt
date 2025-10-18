@@ -129,7 +129,7 @@ def plot_conv_mult(save=False) :
         
         
 
-def plot_dmr(it=nit-2,ntplot=None,save=True) :
+def plot_dmr(it=nit-2,ntplot=[],save=True) :
     """
     Plot data model residuals
 
@@ -151,17 +151,12 @@ def plot_dmr(it=nit-2,ntplot=None,save=True) :
     if path.ERRMOD != 2 : #LOS ERROR PLOT 
         print("Not implemented for this ERRMOD = ",path.ERRMOD)
         return None    
+
         
-    mono = False
-    if isinstance(ntplot,int) :
-        mono = True
-    
-        
-    if not mono :
-        fig,axs = plt.subplots(path.NTCK,3,figsize=(13,4.5*path.NTCK),layout="constrained")
-    else :
-        fig,axs = plt.subplots(1,3,figsize=(13,4.5),layout="constrained")
-        axs = axs[np.newaxis,:]
+    if not ntplot :
+        ntplot = list(range(path.NTCK))
+    fig,axs = plt.subplots(len(ntplot),3,figsize=(13,4.5*len(ntplot)),layout="constrained")
+    if len(ntplot) == 1 : axs = axs[np.newaxis,:]
     print(axs)
     msh=meshio.read(path.step(it,"mesh"))
     mkup = msh.point_data["medit:ref"]==path.REFUP
@@ -176,11 +171,12 @@ def plot_dmr(it=nit-2,ntplot=None,save=True) :
     outtmp = path.PLOTS+"tmplos/"
     os.makedirs(outtmp,exist_ok=True)
  
+    subi = -1
     for i,(tck,hea,inc) in enumerate(zip(path.TCKS,path.HEAS,path.INCS)) :
         print("Ploting",tck)
-        if mono :
-            if i != ntplot : continue
-            else : i=0
+
+        if i not in ntplot : continue
+        else : subi+= 1; i=subi
         
         #reinterpolate los on the choosen mesh
         solf = outtmp+f"losu_it{it}_{i}.sol"
@@ -241,11 +237,11 @@ def plot_dmr(it=nit-2,ntplot=None,save=True) :
 
 
 
-def plot_conv_mono(save=False) :
+def plot_conv_mono(nit=lastit,save=False) :
     ## Convergence plots    
     fig, ax = plt.subplots(figsize=(20,12))
     axcol = "blue"
-    p=ax.semilogy(itl,errl,color=axcol,linewidth=2.5, zorder=5, label="Error $J_{LS}$")
+    p=ax.semilogy(itl[:nit],errl[:nit],color=axcol,linewidth=2.5, zorder=5, label="Error $J_{LS}$")
     ax.tick_params(axis='y',colors=axcol)
     ax.set_ylabel("Error $J_{LS}$ ($m^4$)",color=axcol,labelpad=15)
     ax.set_xlabel("Iterations")
@@ -256,7 +252,7 @@ def plot_conv_mono(save=False) :
                     
     ax1 = ax.twinx()
     axcol = "red"
-    p1=ax1.plot(itl,col,color=axcol,linewidth=1,label="Step size $\\tau$",zorder=1)
+    p1=ax1.plot(itl[:nit],col[:nit],color=axcol,linewidth=1,label="Step size $\\tau$",zorder=1)
     ax1.spines['right'].set_visible(False)  # Hide right spine
     ax1.spines['left'].set_position(('outward', 0))  # Share left spine
     ax1.tick_params(axis='y',direction="in", pad=-30,colors=axcol)
@@ -275,7 +271,7 @@ def plot_conv_mono(save=False) :
         voln = voll
         ax2.set_ylabel("Volume $V_{\Omega}$",color=axcol,labelpad=20)
         
-    p2=ax2.plot(itl,voln,color=axcol,linewidth=1,ls="--",zorder=1)
+    p2=ax2.plot(itl[:nit],voln[:nit],color=axcol,linewidth=1,ls="--",zorder=1)
     ax2.tick_params(axis='y',colors=axcol)
 
 
@@ -286,7 +282,7 @@ def plot_conv_mono(save=False) :
         distn = np.sum((np.column_stack([bxl,byl,bzl])-path.XTs[0][np.newaxis,:])**2,axis=1)**0.5
         ax3.set_ylabel("Shapes distance $||\mathbf{b}_{\Omega}-\mathbf{b}_{obj}||$ ($m$)",color=axcol,labelpad=-70)
     
-        p3=ax3.plot(itl,distn,color=axcol,linewidth=1,ls="--",label="Distance of shapes $||\mathbf{x}_{\Omega}-x_{obj}||$",zorder=1)
+        p3=ax3.plot(itl[:nit],distn[:nit],color=axcol,linewidth=1,ls="--",label="Distance of shapes $||\mathbf{x}_{\Omega}-x_{obj}||$",zorder=1)
 
         ax3.spines['left'].set_visible(False)  # Hide right spine
         ax3.spines['right'].set_position(('outward', 0))  # Share left spine
@@ -366,9 +362,9 @@ print("**********************************************")
 
 if __name__ == "__main__" :
     plot_conv_mult(save=1)
-    plot_conv_mono(1)
+    plot_conv_mono(nit=1000,save=1)
     plot_traj(1)
-    plot_dmr(it=min(bestit,lastit-2),save=1)
+    plot_dmr(it=min(bestit,lastit-2),ntplot=[2,3,4,5],save=1)
     plot_dmr(it=lastit-2,save=0)
     
     print(f"CURRENT IT {nit-2}, BESTIT {bestit}")

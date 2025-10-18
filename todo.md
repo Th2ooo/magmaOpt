@@ -6,28 +6,23 @@
 
 ## Things to fix
 
-plot_dmr in plots to compare data model residuals of insar
-
-inhomogenous meshing
-    - mmg find good parameters
-    - do tests on convergence
-    - add local parameters mmg with DEFAULT.mmg3d file (https://www.mmgtools.org/tutorials/tutorials_parameter_file.htmls)
-
-Insar handle N tracks. either
-    - Fix the FreeFem for loops handling
-    - Modify adjoint2 in inout to add N insar tracks in adjoint2.edp
 
 
-TO compute the null test, use a synthetic null dispacement field (as in insar interp) instead of solving elasticity
-
-FIX INSAR BUG BAD CONVERGENCE
+- Modify InsAR interpolation to also handle no data case :
+    - modify mesh to no reference points with nodata as REFUP => they wont be taken into account
 
 
 ## Features to add
 
+- README
+    - installation instructions
+    - basic usage
+    - examples
+
+- TO compute the null test, use a synthetic null dispacement field (as in insar interp) instead of solving elasticity
 
 
-- General option to activate/deactivate vtu outputs
+- Common output dir for vtu outputs
 
 
 - InSAR data improvement :
@@ -42,7 +37,7 @@ FIX INSAR BUG BAD CONVERGENCE
             - elasticity
             - adjoint
             - gradE
-        2. mmg3d : parmmg (https://github.com/MmgTools/ParMmg/tree/master)
+        2. ~~mmg3d : parmmg (https://github.com/MmgTools/ParMmg/tree/master)~~ -> not suitable according to charles
         3. GMSH meshing
 
 
@@ -70,6 +65,25 @@ FIX INSAR BUG BAD CONVERGENCE
 
 
 ## Done
+
+
+- plot_dmr in plots to compare data model residuals of insar
+
+- inhomogenous meshing
+    - mmg find good parameters
+    - do tests on convergence
+    - add local parameters mmg with DEFAULT.mmg3d file (https://www.mmgtools.org/tutorials/tutorials_parameter_file.htmls)
+
+- Insar handle N tracks. either
+    - ~~Fix the FreeFem for loops handling~~
+    - Modify adjoint2 in inout to add N insar tracks in adjoint2.edp
+
+
+- ~~General option to activate/deactivate vtu outputs~~
+
+
+- FIX INSAR BUG BAD CONVERGENCE
+
 
 - Compute the volume change of the shape
 

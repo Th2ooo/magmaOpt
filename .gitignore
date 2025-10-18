@@ -8,7 +8,7 @@ unshared/
 data/
 *.mp4
 *.pyc
-
+DEFAULT*
 */res*/
 *.data
 *.mesh

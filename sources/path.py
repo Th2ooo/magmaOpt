@@ -33,9 +33,9 @@ REFEXT        = 2     #2  # Reference of the exterior domain
 
 YOUNG = 25.4e9 ; #E (from sigmundsson 2024)
 POISS = 0.257;   #nu (from sigmundsson 2024)
-PRESS = 10e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
+PRESS = 5e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
 
-fact = 5e3 #50e3 #6e3
+fact = 10e3 #50e3 #6e3
 
 # Initial guess parameters
 X0 = [0.,0,-4e3] #xyz coordinates of the center (it 0)
