@@ -221,7 +221,11 @@ def export_3Dviews(nit=nit):
         mshfile = path.step(it, "mesh")  
         
         # Create mesh source for PyVista
-        msh = meshio.read(mshfile)
+        try :
+            msh = meshio.read(mshfile)
+        except :
+            print(f"Error on reading iteration {it}, skipped")
+            continue
         mk = msh.cell_data["medit:ref"][1] == path.REFISO
         faces = msh.cells[1].data[mk]
         nbs = np.full((faces.shape[0], 1), 3)
@@ -389,5 +393,5 @@ print("**********************************************")
 
 if __name__ == "__main__" :
     # export_3Dviews()
-    composite_animation(nit=2500,fps=30)
+    composite_animation(fps=12)
 

@@ -33,34 +33,34 @@ REFEXT        = 2     #2  # Reference of the exterior domain
 
 YOUNG = 25.4e9 ; #E (from sigmundsson 2024)
 POISS = 0.257;   #nu (from sigmundsson 2024)
-PRESS = 5e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
+PRESS = 3e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
 
 fact = 10e3 #50e3 #6e3
 
 # Initial guess parameters
-X0 = [0.,0,-4e3] #xyz coordinates of the center (it 0)
-R0 = [3e3,1e3,0.5e3] #rx ry rz radii of the source
-# X0 = np.array([0.0,0.0,-0.3])*fact #center
+X0 = [0.,-1e3,-3e3] #xyz coordinates of the center (it 0)
+R0 = [1e3,1e3,1e3] #rx ry rz radii of the source
+# X0 = np.array([0.0,0.0,-0.2])*fact #center
 # R0 = np.array([0.1,0.1,0.1])*fact   #radius
 
 # Objective / target source(s) parameters (for ERRMOD 0 ou 1) 
-XTs = np.array([[0.3,0.3,-0.2]])*fact #centers
-RTs = np.array([[0.1,0.1,0.1]])*fact   #radii
+XTs = np.array([[0.3,0.3,-0.2],[-0.3,-0.3,-0.3]])*fact #centers
+RTs = np.array([[0.1,0.1,0.1],[0.1,0.1,0.1]])*fact   #radii
 
-# Extent of the simulated doain
+# # Extent of the simulated doain
 # XEXT          = 1.*fact #extent of domain in X direction
 # YEXT          = 1.*fact #extent of domain in X direction
 # ZEXT          = 1.*fact #extent of domain in X direction
-XEXT          = 16e3 #extent of domain in X direction
-YEXT          = 16e3 #extent of domain in X direction
+XEXT          = 18e3 #extent of domain in X direction
+YEXT          = 15e3 #extent of domain in X direction
 ZEXT          = 10e3 #extent of domain in X direction
 
 
 
 #### Meshing parameters
-MESHSIZ       = 0.05*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
+MESHSIZ       = 0.045*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
 HMIN          = 0.01*fact #minimum autorized element lenght
-HMAX          = 0.15*fact #maximum authorized element length
+HMAX          = 0.1*fact #maximum authorized element length
 HAUSD         = 0.005*fact  #mawimum authorized gap between ideal shape and its mesh nodes
 
 HGRAD         = 1.5 #max rati allowed between 2 adjascent edges
@@ -85,7 +85,6 @@ OBJMESH      = RES + "obj.mesh" # path of the mesh associated with the objective
 
 # Other parameters of the shape opt algo
 EPS           = 1e-10 # Precision parameter
-EPSP          = 1e-20 # Precision parameter for packing
 ALPHA         = 5*MESHSIZ # Parameter for velocity extension - regularization, few mesh elements (to textend gradient outside of REFISO)
 MAXIT         = 10000   # Maximum number of iterations in the shape optimization process
 MAXITLS       = 15   # Maximum number of iterations in the line search procedure
@@ -112,7 +111,7 @@ INCS = [i*np.pi/180 for i in INCS]
 
 
 
-ORMOD = (2529000,181000)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
+ORMOD = (2528000,180000)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
 
 
 # tests with 2 track

@@ -16,10 +16,11 @@ import numpy as np
 def save_results(name="") :
     """
     Save the results after execution
-
-    Returns
-    -------
-    None.
+    
+    Parameters
+    ----------
+    name : str, optional
+        DESCRIPTION. name of the subfolder with the results. if not provided, the current date is the name
 
     """
     if not name :
@@ -59,5 +60,5 @@ def save_results(name="") :
 if __name__ == "__main__" :
     
     
-      save_results("testcase_insar_6tck_5MPa")
+      save_results("")
     

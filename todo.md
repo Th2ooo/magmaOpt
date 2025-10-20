@@ -14,6 +14,10 @@
 
 ## Features to add
 
+- Improve ERRMOD 3  to be more flexible
+
+- Fix errmod 1
+
 - README
     - installation instructions
     - basic usage

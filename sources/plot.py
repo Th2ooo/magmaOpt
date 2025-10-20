@@ -361,12 +361,13 @@ print("**********************************************")
 
 
 if __name__ == "__main__" :
-    plot_conv_mult(save=1)
-    plot_conv_mono(nit=1000,save=1)
+
     plot_traj(1)
     plot_dmr(it=min(bestit,lastit-2),ntplot=[2,3,4,5],save=1)
     plot_dmr(it=lastit-2,save=0)
     
+    plot_conv_mult(save=1)
+    plot_conv_mono(nit,save=1)
     print(f"CURRENT IT {nit-2}, BESTIT {bestit}")
 
         

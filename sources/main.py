@@ -3,24 +3,28 @@
 
 
 """
-author: Théo Perrot (modified from Charles Dapogny and Florian Feppon)
+author: Théo Perrot (modified from Charles Dapogny and Florian Feppon sotuto code)
 
 Informations:
    - To run from the console inside the magmaOpt/ folder : python -m sources.main
    - Mesh compatibility problem : export in .mesh format crashes with GMSH 4.14 
        -> Downgrade to GMSH 4.13
-
-
-
-Improvements ideas
-    - speed up by paralelizing solving
-    - object oriented paradigm
-    - clean code
-    - alow inhomogeneous mesh
-    - change mesh bouundaries (half sphere ?)
+       
+       
+Usefull links :
+    github page : https://github.com/Th2ooo/magmaOpt
+    sotuto paper : https://dapogny.org/publis/sotuto.pdf
+    Tutorial scientific computing (theory+practice) : https://dapogny.github.io/sctuto/index.html
+    pierre jolivet freefem parralel computing tuto : https://joliv.et/FreeFem-tutorial/
+    GMSH doc : https://gmsh.info/doc/texinfo/gmsh.html  
+    MMG doc: https://www.mmgtools.org/documentation/documentation_index.html
+    medit doc : https://www.ljll.fr/frey/logiciels/Docmedit.dir/
     
 """
 
+# system imports
+import numpy as np
+import time
 import sys
 import os
 
@@ -31,8 +35,7 @@ if 0 : #To activate if called from any other directory than magmaOpt
     os.chdir(project_root)
     sys.path.insert(0, project_root)
 
-import numpy as np
-import subprocess
+# local imports
 import sources.path as path
 import sources.inout as inout
 import sources.extools as extools
@@ -41,48 +44,17 @@ import sources.basemesh as basemesh
 import sources.insar as insar
 
 
-"""
-TODO BEFORE PUBLISHING
-
-    - numerical errror 
-    - test insar again
-
-
-DONE 
-    -finsh cleaning merit / gradient calcluation -> DONE
-    -recheck signs/code
-    -benchmark with Charles code
-    - null test systematically
-    - commmon output folder for results3
-    - prevent mmg to move the cube booundaries :
-    - solve dimension problem
-
-
-
-    
-Usefull links :
-    github page : https://github.com/Th2ooo/magmaOpt
-    medit doc : https://www.ljll.fr/frey/logiciels/Docmedit.dir/
-    sotuto paper : https://dapogny.org/publis/sotuto.pdf
-    charles tuto scientific comp : https://dapogny.github.io/sctuto/index.html
-    pierre jolivet freefem parralel computing tuto : https://joliv.et/FreeFem-tutorial/
-    GMSH doc : https://gmsh.info/doc/texinfo/gmsh.html
-
-
-"""
 go = input("ARE YOU SURE YOU WANT TO RUN ??? ")
 if go != "y":
-    raise Exception("CACA")
+    raise Exception("not running")
+
 
 restart = 0 #Restart iteration
-verb = 0 #Verbosity level
 #%% #### Initialization
 ###############################################################
 ##################      START PROGRAM    ######################
 ###############################################################
 
-
-"""Enter the main optimization loop of magmaOpt"""
    
 print("*************************************************")
 print("********************* magmaOpt ******************")
@@ -94,7 +66,6 @@ if not restart  :
 
     # Test the links with external C libraries
     # inout.testLib()
-    
     
     ## Creation of the initial mesh
     print("Creating intial mesh")
@@ -120,7 +91,7 @@ if not restart  :
         
     ## Compute Null test of the best solution
     print("Null test computation ...")
-    inout.setAtt(file=path.EXCHFILE,attname="Pressure",attval=0.0) # -> set null pressure to have a 0 disp field
+    inout.setAtt(file=path.EXCHFILE,attname="Pressure",attval=0.0) # -> set 0 pressure to have a 0 disp field
     mechtools.elasticity(path.step(0,"mesh"),path.step(0,"u.sol"))
     nullE = mechtools.error(path.step(0,"mesh"),path.step(0,"u.sol"))
     inout.setAtt(file=path.EXCHFILE,attname="Pressure",attval=path.PRESS) 
@@ -129,7 +100,6 @@ if not restart  :
         
     if path.ERRMOD == 2 : #if unknow source, null test is the ref
         bestE = nullE
-
         
     # Resolution of the state equation
     mechtools.elasticity(path.step(0,"mesh"),path.step(0,"u.sol"))
@@ -141,19 +111,15 @@ if not restart  :
     curE = newE
     print(f"Minimal error reachable {bestE}")
     print("*** Initialization: Error {}".format(newE))
-    
-    # Coefficient for time step ( descent direction is scaled with respect to mesh size)
-    coef = path.INICOEF
-    # Number of refinement steps
-    nref = 0
-    
-    iniE = newE #Initia0.02l error
+
+    # Variable initialization
+    coef = path.INICOEF  # Coefficient for time step ( descent direction is scaled with respect to mesh size)
+    iniE = newE #Initial error
     minE = newE
     itstart = 0
     minit = 0
-    
 
-else : ## To restart loop at  a given it
+else : ## To restart loop at a given iteration
     itstart = restart
     curE = mechtools.error(path.step(restart,"mesh"),path.step(restart,"u.sol"))
     histo = np.genfromtxt(path.HISTO,delimiter=" ")
@@ -172,21 +138,23 @@ else : ## To restart loop at  a given it
 ###############################################################
 
 """
-At the beginning of each iteration, are available:
-   - the mesh lT^n of $D$ associated to the current shape Omega^n;
-   - the solution to the linear elasticity equation on $Omega^n$ (at the nodes of $D$).
-   - The error of the shape
+At the beginning of each iteration, are available :
+   - the mesh T^n of D associated to the current shape Omega^n  -> curmesh
+   - its level-set representation phi^n                         -> curphi
+   - the displacement solution of elasticity problem u^n        -> curu
+   - the corresponding adjoint state p^n                        -> curp
+   - The error of the shape Omega^n                             -> curE
+   
+During the iteration we compute :
+    - the descent direction from the gradient JLS^n'             -> curgrad 
+    - the level-set representation phi^n+1 of the new shape      -> newphi
+    - the mesh T^n+1 of Omega^n+1 after discretatizing phi^n+1   -> newmesh
+    - the  new displacement u^n+1                                -> newu
+    - The error of the new shape Omega^n                         -> newE
 """
 
 for it in range(itstart,path.MAXIT) :
-    # Change value of tolerance after a certain number of iterations
-    # if (( it == 100 ) or (curE+path.ERRTOL<newE)) and False : #no improvement in error (curE=E last it, newE=E cur it)
-    #   print("REFINEMENT")
-    #   nref += 1
-    #   path.TOL  = path.TOL/2
-    #   path.HMIN = path.HMIN/2
-    #   print(f"New tol {path.TOL}, New hmin {path.HMIN}")
-    
+    st = time.time() #start time
     # update best minimum found
     if newE < minE : #new minimum 
         minit = it
@@ -207,10 +175,11 @@ for it in range(itstart,path.MAXIT) :
     print(f"Iteration {it}: Error {curE:.2E}, Obj {bestE:.2E} (null={nullE}), Coeff {coef:.3f}")
     print("**************************************************************************************")
     
-    #Compute stats of the current domain
+    #### Start of iteration
+    
+    # Compute stats of the current domain
     vol,barx,bary,barz = mechtools.stats(curmesh)
     #print("STATS", vol,barx,bary,barz)
-    
     
     # Print values in the path.HISTO file
     inout.printHisto(it,curE,vol,coef,barx,bary,barz)
@@ -229,7 +198,6 @@ for it in range(itstart,path.MAXIT) :
     # Calculation of a descent direction
     mechtools.descent(curmesh,curphi,curE,curEgrad,curgrad) 
     
-    
     #### Line search
     for k in range(0,path.MAXITLS) :
         print(f"  Line search k = {k}; step size = {coef:.3f}")
@@ -239,14 +207,9 @@ for it in range(itstart,path.MAXIT) :
         extools.advect(curmesh,curphi,curgrad,coef,newphi)
         # extools.regls(curmesh,newphi,newphi)
           
-          
         # Creation of a mesh associated to the new shape
         print("Local remeshing")
-        retmmg = extools.mmg3d(curmesh,1,newphi,path.HMIN,path.HMAX,path.HAUSD,path.HGRAD,1,newmesh) 
-
-        if  not retmmg  :
-            print("Error in mmg, end of loop")
-            break
+        extools.mmg3d(curmesh,1,newphi,path.HMIN,path.HMAX,path.HAUSD,path.HGRAD,1,newmesh) 
 
         # Resolution of the state equation on the new shape
         print("    Resolution of the linearized elasticity system")
@@ -256,7 +219,6 @@ for it in range(itstart,path.MAXIT) :
         newE = mechtools.error(newmesh,newu)
         print(f"New error {newE:.2E}")
 
-          
         # Decision
         if  ( newE <  curE )   : # strict improvement in the error
             coef = min(path.MAXCOEF,coef*path.MULTCOEF)
@@ -272,23 +234,13 @@ for it in range(itstart,path.MAXIT) :
             break
         else : # Reject iteration: go to start of line search with a decreased "time step"
             print("    Iteration {} - subiteration {} rejected".format(it,k))
-            proc = subprocess.Popen(["rm {nmesh}".format(nmesh=newmesh)],shell=True)
+            proc = os.remove(newmesh) 
             proc.wait()
             coef = max(path.MINCOEF,coef/path.MULTCOEF)
-        
-   
-        
-    if 0 :
-        if  ((it-minit) > 100)   : # end the loop if no improvement have been made in a while
-            print("No sufficient improvement have been made in a while")
-            break
-        elif  ((newE-minE)>0.1*iniE):
-            print("No sufficient improvement have been made compared to initial guess")
-            break
-        
-    # ## FOR PROFILING ONLY !!!
-    # if it > 3 :
-    #     break
+
+    #monitoring time
+    et = time.time() #end time
+    print(f"Iteration {it} total duration {et-st:.2f}s \n\n")
     
 ###############################################################
 ####################       END PROGRAM      ###################
