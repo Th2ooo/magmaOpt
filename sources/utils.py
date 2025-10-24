@@ -195,7 +195,7 @@ def dipangle(pt1,pt2) :
     
         
         
-###Usefull functions for computations        
+### Usefull functions for computations        
 
 def cart_to_cyl(x,y,z,chx,chy,chz) :
     """Convert a 3D field (chx, chy, chz)
@@ -216,7 +216,31 @@ def cart_to_cyl(x,y,z,chx,chy,chz) :
 
 
 
+#### Mesh tools
 
+def mesh_labmask(mesh,surflabel) :
+    """
+    Return the mask to filter all the points belonging to a given surface surflabel
+    from the mesh (should be a meshio object)
+
+    Parameters
+    ----------
+    mesh : TYPE
+        DESCRIPTION.
+    surflabel : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    
+    maskcells = mesh.cell_data["medit:ref"][1]==surflabel #get triangulars cells on REFUP
+    ptslab_up = mesh.cells[1].data[maskcells] #points labels from triangular cells on refup 
+    ptslab_up = np.unique(ptslab_up.flatten()) # remvoe the subarrray structure and points mentionned severaltimes
+    return ptslab_up
+    
 
 
 #### INSAR TOOLS

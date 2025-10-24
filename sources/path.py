@@ -38,7 +38,7 @@ PRESS = 3e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
 fact = 10e3 #50e3 #6e3
 
 # Initial guess parameters
-X0 = [0.,-1e3,-3e3] #xyz coordinates of the center (it 0)
+X0 = [0.,0,-3e3] #xyz coordinates of the center (it 0)
 R0 = [1e3,1e3,1e3] #rx ry rz radii of the source
 # X0 = np.array([0.0,0.0,-0.2])*fact #center
 # R0 = np.array([0.1,0.1,0.1])*fact   #radius
@@ -51,16 +51,16 @@ RTs = np.array([[0.1,0.1,0.1],[0.1,0.1,0.1]])*fact   #radii
 # XEXT          = 1.*fact #extent of domain in X direction
 # YEXT          = 1.*fact #extent of domain in X direction
 # ZEXT          = 1.*fact #extent of domain in X direction
-XEXT          = 18e3 #extent of domain in X direction
-YEXT          = 15e3 #extent of domain in X direction
+XEXT          = 22e3 #extent of domain in X direction
+YEXT          = 18e3 #extent of domain in X direction
 ZEXT          = 10e3 #extent of domain in X direction
 
 
 
 #### Meshing parameters
-MESHSIZ       = 0.045*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
+MESHSIZ       = 0.05*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
 HMIN          = 0.01*fact #minimum autorized element lenght
-HMAX          = 0.1*fact #maximum authorized element length
+HMAX          = 0.13*fact #maximum authorized element length
 HAUSD         = 0.005*fact  #mawimum authorized gap between ideal shape and its mesh nodes
 
 HGRAD         = 1.5 #max rati allowed between 2 adjascent edges
@@ -111,7 +111,7 @@ INCS = [i*np.pi/180 for i in INCS]
 
 
 
-ORMOD = (2528000,180000)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
+ORMOD = (2530000,180000)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
 
 
 # tests with 2 track
@@ -126,7 +126,7 @@ ORMOD = (2528000,180000)  #local origin of the model relatively to the InSAR tra
 WEIG = [1.]*NTCK #Weights given to the differents insar tracks
 WEIG =  np.array(WEIG)/np.sum(WEIG) # normalize the weights
 LOSS = [OBJDISP.replace("sol",f"los{i}.sol") for i in range(NTCK)] #SOL files location after interpolation of the data location
-
+KS = [OBJDISP.replace("sol",f"k{i}.sol") for i in range(NTCK)] 
 
 #### Scripts paths
 

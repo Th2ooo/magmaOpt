@@ -393,5 +393,5 @@ print("**********************************************")
 
 if __name__ == "__main__" :
     # export_3Dviews()
-    composite_animation(fps=12)
+    composite_animation(fps=20)
 

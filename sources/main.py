@@ -234,8 +234,7 @@ for it in range(itstart,path.MAXIT) :
             break
         else : # Reject iteration: go to start of line search with a decreased "time step"
             print("    Iteration {} - subiteration {} rejected".format(it,k))
-            proc = os.remove(newmesh) 
-            proc.wait()
+            os.remove(newmesh) 
             coef = max(path.MINCOEF,coef/path.MULTCOEF)
 
     #monitoring time

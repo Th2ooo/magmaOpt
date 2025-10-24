@@ -149,7 +149,6 @@ def iniWF():
     ff.write(f"InteriorDomains\n1\n\n{path.REFINT}")
     ff.close()
     
-    
     # Create DEFAULT.mmg3d file: for local refining of the uper surface
     if path.FINEUP :
         ff = open(path.DEFMMG,'w')
@@ -186,6 +185,7 @@ def iniWF():
         setAtt(file=path.EXCHFILE,attname="Ntracks",attval=path.NTCK)
         for i in range(path.NTCK) :
             setAtt(file=path.EXCHFILE,attname=f"Track{i}",attval=path.LOSS[i])
+            setAtt(file=path.EXCHFILE,attname=f"K{i}",attval=path.KS[i])
             setAtt(file=path.EXCHFILE,attname=f"Head{i}",attval=path.HEAS[i])
             setAtt(file=path.EXCHFILE,attname=f"Incl{i}",attval=path.INCS[i])
             setAtt(file=path.EXCHFILE,attname=f"Weight{i}",attval=path.WEIG[i])
@@ -343,39 +343,14 @@ def ini_adjoint2() :
     for l in lfs :
         l = l.rstrip()
         
+
+        if l == "///LOSADJCOMPSUM" :
+            l = ""
+            for i in range(ntck) :
+                l += f"2.0*UtoLOSi(vex,vey,vez,{i})*ws[{i}]*kdatA[{i}]*(UtoLOSi(uex,uey,uez,{i})-losdatA[{i}])+"
+            l = l[:-1] #remove the last +
         louts.append(l)
-        if l == "///LOSDATADECL" :
-            nl = "Vhe "
-            for i in range(ntck) :
-                nl += f"losdata{i},"
-            nl = nl[:-1]+";\n"
-            louts.append(nl)
-            
-        elif l == "///LOSDATAGET" :
-            nls = []
-            for i in range(ntck) :
-                louts += [f"LOSD = getsParam(EXCHFILE,\"Track{i}\");"]
-                louts += [f"loadsol(LOSD,tmplos[]);"]
-                louts += [f"losdata{i} = tmplos;"]
-                louts += [""]
-                
-        elif l == "///LOSADJCOMPSUM" :
-            #z comp
-            nl = "2.0*vez*("
-            for i in range(ntck) :
-                nl += f"UtoLOSi(0,0,1,{i})*ws[{i}]*(UtoLOSi(uex,uey,uez,{i})-losdata{i})+"
-            nl = nl[:-1]+")+"
-            # y comp
-            nl += "2.0*vey*("
-            for i in range(ntck) :
-                nl += f"UtoLOSi(0,1,0,{i})*ws[{i}]*(UtoLOSi(uex,uey,uez,{i})-losdata{i})+"
-            nl = nl[:-1]+")+"
-            # x comp
-            nl += "2.0*vex*("
-            for i in range(ntck) :
-                nl += f"UtoLOSi(1,0,0,{i})*ws[{i}]*(UtoLOSi(uex,uey,uez,{i})-losdata{i})+"
-            nl = nl[:-1]+"))"
-            louts.append(nl)
+
             
     with open(path.FFADJ, 'w') as f:
         for l in louts:

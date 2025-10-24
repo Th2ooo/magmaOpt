@@ -60,5 +60,5 @@ def save_results(name="") :
 if __name__ == "__main__" :
     
     
-      save_results("")
+      save_results("testcase_insar6tck_3MPa")
     

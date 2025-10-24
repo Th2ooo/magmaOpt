@@ -6,11 +6,12 @@ import sources.insar as insar
 import numpy as np
 import meshio
 import os 
-from utils import LOS_set
+from utils import LOS_set,mesh_labmask
 
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import mpltern #optional, used for ternary plot
 SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE = 18, 15, 30;
 plt.rcParams.update({
@@ -152,42 +153,49 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         print("Not implemented for this ERRMOD = ",path.ERRMOD)
         return None    
 
-        
     if not ntplot :
         ntplot = list(range(path.NTCK))
+        
+    #create fig,axs
     fig,axs = plt.subplots(len(ntplot),3,figsize=(13,4.5*len(ntplot)),layout="constrained")
     if len(ntplot) == 1 : axs = axs[np.newaxis,:]
-    print(axs)
+    
+    # load mesh of interest on upper surface
     msh=meshio.read(path.step(it,"mesh"))
-    mkup = msh.point_data["medit:ref"]==path.REFUP
-    loc = msh.points[mkup]
-    loc[:,0:2] += path.ORMOD #readjust the plots to local coordinates
+    mkup = mesh_labmask(msh,path.REFUP)
+    locpl = msh.points[mkup]
+    locpl[:,0:2] += path.ORMOD #readjust the plots to local coordinates
     
     #modeled disp
     modu = np.genfromtxt(path.step(it,"u.sol"),skip_header=8,skip_footer=1)[mkup]
     
-
     #get Insar data
     outtmp = path.PLOTS+"tmplos/"
     os.makedirs(outtmp,exist_ok=True)
  
     subi = -1
     for i,(tck,hea,inc) in enumerate(zip(path.TCKS,path.HEAS,path.INCS)) :
-        print("Ploting",tck)
+        print("Ploting",tck,"on",path.step(it,"mesh"))
 
         if i not in ntplot : continue
         else : subi+= 1; i=subi
         
-        #reinterpolate los on the choosen mesh
-        solf = outtmp+f"losu_it{it}_{i}.sol"
-        insar.los2sol(tck, path.step(it,"mesh"), solf,path.ORMOD)
+        # data to plot
+        losf = LOS_set(hea,inc)
+        modlos = losf(modu[:,0],modu[:,1],modu[:,2])
+        dat=insar.los2sol(tck, path.step(it,"mesh"), path.ORMOD)[:,2]
+        k = insar.los2k(tck, path.step(it,"mesh"), path.ORMOD)[:,2]
+                
+        #mask where no data given
+        loc = locpl[k==1]
+        modlos = modlos[k==1]
+        dat = dat[k==1]
+        
+        # extrema values
+        vmin = np.min((dat,modlos,dat-modlos))
+        vmax = np.max((dat,modlos,dat-modlos))            
 
-        #plot data
-        dat=np.genfromtxt(solf,skip_header=8)[mkup]
-  
-        vmin = np.min(dat)
-        vmax = np.max(dat)            
-
+        # Plot data
         ax = axs[i,0]
         ax.scatter(loc[:,0],loc[:,1],c=dat,marker=".",cmap="jet",vmin=vmin,vmax=vmax)
         ax.set_aspect('equal', adjustable='box')
@@ -211,8 +219,6 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         
         #plot model
         ax = axs[i,1]
-        losf = LOS_set(hea,inc)
-        modlos = losf(modu[:,0],modu[:,1],modu[:,2])
         ax.scatter(loc[:,0],loc[:,1],c=modlos,marker=".",cmap="jet") #,vmin=vmin,vmax=vmax)
         ax.set_aspect('equal', adjustable='box')
         ax.ticklabel_format(style='sci',scilimits=(0,0), useMathText=True)
@@ -225,8 +231,9 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         ax.set_title("Residuals")
         ax.ticklabel_format(style='sci',scilimits=(0,0), useMathText=True)
 
-        
-        fig.colorbar(cm,label="LOS (m)",location="right")
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.2)
+        fig.colorbar(cm,label="LOS (m)",location="right",cax=cax)
   
     if save :
         plt.savefig(path.PLOTS+"DMRplot.pdf")
@@ -364,10 +371,9 @@ if __name__ == "__main__" :
 
     plot_traj(1)
     plot_dmr(it=min(bestit,lastit-2),ntplot=[2,3,4,5],save=1)
-    plot_dmr(it=lastit-2,save=0)
-    
+    plot_dmr(it=nit-2,save=0)
     plot_conv_mult(save=1)
-    plot_conv_mono(nit,save=1)
+    plot_conv_mono(nit-2,save=1)
     print(f"CURRENT IT {nit-2}, BESTIT {bestit}")
 
         
