@@ -56,9 +56,11 @@ def save_results(name="") :
     print("Results and vizualisations saved in",dest)
     
         
-        
+    
+    
+#### Tests    
 if __name__ == "__main__" :
     
     
-      save_results("testcase_insar6tck_3MPa")
+      save_results("testcase1")
     

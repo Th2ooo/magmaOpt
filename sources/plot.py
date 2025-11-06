@@ -1,4 +1,4 @@
-#!/usr/bin/pythonw
+    #!/usr/bin/pythonw
 # -*-coding:Utf-8 -*
 
 import sources.path as path
@@ -6,14 +6,16 @@ import sources.insar as insar
 import numpy as np
 import meshio
 import os 
-from utils import LOS_set,mesh_labmask
+import pyvista as pv
+from sources.utils import LOS_set,mesh_labmask
 
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import mpltern #optional, used for ternary plot
-SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE = 18, 15, 30;
+import colormaps as cm
+SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE = 18, 18, 30;
 plt.rcParams.update({
     'font.family' : 'sans-serif' , 'font.size': MEDIUM_SIZE ,  'axes.titlesize' : MEDIUM_SIZE , 'axes.labelsize' : MEDIUM_SIZE + 2, 
     'xtick.labelsize' : MEDIUM_SIZE , 'ytick.labelsize' : MEDIUM_SIZE, 'legend.fontsize' : SMALL_SIZE + 1 , 'figure.max_open_warning' : 0,
@@ -27,8 +29,8 @@ print("**********************************************")
     
     
 histo = np.genfromtxt(path.HISTO,delimiter=" ")
-nit = histo.shape[0] #number of iteration
-itl = histo[:,0] #iterations
+itl = histo[:,0].astype(int) #iterations
+nit = itl[-1]#number of iteration
 errl = histo[:,1] #errors
 voll = histo[:,2] #volumes
 col = histo[:,3] #
@@ -157,7 +159,9 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         ntplot = list(range(path.NTCK))
         
     #create fig,axs
-    fig,axs = plt.subplots(len(ntplot),3,figsize=(13,4.5*len(ntplot)),layout="constrained")
+    fig,axs = plt.subplots(len(ntplot),3,figsize=(15,4.5*len(ntplot)),layout="constrained")
+    fig.suptitle(f"Iteration {it}")
+
     if len(ntplot) == 1 : axs = axs[np.newaxis,:]
     
     # load mesh of interest on upper surface
@@ -192,8 +196,8 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         dat = dat[k==1]
         
         # extrema values
-        vmin = np.min((dat,modlos,dat-modlos))
-        vmax = np.max((dat,modlos,dat-modlos))            
+        vmin = np.min(np.vstack((dat,modlos,dat-modlos)))
+        vmax = np.max(np.vstack((dat,modlos,dat-modlos)))            
 
         # Plot data
         ax = axs[i,0]
@@ -211,7 +215,6 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
                  head_width=0.6*scale, head_length=1*scale,  # Bigger head
                  length_includes_head=True) 
         ax.ticklabel_format(style='sci',scilimits=(0,0), useMathText=True)
-
         if not ntplot :
             ax.set_title(f"Data track {tck}")
         else : 
@@ -219,7 +222,7 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         
         #plot model
         ax = axs[i,1]
-        ax.scatter(loc[:,0],loc[:,1],c=modlos,marker=".",cmap="jet") #,vmin=vmin,vmax=vmax)
+        ax.scatter(loc[:,0],loc[:,1],c=modlos,marker=".",cmap="jet",vmin=vmin,vmax=vmax)
         ax.set_aspect('equal', adjustable='box')
         ax.ticklabel_format(style='sci',scilimits=(0,0), useMathText=True)
         ax.set_title("Model")
@@ -234,9 +237,18 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.2)
         fig.colorbar(cm,label="LOS (m)",location="right",cax=cax)
+        
+    for i in range(len(ntplot)) :
+        axs[i,0].set(ylabel="Northing (m)") 
+    for i in range(3) :
+        axs[-1,i].set(xlabel="Easting (m)") 
+
+
   
     if save :
         plt.savefig(path.PLOTS+"DMRplot.pdf")
+        plt.savefig(path.PLOTS+"DMRplot.png")
+
     else :
         plt.show()
             
@@ -246,63 +258,78 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
 
 def plot_conv_mono(nit=lastit,save=False) :
     ## Convergence plots    
-    fig, ax = plt.subplots(figsize=(20,12))
-    axcol = "blue"
-    p=ax.semilogy(itl[:nit],errl[:nit],color=axcol,linewidth=2.5, zorder=5, label="Error $J_{LS}$")
+    fig, ax = plt.subplots(figsize=(15,10))
+
+    ax1 = ax.twinx()
+    axcol = cm.set1[0].colors
+    p1=ax1.plot(itl[:nit],col[:nit],color=axcol,linewidth=1,label="Step size $\\tau$",zorder=1)
+    ax1.spines['right'].set_visible(False)  # Hide right spine
+    ax1.spines['left'].set_position(('outward', 0))  # Share left spine
+    ax1.tick_params(axis='y',direction="in", pad=-40,colors=axcol)
+    ax1.yaxis.set_label_position('left')
+    ax1.set_ylabel("Step size $\\tau$",color=axcol,labelpad=-60)
+    ax1.yaxis.tick_left()
+    ax1.set_axisbelow(True)
+    # ax1.set_zorder(ax.get_zorder() - 1)  # Force ax2 behind ax1
+
+    
+    ax2 = ax.twinx()
+    axcol = cm.vivid[0].colors
+    if path.ERRMOD != 2:
+        volobj = 4/3*np.pi*np.prod(path.RTs[0]) #volume of objective shape
+        voln = voll/volobj
+        ax2.set_ylabel("Volume ratio $V_{\Omega}/V_{obj}$",color=axcol,labelpad=-70)
+    else :
+        voln = voll
+        ax2.set_ylabel("Volume $V_{\Omega}\quad (m^3)$",color=axcol,labelpad=-70)
+        
+    p2=ax2.plot(itl[:nit],voln[:nit],color=axcol,linewidth=1,zorder=1)
+    
+    ax2.spines['left'].set_visible(False)  # Hide right spine
+    ax2.spines['right'].set_position(('outward', 0))  # Share left spine
+    ax2.tick_params(axis='y',direction="in", pad=-40, colors=axcol)
+    ax2.yaxis.set_label_position('right')
+
+
+    
+    axcol = cm.vivid[2].colors
+    if path.ERRMOD != 2 :
+        ax3 = ax.twinx()
+        distn = np.sum((np.column_stack([bxl,byl,bzl])-path.XTs[0][np.newaxis,:])**2,axis=1)**0.5
+        ax3.set_ylabel("Shapes distance $||\mathbf{b}_{\Omega}-\mathbf{b}_{obj}||$ ($m$)",color=axcol,labelpad=20)
+    
+        p3=ax3.plot(itl[:nit],distn[:nit],color=axcol,linewidth=1,ls="--",label="Distance of shapes $||\mathbf{x}_{\Omega}-x_{obj}||$",zorder=1)
+        ax3.tick_params(axis='y',colors=axcol)
+        ax3.zorder = 1 
+        ax3.patch.set_visible(False)
+        ax3.margins(x=0.1)
+
+    
+    
+    axcol ="blue"
+    p=ax.semilogy(itl[:nit],errl[:nit],color=axcol,linewidth=3, zorder=5, label="Error $J_{LS}$")
     ax.tick_params(axis='y',colors=axcol)
-    ax.set_ylabel("Error $J_{LS}$ ($m^4$)",color=axcol,labelpad=15)
+    ax.set_ylabel("Error $J_{LS}\quad (m^4)$",color=axcol,labelpad=5)
     ax.set_xlabel("Iterations")
     ax.xaxis.set_label_position('top')
     ax.xaxis.set_major_locator(ticker.FixedLocator(np.arange(0,nit,nit//10)))
     ax.tick_params(axis="x", bottom=True, top=True, labelbottom=True, labeltop=True)
 
                     
-    ax1 = ax.twinx()
-    axcol = "red"
-    p1=ax1.plot(itl[:nit],col[:nit],color=axcol,linewidth=1,label="Step size $\\tau$",zorder=1)
-    ax1.spines['right'].set_visible(False)  # Hide right spine
-    ax1.spines['left'].set_position(('outward', 0))  # Share left spine
-    ax1.tick_params(axis='y',direction="in", pad=-30,colors=axcol)
-    ax1.yaxis.set_label_position('left')
-    ax1.set_ylabel("Step size $\\tau$",color=axcol,labelpad=-60)
-    ax1.yaxis.tick_left()
 
+    ax.grid(alpha=0.4)
+    ax.patch.set_visible(False)
+    ax1.patch.set_visible(False)
+    ax2.patch.set_visible(False)
     
-    ax2 = ax.twinx()
-    axcol = "forestgreen"
-    if path.ERRMOD != 2:
-        volobj = 4/3*np.pi*np.prod(path.RTs[0]) #volume of objective shape
-        voln = voll/volobj
-        ax2.set_ylabel("Volume ratio $V_{\Omega}/V_{obj}$",color=axcol,labelpad=20)
-    else :
-        voln = voll
-        ax2.set_ylabel("Volume $V_{\Omega}$",color=axcol,labelpad=20)
+    ax1.zorder = 3
+    ax2.zorder = 2
+    ax.zorder = 4
+    
+    ax.margins(x=0.1)
+    ax1.margins(x=0.1)
+    ax2.margins(x=0.1)
         
-    p2=ax2.plot(itl[:nit],voln[:nit],color=axcol,linewidth=1,ls="--",zorder=1)
-    ax2.tick_params(axis='y',colors=axcol)
-
-
-    
-    axcol = "darkorange"
-    if path.ERRMOD != 2 :
-        ax3 = ax.twinx()
-        distn = np.sum((np.column_stack([bxl,byl,bzl])-path.XTs[0][np.newaxis,:])**2,axis=1)**0.5
-        ax3.set_ylabel("Shapes distance $||\mathbf{b}_{\Omega}-\mathbf{b}_{obj}||$ ($m$)",color=axcol,labelpad=-70)
-    
-        p3=ax3.plot(itl[:nit],distn[:nit],color=axcol,linewidth=1,ls="--",label="Distance of shapes $||\mathbf{x}_{\Omega}-x_{obj}||$",zorder=1)
-
-        ax3.spines['left'].set_visible(False)  # Hide right spine
-        ax3.spines['right'].set_position(('outward', 0))  # Share left spine
-        ax3.tick_params(axis='y',direction="in", pad=-40, colors=axcol)
-        ax3.yaxis.set_label_position('right')
-    
-    
-    ax.grid(alpha=0.5)
-    
-    
-    
-
-    # ax.legend(handles=p+p1+p2+p3, loc='lower left')
 
     if save :
         plt.savefig(path.PLOTS+"plot_conv_mono.pdf")
@@ -362,18 +389,111 @@ def plot_traj(save=False) :
         plt.show()
 
 
+
+
+def plot_shape(it=nit-2,save=False) :
+    """Show multiple views of the current shape"""
+    # Create a plotter with 4 subplots (2x2 grid)
+    plo = pv.Plotter(shape=(2, 2), title="Multi-view optimization animation", window_size=[1200,1200])    
+    
+    
+    # Create objects
+    if path.ERRMOD != 2 :
+        sph_T = []
+        for rs,xs in zip(path.RTs,path.XTs) :
+            sph_T += [pv.ParametricEllipsoid(rs[0],rs[1],rs[2])]  #sphere at the objective source loc
+            sph_T[-1].translate(xs,inplace=True)
+            
+    dom_box = pv.Box(bounds=(-path.XEXT/2, path.XEXT/2, -path.YEXT/2, path.YEXT/2, -path.ZEXT, 0.0))
+
+                    
+    # Set up each subplot
+    for i in range(2):
+        for j in range(2) :
+            plo.subplot(i,j)
+            plo.add_axes(interactive=False, line_width=4)
+            
+            if  path.ERRMOD != 2 :
+                for sph in sph_T :
+                    plo.add_mesh(sph, style="surface", color="blue", opacity=0.3)
+                    
+            # Add domain box to all views
+            plo.add_mesh(dom_box, style='wireframe', color="black")
+    
+    # Set specific camera angles for each subplot
+    plo.subplot(0,0)
+    plo.camera_position = "iso"
+    
+    plo.add_text("3D View", "upper_left", color='black')
+    
+    plo.subplot(0,1)
+    plo.camera_position = "xy"
+    plo.add_text("Top View (XY)", "upper_left", color='black')
+    
+    plo.subplot(1,0)
+    plo.camera_position = "xz"
+    plo.add_text("Front View (XZ)", "upper_left", color='black')
+    
+    plo.subplot(1,1)
+    plo.camera_position = "yz"
+    plo.add_text("Side View (YZ)", "upper_left", color='black')
+    
+    
+    print(f"it no {it}")
+    mshfile = path.step(it, "mesh")  
+    msh = meshio.read(mshfile)
+    
+    # Creating the face array for pyvista
+    mk = msh.cell_data["medit:ref"][1] == path.REFISO
+    faces = msh.cells[1].data[mk]
+    nbs = np.full((faces.shape[0], 1), 3)
+    faces = np.hstack((nbs, faces))
+    faces = np.ravel(faces)
+    mshpv = pv.PolyData(msh.points, faces)
+    
+    
+    c = 0
+    # Add mesh to all subplots
+    for i in range(2):
+        for j in range(2) :
+            plo.subplot(i,j)
+            plo.add_mesh(mshpv, color="orangered", opacity=1)
+            # Add grid to help visualization
+            plo.show_grid(xtitle="X", ytitle="Y", ztitle="Z", 
+                grid=True,
+                location='outer',
+                font_size=10,
+                color='gray',
+                fmt="%.0f")
+            c+= 1
+            
+    plo.subplot(0,0)# Add iteration and error info to the firset subplot
+    plo.add_text(f"it {it}", "lower_right", color='black')
+
+    if save :
+        plo.save_graphic(path.PLOTS+"shape.pdf", f"Shape at it {it}")
+    plo.show()
+
+ 
+
+
+
+
 print("**********************************************")
 print("**************    End of Plot   **************")
 print("**********************************************")
 
 
+#### Tests
 if __name__ == "__main__" :
-
+    print(f"CURRENT IT {nit-1}, BESTIT {bestit}")
     plot_traj(1)
-    plot_dmr(it=min(bestit,lastit-2),ntplot=[2,3,4,5],save=1)
-    plot_dmr(it=nit-2,save=0)
+    plot_shape(it=bestit,save=1)
+    plot_dmr(it=bestit,save=1)
+    plot_dmr(it=nit-1,save=0)
     plot_conv_mult(save=1)
-    plot_conv_mono(nit-2,save=1)
-    print(f"CURRENT IT {nit-2}, BESTIT {bestit}")
+    plot_conv_mono(nit-1,save=1)
+    print(f"CURRENT IT {nit-1}, BESTIT {bestit}")
+
 
         

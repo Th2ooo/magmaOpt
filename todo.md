@@ -3,6 +3,30 @@
 *author: Théo Perrot*
 *sept-oct 2025*
 
+## Things to do befor publication
+
+- Main text :
+    - FS rereading
+    - Correction figures part 3 and text
+    - ereading charles modifs
+
+- Supp mat
+    - Write text S3-S4
+    - Figures
+        - Disp field test case
+        - 2nd test case
+        - InSAR test cases
+            - 1 MPa
+            - 5 MPa
+
+- Code
+    - publish
+    - clean
+    - add documentation
+    - write readme
+    - write tutorial
+
+
 
 ## Things to fix
 

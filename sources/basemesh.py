@@ -128,7 +128,7 @@ def build_mesh(out,poss,rads,ext=[],inhom=False,rename=False,mmg=True,verb=3,deb
     surfsrcdts= mod.getBoundary([(3,path.REFINT)])
     bad_ents = mod.getBoundary(surfsrcdts,oriented=False,recursive=False) #lines
     bad_ents += mod.getBoundary(surfsrcdts,oriented=False,recursive=True) #points
-    print("ents to remove",bad_ents)
+    # print("ents to remove",bad_ents)
 
     
     ####Meshing
@@ -188,7 +188,6 @@ def build_mesh(out,poss,rads,ext=[],inhom=False,rename=False,mmg=True,verb=3,deb
         
         
     ####Saving
-    
     if os.access(os.path.dirname(out), os.W_OK):     # Check if we can write to this location
         print(f'Writing mesh in {out}')
         gmsh.write(out)

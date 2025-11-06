@@ -48,22 +48,13 @@ piz = pz;
 
 
 /* Computation of shape gradient terms */
+
 /*Possible to externalize the computation bc problem solution g is not in these terms*/
 
 //elasticproduct
 Aeuep = mu*(2.0*(dx(uix)*dx(pix)+dy(uiy)*dy(piy)+dz(uiz)*dz(piz))
      + ((dx(uiy)+dy(uix))*(dx(piy)+dy(pix)) + (dx(uiz)+dz(uix))*(dx(piz)+dz(pix)) + (dy(uiz)+dz(uiy))*(dy(piz)+dz(piy))))
      + lm*(dx(uix)+dy(uiy)+dz(uiz))*(dx(pix)+dy(piy)+dz(piz)) ;
-
-
-// //normal vector
-// loadsol(PHI,phi[]);
-// real eps = 1.e-6;
-// norm = sqrt(eps+dx(phi)*dx(phi)+dy(phi)*dy(phi)+dz(phi)*dz(phi));
-// nx = dx(phi)/norm ;
-// ny = dy(phi)/norm ;
-// nz = dz(phi)/norm ;
-// kappa = dx(nx)+dy(ny)+dz(nz); //mean curvature
 
 
 //gradient of neumann boundary condition (red term) !!!peut être *-1
@@ -74,7 +65,6 @@ Neug = DPs*(dx(pix)+dy(piy)+dz(piz));
 /* Resolution of the extension - regularization problem */
 problem velext(g,v,solver=CG) = psreg(g,v)
                         - int2d(Thi,REFISO)(-Aeuep*v-Neug*v);
-                        // + on(REFNEU,g=0.0);
 
 
 
@@ -88,12 +78,10 @@ printsol(GRADE,g[]);
 
 
 
-// // VTU outputs for debuging/*
+// // VTU outputs for debuging
 // savevtk("p.vtu", Th, [px,py,pz]);
 // savevtk("gscal.vtu", Th, g);
 // // optional : just to check how level set is dicretised
 // loadsol(PHI,phi[]);
-// savevtk("ls.vtu", Th,phi);*/
+// savevtk("ls.vtu", Th,phi);
 
-
-cout << "GRADE" << g[] << endl ;

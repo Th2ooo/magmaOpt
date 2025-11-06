@@ -86,7 +86,7 @@ if not restart  :
             bestE = 0.0 
 
     elif path.ERRMOD == 2 :
-        insar.init(1) # tranfer the insar data into the initial mesh 
+        insar.init(0) # tranfer the insar data into the initial mesh 
     
         
     ## Compute Null test of the best solution
@@ -208,7 +208,7 @@ for it in range(itstart,path.MAXIT) :
         # extools.regls(curmesh,newphi,newphi)
           
         # Creation of a mesh associated to the new shape
-        print("Local remeshing")
+        print("     Local remeshing")
         extools.mmg3d(curmesh,1,newphi,path.HMIN,path.HMAX,path.HAUSD,path.HGRAD,1,newmesh) 
 
         # Resolution of the state equation on the new shape
@@ -217,7 +217,7 @@ for it in range(itstart,path.MAXIT) :
       
         # Calculation of the new value of error
         newE = mechtools.error(newmesh,newu)
-        print(f"New error {newE:.2E}")
+        print(f"    New error {newE:.2E}")
 
         # Decision
         if  ( newE <  curE )   : # strict improvement in the error

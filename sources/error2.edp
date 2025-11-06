@@ -62,7 +62,8 @@ err = 0.0 ;
 for (int i = 0; i < ntck; ++i){
     cout << "Error Track"+i << endl;
     err = err + ws[i]*int2d(Th,REFUP)(kdatA[i]*(UtoLOSi(ux,uy,uz,i)-losdatA[i])^2);
-    errfield = errfield +  ws[i]*kdatA[i]*(UtoLOSi(ux,uy,uz,i)-losdatA[i])^2;  //error field for debugging
+    // errfield = errfield +  ws[i]*kdatA[i]*(UtoLOSi(ux,uy,uz,i)-losdatA[i])^2;  //error field for debugging
+    // if (i==5){errfield=ws[i]*kdatA[i]*(UtoLOSi(ux,uy,uz,i)-losdatA[i])^2;}
 }
 
 

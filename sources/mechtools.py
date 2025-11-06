@@ -106,9 +106,7 @@ def error(mesh,u) :
   #     insar.los2sol(path.TCK2, mesh, path.LOS2)
   if path.ERRMOD == 0 :
       inout.setAtt(file=path.EXCHFILE,attname="OutAna",attval=path.OUTANA)
-      
-  
-  print(f"Computing error file {path.FFERR}")
+
   # Call to FreeFem
   proc = subprocess.Popen(["{FreeFem} {error} > /dev/null 2>&1".format(FreeFem=path.FREEFEM,error=path.FFERR)],shell=True)
   proc.wait()
