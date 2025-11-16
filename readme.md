@@ -14,6 +14,7 @@ Shape optimization code to infer the shape of ground deformation sources in volc
 
 This project is forked from [sotuto shape optimization code](https://github.com/dapogny/sotuto)
 but has been significantly modified and extended for this specific application. It is released alongside an article (in submission process, preprint available here) providing explanation of the method and demonstrate on synthetic and real test cases.
+
 ---
 
 
