@@ -25,25 +25,23 @@ but has been significantly modified and extended for this specific application. 
 
 ## Example Outputs
 
-<div align="center">
 
 **3D Visualization of the shape and the domain (Paraview)**
-<img src="imgs/shape_dom.png" alt="3D View" width="500"/>
-</div>
 
-<div align="center">
+<img src="imgs/shape_dom.png" alt="3D View" width="500"/>
+
+
 
 **Optimization Progress**
+
 <img src="imgs/conv.png" alt="Progress" width="500"/>
-</div>
 
 
-<div align="center">
 
 **Data / Model comparison for real data**
+
 <img src="imgs/dmr.png" alt="DMR" width="500"/>
 
-</div>
 
 ---
 
