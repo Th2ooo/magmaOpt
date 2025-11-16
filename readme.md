@@ -1,9 +1,11 @@
+<img align="right" width="200" src="imgs/body.png" alt="magmaOpt">
+
+
 # magmaOpt
 
 Shape optimization code to infer the shape of ground deformation sources in volcanic area.
 
 
-<img align="right" width="200" src="imgs/body.png" alt="magmaOpt">
 
 ---
 
@@ -26,13 +28,20 @@ but has been significantly modified and extended for this specific application. 
 <div align="center">
 
 **3D Visualization of the shape and the domain (Paraview)**
-<img src="imgs/shape_dom.png" alt="3D View" width="400"/>
+<img src="imgs/shape_dom.png" alt="3D View" width="500"/>
+</div>
+
+<div align="center">
 
 **Optimization Progress**
-<img src="imgs/conv.png" alt="Progress" width="400"/>
+<img src="imgs/conv.png" alt="Progress" width="500"/>
+</div>
+
+
+<div align="center">
 
 **Data / Model comparison for real data**
-<img src="imgs/dmr.png" alt="DMR" width="400"/>
+<img src="imgs/dmr.png" alt="DMR" width="500"/>
 
 </div>
 
