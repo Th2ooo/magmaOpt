@@ -1,9 +1,9 @@
 # TODO file for the code **magmaOpt**
 
 *author: Théo Perrot*
-*sept-oct 2025*
+*sept-nov 2025*
 
-## Things to do befor publication
+## Things to do before publication
 
 - Main text :
     - FS rereading
@@ -32,15 +32,10 @@
 
 
 
-- Modify InsAR interpolation to also handle no data case :
-    - modify mesh to no reference points with nodata as REFUP => they wont be taken into account
-
-
 ## Features to add
 
 - Improve ERRMOD 3  to be more flexible
 
-- Fix errmod 1
 
 - README
     - installation instructions
@@ -93,6 +88,12 @@
 
 
 ## Done
+
+
+- Fix errmod 1
+
+- Modify InsAR interpolation to also handle no data case :
+    - ~~modify mesh to no reference points with nodata as REFUP => they wont be taken into account~~
 
 
 - plot_dmr in plots to compare data model residuals of insar

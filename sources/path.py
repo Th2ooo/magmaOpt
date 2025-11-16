@@ -11,7 +11,7 @@ import numpy as np
 #### Files paths
 
 BASE = "/home/th2o/Documents/Cours/magmaOpt_dev/magmaOpt/"
-RES     = "./res/"       # Directory for results
+RES     = "./res_testcase1/"       # Directory for results
 PLOTS   = RES+"plots/"    # Directory to output the plots and animations 
 TESTDIR = RES + "test/"  # Directory for test of libraries
 SCRIPT  = "./sources/"   # Directory for sources
@@ -31,37 +31,34 @@ REFEXT        = 2     #2  # Reference of the exterior domain
 
 #### Physical problem paramaters
 
-YOUNG = 25.4e9 ; #E (from sigmundsson 2024)
-POISS = 0.257;   #nu (from sigmundsson 2024)
-PRESS = 1e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
+YOUNG =  10#25.4e9 ; #E (from sigmundsson 2024)
+POISS = 0.25 #0.257;   #nu (from sigmundsson 2024)
+PRESS = 2e6 ;  #Pressure change DP (source load) (typical values at svarstengi)
 
 fact = 10e3 #50e3 #6e3
 
 # Initial guess parameters
-X0 = [0.,0,-5e3] #xyz coordinates of the center (it 0)
+X0 = [0.,0,-4e3] #xyz coordinates of the center (it 0)
 R0 = [2e3,2e3,2e3] #rx ry rz radii of the source
-# X0 = np.array([0.0,0.0,-0.3])*fact #center
+# X0 = np.array([0.0,0.0,-0.4])*fact #center
 # R0 = np.array([0.1,0.1,0.1])*fact   #radius
 
 # Objective / target source(s) parameters (for ERRMOD 0 ou 1) 
-XTs = np.array([[0.4,0.4,-0.2],[-0.4,-0.4,-0.2]])*fact #centers
-RTs = np.array([[0.1,0.1,0.1],[0.1,0.1,0.1]])*fact   #radii
+XTs = np.array([[3e3,3e3,-6e3],[-3e3,-3e3,-6e3]]) #centers
+RTs = np.array([[1.5e3,1.5e3,1.5e3],[1.5e3,1.5e3,1.5e3]])   #radii
 
 # # Extent of the simulated doain
-# XEXT          = 1.*fact #extent of domain in X direction
-# YEXT          = 1.*fact #extent of domain in X direction
-# ZEXT          = 1.*fact #extent of domain in X direction
-XEXT          = 22e3 #extent of domain in X direction
-YEXT          = 22e3 #extent of domain in X direction
-ZEXT          = 20e3 #extent of domain in X direction
+XEXT          = 15e3 #extent of domain in X direction
+YEXT          = 15e3 #extent of domain in X direction
+ZEXT          = 15e3 #extent of domain in X direction
 
 
 
 #### Meshing parameters
-MESHSIZ       = 0.06*fact #nominal size of thee mesh (used by initial mesher and as regularisation length)
-HMIN          = 0.02*fact #minimum autorized element lenght
-HMAX          = 0.2*fact #maximum authorized element length
-HAUSD         = 0.005*fact  #mawimum authorized gap between ideal shape and its mesh nodes
+MESHSIZ       = 600 #nominal size of thee mesh (used by initial mesher and as regularisation length)
+HMIN          = 100 #minimum autorized element lenght
+HMAX          = 100 #maximum authorized element length
+HAUSD         = 50  #mawimum authorized gap between ideal shape and its mesh nodes
 
 HGRAD         = 1.3 #max rati allowed between 2 adjascent edges
 INHOM         = False #inhomogenous meshing for wider domains simulation
@@ -72,7 +69,7 @@ FINEUP        = True #implement refinement on  upper boundary with mmg
 #### Optimization parameters
 
 # Error type 
-ERRMOD = 2
+ERRMOD = 1
 """ 0 if error is computed with analytic solution, 
     1 if computed with numeric sol
     2 if computed with InSAR real data (bestE = null test)
@@ -89,11 +86,10 @@ ALPHA         = 5*MESHSIZ # Parameter for velocity extension - regularization, f
 MAXIT         = 10000   # Maximum number of iterations in the shape optimization process
 MAXITLS       = 15   # Maximum number of iterations in the line search procedure
 TOL           = 0.01  # Tolerance for a slight increase in the ERROR
-MULTCOEF      = 1.3  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
+MULTCOEF      = 1.5  #Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
 MINCOEF       = 0.001 # Minimum allowed move between two iterations (in # * MESHSIZ)
 MAXCOEF       = 2. # Maximum allowed step between two iterations (in # * MESHSIZ)
 INICOEF = 1 # initial step size 
-
 
 
 #### InSAR parameters
@@ -102,25 +98,14 @@ TCKS = ["t16","t155","a33","d44","t26","t19"] #tck data files
 TCKS = [DATA+tck+".csv" for tck in TCKS]
 NTCK = len(TCKS) # number of tck files
 
-
-
 HEAS = [347.4,191.7,347.1,189.7,349.6,195.1] #heading angles associated to the tracks
 HEAS = [h*np.pi/180 for h in HEAS]
 INCS = [34.6,37.6,33.3,44.7,43.2,22.7] #inclinaison angles associated to the tracks
 INCS = [i*np.pi/180 for i in INCS]
 
 
-
 ORMOD = (2530000,179000)  #local origin of the model relatively to the InSAR track coordinates. If not provided, the mean center of the tracks is automatically choosen
 
-
-# tests with 2 track
-# nums = [2,3]
-# NTCK = len(nums)
-# TCKS = [TCKS[i] for i in nums]
-# HEAS = [HEAS[i] for i in nums]
-# INCS = [INCS[i] for i in nums]
-# WEIG = [0.01,0.01] #Weights given to the differents insar tracks
 
 
 WEIG = [1.]*NTCK #Weights given to the differents insar tracks
@@ -135,6 +120,9 @@ FREEFEM = "FreeFem++"
 MSHDIST = "mshdist"
 ADVECT  = "/home/th2o/Softs/Advection/build/advect"
 MMG3D   = "/home/th2o/Softs/mmg/build/bin/mmg3d_O3"
+
+
+
 # Path to FreeFem scripts
 FFTEST         = SCRIPT + "testFF.edp"
 FFREGLS        = SCRIPT + "regls.edp"
@@ -146,10 +134,6 @@ FFADJ          = SCRIPT + f"adjoint{ERRMOD}.edp"#adjoint state solving script (o
 FFGRADE        = SCRIPT + "gradE.edp" # grad error script
 FFSTATS          = SCRIPT + "stats.edp"
 FFTRUNC        = SCRIPT + "truncvid.edp"
-
-
-
-
 
 
 

@@ -80,15 +80,11 @@ def anim_simple() :
         
         err = El[it]
         txt2 = plo.add_text(f"Error {err:.3E}","upper_left",color='black')
-        
-        # break
-    
+            
         plo.write_frame()
         
         
         plo.remove_actor([mspl,txt,txt2])
-
-    # plo.show()
 
     plo.close()
     
@@ -198,15 +194,18 @@ def anim_multiview() :
 
 
 def export_3Dviews(nit=nit):
-    """Export 3D and side view images for each iteration without displaying windows
-    MODIFY to add N views"""
+    """Export 3D and side pictures of the domain and magma domain  for each iteration 
+    without displaying windows
+    TODO : MODIFY to add N views"""
+    
+    
     print("**********************************************")
     print("*****  Headless Image Export for Animation *****")
     print("**********************************************")
     
     # Create output directories
     os.makedirs(path.PLOTS + "3d_views/", exist_ok=True)
-    os.makedirs(path.PLOTS + "side_views/", exist_ok=True)
+    os.makedirs(path.PLOTS + "top_views/", exist_ok=True)
    
     for it in range(nit):
         
@@ -334,7 +333,7 @@ def composite_animation(nit=nit-3,fps=5) :
     it=0
     img = mpimg.imread(path.PLOTS + f"3d_views/frame_{it:04d}.png")
     img_3d = ax2.imshow(img)
-    img = mpimg.imread(path.PLOTS + f"side_views/frame_{it:04d}.png")
+    img = mpimg.imread(path.PLOTS + f"top_views/frame_{it:04d}.png")
     img_side = ax3.imshow(img)
     
     ax2.set_title('3D View')
@@ -373,10 +372,7 @@ def composite_animation(nit=nit-3,fps=5) :
         fig, update_frame, frames=range(nit), 
         interval=200, blit=False, repeat=True)
     
-
-    
     # Save animation
-    # fps = max(int(nit/times),1)
     print("FPS selected",fps)
     anim.save(filename= path.PLOTS+'animation.mp4', 
               writer='ffmpeg', fps=fps, dpi=150)

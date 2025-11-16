@@ -4,8 +4,6 @@
 
 import sources.path as path
 import subprocess
-import os
-import sys
 import numpy as np
 import sources.mechtools as mechtools
 from pathlib import Path
@@ -251,9 +249,9 @@ def testLib():
       exit()
     
     # Test command line sed
-    proc = subprocess.Popen(["sed 's/MeshVersionFormatted/MeshVersion/g' {SolName} > /dev/null 2>&1".format(SolName=path.TESTSOL)],shell=True)
+    proc = subprocess.Popen([f"sed 's/MeshVersionFormatted/MeshVersion/g' {path.TESTSOL} > /dev/null 2>&1"],shell=True)
     proc.wait()
-    proc = subprocess.Popen(["sed 's/MeshVersion/MeshVersionFormatted/g' {SolName} > /dev/null 2>&1".format(SolName=path.TESTSOL)],shell=True)
+    proc = subprocess.Popen([f"sed 's/MeshVersion/MeshVersionFormatted/g' {path.TESTSOL} > /dev/null 2>&1"],shell=True)
     proc.wait()
     
     if ( proc.returncode == 0 ) :
@@ -359,6 +357,7 @@ def ini_adjoint2() :
             
             
 if __name__ == "__main__" :
-    pass
+    testLib()
+    
     
     

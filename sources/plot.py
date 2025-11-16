@@ -159,7 +159,7 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         ntplot = list(range(path.NTCK))
         
     #create fig,axs
-    fig,axs = plt.subplots(len(ntplot),3,figsize=(15,4.5*len(ntplot)),layout="constrained")
+    fig,axs = plt.subplots(len(ntplot),3,figsize=(16,4*len(ntplot)),layout="constrained")
     fig.suptitle(f"Iteration {it}")
 
     if len(ntplot) == 1 : axs = axs[np.newaxis,:]
@@ -191,19 +191,19 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         k = insar.los2k(tck, path.step(it,"mesh"), path.ORMOD)[:,2]
                 
         #mask where no data given
-        loc = locpl[k==1]
-        modlos = modlos[k==1]
-        dat = dat[k==1]
+        loc = locpl[k==1]*1e-3
+        modlos = modlos[k==1]*1e3
+        dat = dat[k==1]*1e3
         
         # extrema values
-        vmin = np.min(np.vstack((dat,modlos,dat-modlos)))
-        vmax = np.max(np.vstack((dat,modlos,dat-modlos)))            
+        vmin = np.min(np.vstack((dat,modlos)))
+        vmax = np.max(np.vstack((dat,modlos)))            
 
         # Plot data
         ax = axs[i,0]
-        ax.scatter(loc[:,0],loc[:,1],c=dat,marker=".",cmap="jet",vmin=vmin,vmax=vmax)
+        cm0=ax.scatter(loc[:,0],loc[:,1],c=dat,marker=".",cmap="jet",vmin=vmin,vmax=vmax)
         ax.set_aspect('equal', adjustable='box')
-        scale = path.XEXT/20
+        scale = path.XEXT*1e-3/20
         ax.arrow(ax.get_xbound()[0] + 4*scale, ax.get_ybound()[1] - 5*scale,
                  scale*3*np.sin(hea), scale*3*np.cos(hea), 
                  color="black", lw=3,  # Thinner line (was lw=5)
@@ -219,7 +219,10 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
             ax.set_title(f"Data track {tck}")
         else : 
             ax.set_title("Data")
-        
+            
+            
+        fig.colorbar(cm0,label="LOS displacements (mm)", ax=ax, location="left")
+
         #plot model
         ax = axs[i,1]
         ax.scatter(loc[:,0],loc[:,1],c=modlos,marker=".",cmap="jet",vmin=vmin,vmax=vmax)
@@ -227,21 +230,26 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         ax.ticklabel_format(style='sci',scilimits=(0,0), useMathText=True)
         ax.set_title("Model")
 
+        # divider = make_axes_locatable(ax)
+        # cax = divider.append_axes("right", size="5%", pad=0.2)
+        
         #plot residuals
+        resi = dat-modlos
+        extr = np.max(np.abs(resi))
         ax = axs[i,2]
-        cm=ax.scatter(loc[:,0],loc[:,1],c=dat-modlos,marker=".",cmap="jet",vmin=vmin,vmax=vmax)
+        cm2=ax.scatter(loc[:,0],loc[:,1],c=resi,marker=".",cmap="coolwarm",vmin=-extr,vmax=extr)
         ax.set_aspect('equal', adjustable='box')
         ax.set_title("Residuals")
         ax.ticklabel_format(style='sci',scilimits=(0,0), useMathText=True)
+        fig.colorbar(cm2,label="LOS residuals (mm)", ax=ax, location='right')
 
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.2)
-        fig.colorbar(cm,label="LOS (m)",location="right",cax=cax)
+
+        
         
     for i in range(len(ntplot)) :
-        axs[i,0].set(ylabel="Northing (m)") 
+        axs[i,0].set(ylabel="Northing (km)") 
     for i in range(3) :
-        axs[-1,i].set(xlabel="Easting (m)") 
+        axs[-1,i].set(xlabel="Easting (km)") 
 
 
   
@@ -333,6 +341,8 @@ def plot_conv_mono(nit=lastit,save=False) :
 
     if save :
         plt.savefig(path.PLOTS+"plot_conv_mono.pdf")
+        plt.savefig(path.PLOTS+"plot_conv_mono.png")
+
     else :
         plt.show()
         
@@ -472,6 +482,8 @@ def plot_shape(it=nit-2,save=False) :
 
     if save :
         plo.save_graphic(path.PLOTS+"shape.pdf", f"Shape at it {it}")
+        plo.save_graphic(path.PLOTS+"shape.svg", f"Shape at it {it}")
+
     plo.show()
 
  

@@ -1,55 +1,91 @@
-# Project Title
+# magmaOpt
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://python.org)
+Shape optimization code to infer the shape of ground deformation sources in volcanic area.
 
-Brief one-sentence description of your project.
+
+<img align="right" width="200" src="imgs/body.png" alt="magmaOpt">
+
+---
+
 
 ## Quick Overview
 
-This project [briefly explain what it does and its main purpose]. It provides [key features/benefits].
+> **Note**: This code is in early development stage. If you encounter bugs or would like to contribute, please email me at [theo.perrot@ens-paris-saclay.fr](mailto:theo.perrot@ens-paris-saclay.fr)
 
-### Example Outputs
+This project is forked from [sotuto shape optimization code](https://github.com/dapogny/sotuto)
+but has been significantly modified and extended for this specific application. It is released alongside an article (in submission process, preprint available here) providing explanation of the method and demonstrate on synthetic and real test cases.
+---
 
-| 3D Visualization | Optimization Progress |
-|:---:|:---:|
-| ![3D View](docs/images/3d_example.png) | ![Progress](docs/images/progress_plot.png) |
 
-## Installation
+**A short tutorial** on how to use the code and tune its main parameters is available in [**tutorial.md**](tutorial.md).
 
-### Requirements
-- Python 3.8+
-- [Other dependencies]
 
-### Quick Install
+## Example Outputs
+
+<div align="center">
+
+**3D Visualization of the shape and the domain (Paraview)**
+<img src="imgs/shape_dom.png" alt="3D View" width="400"/>
+
+**Optimization Progress**
+<img src="imgs/conv.png" alt="Progress" width="400"/>
+
+**Data / Model comparison for real data**
+<img src="imgs/dmr.png" alt="DMR" width="400"/>
+
+</div>
+
+---
+
+
+## Installation Instructions
+
+### 1️. Get the Code
+Clone this repository and navigate to the project directory:
+```bash
+git clone https://github.com/Th2ooo/magmaOpt
+cd magmaOpt
 ```
-git clone https://github.com/yourusername/yourproject.git
-cd yourproject
-pip install -r requirements.txt
+
+### 2️. Python Requirements
+The code is written in Python (3.8+). It is recommended to use a virtual environment (e.g., `venv` or `conda`). Install the required packages:
+```bash
+pip install numpy matplotlib scipy gmsh meshio pyvista
 ```
 
+### 3️. External Dependencies
+To run the code, you will need the following open-source tools:
+- **[FreeFem++](https://freefem.org/)** (Finite Element PDE Solver)
+- **[Mshdist](https://github.com/ISCDtoolbox/Mshdist)** (Signed Distance Calculation)
+- **[Advect](https://github.com/ISCDtoolbox/Advection)** (Advection Problem Solver)
+- **[Mmg](https://www.mmgtools.org/)** (Remeshing Software)
 
-## Documentation
+For visualization (optional):
+- **[Medit](https://github.com/ISCDtoolbox/Medit)**
+- **[ParaView](https://www.paraview.org/)**
 
-- **Full Documentation** - Complete user guide and API reference
-- **Examples Gallery** - Ready-to-run example scripts
-- **Theory** - Mathematical background and methodology
+### 4️. Configuration
+Open `sources/path.py` and update the paths for the external tools (`FREEFEM`, `MSHDIST`, `ADVECT`, `MMG3D`) to match their locations on your system.
+
+To verify the setup, run:
+```bash
+python sources/inout.py
+```
+**Note:** If you are a macOS user, ensure all dependencies are compatible with your system.
+
+---
 
 ## Citation
-
-If you use this software in your research, please cite:
-
-@article{yourpaper2024,
-title={Your Paper Title},
-author={Your Name and Coauthors},
-journal={Journal Name},
-year={2024},
-volume={X},
-pages={XX--XX}
+If you use this software in your research, please cite the corresponding paper (in submission process):
+```bibtex
+unpublished{perrot2025shape,
+  author = "Perrot Théo, Sigmundsson Freysteinn, Dapogny Charles",
+  title  = "A Shape Optimization Approach for Inferring Sources of Volcano Ground Deformation",
+  year   = 2025
 }
+```
 
-
+---
 
 ## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the **GNU GPLv3** license. See [LICENSE](license.txt) for details.
