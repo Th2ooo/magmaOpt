@@ -2,220 +2,235 @@
 # -*-coding:Utf-8 -*
 
 import subprocess
-import os
-import sys
-import numpy as np
-
 import sources.path as path
 import sources.inout as inout
-import sources.insar as insar
 
-#####################################################################################
-#######   Numerical solver for elasticity                                     #######
-#######       inputs: mesh (string): mesh of the shape                        #######
-#######               u (string): output elastic displacement                 #######
-#####################################################################################
+"""
+Wrappers to call all the FreeFem++ scripts corrsponding to the different FEM resolution
+needed during the optimization process
 
-def elasticity(mesh,u) :
-  """Solve elasticity problem on mesh file and store in in u file"""
-  # Set information in exchange file
-  inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
-  inout.setAtt(file=path.EXCHFILE,attname="DispName",attval=u)
-  
-  # Call to FreeFem
-  log = open(path.LOGFILE,'a')
+TODO: on some functions remove useless parameters
+"""
 
-  proc = subprocess.Popen(["{FreeFem} {elasticity} > /dev/null 2>&1".format(FreeFem=path.FREEFEM,elasticity=path.FFELAS)],shell=True,stdout=log)
-  proc.wait()
 
-  log.close()
-  
-  return proc
-
-  if ( proc.returncode != 0 ) :
-    print("Error in numerical solver; abort. OOO")
-    print(proc.returncode)
+def elasticity(mesh, u):
+    """
+    Solve elasticity problem on mesh file and store in in u file
     
-#####################################################################################
-#####################################################################################
-
-#####################################################################################
-#######   Calculate elastic compliance                                        #######
-#######       inputs: mesh (string): mesh of the shape                        #######
-#######               u (string): output elastic displacement                 #######
-#####################################################################################
-
-def compliance(mesh,u) :
-  
-  # Set information in exchange file
-  inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
-  inout.setAtt(file=path.EXCHFILE,attname="DispName",attval=u)
-
-  # Call to FreeFem
-  proc = subprocess.Popen(["{FreeFem} {compliance} > /dev/null 2>&1".format(FreeFem=path.FREEFEM,compliance=path.FFCPLY)],shell=True)
-  proc.wait()
-  
-  if ( proc.returncode != 0 ) :
-    print("Error in compliance calculation; abort.")
-    print(proc.returncode)
-  
-  [cply] = inout.getrAtt(file=path.EXCHFILE,attname="Compliance")
-  
-  return cply
-
-
-
-#####################################################################################
-#######   Computation of the adjoint state for the ERROR functional          #######
-#######       inputs: mesh (string): mesh of the shape                        #######
-#######               u (string): input elastic displacement                 #######
-#######               p (string): output adjoint state                       #######
-#####################################################################################
-
-def adjoint(mesh,u,p) :
-  
-  # Set information in exchange file
-  inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
-  inout.setAtt(file=path.EXCHFILE,attname="DispName",attval=u)
-  inout.setAtt(file=path.EXCHFILE,attname="AdjName",attval=p)
-  
-  # Call to FreeFem
-  proc = subprocess.Popen(["{FreeFem} {adjoint} > /dev/null 2>&1".format(FreeFem=path.FREEFEM,adjoint=path.FFADJ)],shell=True)
-  proc.wait()
-
-  if ( proc.returncode != 0 ) :
-    print(proc.returncode)
-    raise Exception("Error in numerical solver for adjoint equation; abort.")
-
+    Parameters
+    ----------
+    mesh : str
+        path of the mesh for D.
+    u : str
+        path of the output displacement field.
+    """
     
-#####################################################################################
-#######   Calculate error data-model                                        #######
-#######       inputs: mesh (string): mesh of the shape                        #######
-#######               u (string): output elastic displacement                 #######
-#####################################################################################
+    # Set information in exchange file
+    inout.setAtt(file=path.EXCHFILE, attname="MeshName", attval=mesh)
+    inout.setAtt(file=path.EXCHFILE, attname="DispName", attval=u)
 
-def error(mesh,u) :
-  
-  # Set information in exchange file
-  inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
-  inout.setAtt(file=path.EXCHFILE,attname="DispName",attval=u)
-  
-  # !! TO REMOVE
-  # if path.ERRMOD == 2 : # interpolation of LOS disp at mesh nodes
-  #     insar.los2sol(path.TCK1, mesh, path.LOS1)
-  #     insar.los2sol(path.TCK2, mesh, path.LOS2)
-  if path.ERRMOD == 0 :
-      inout.setAtt(file=path.EXCHFILE,attname="OutAna",attval=path.OUTANA)
+    # Call to FreeFem
+    log = open(path.LOGFILE, 'a')
 
-  # Call to FreeFem
-  proc = subprocess.Popen(["{FreeFem} {error} > /dev/null 2>&1".format(FreeFem=path.FREEFEM,error=path.FFERR)],shell=True)
-  proc.wait()
-  
-  if ( proc.returncode != 0 ) :
-    print(proc.returncode)
-    raise Exception("Error in error calculation; abort.")
+    proc = subprocess.Popen(["{FreeFem} {elasticity} > /dev/null 2>&1".format(
+        FreeFem=path.FREEFEM, elasticity=path.FFELAS)], shell=True, stdout=log)
+    proc.wait()
 
-  [err] = inout.getrAtt(file=path.EXCHFILE,attname="Error")
-  
-  return err
+    log.close()
 
+    return proc
 
-
-#####################################################################################
-#####################################################################################
+    if (proc.returncode != 0):
+        print("Error in numerical solver; abort. OOO")
+        print(proc.returncode)
 
 
 
 
-#####################################################################################
-#######   Calculate geometrical statistics                                    #######
-#######       input: mesh (string): mesh of the shape                         #######
-#####################################################################################
+def adjoint(mesh, u, p):
+    """
+    Computation of the adjoint state for the ERROR functional. The adjoint script
+    called depend on the path.ERRMOD
 
-def stats(mesh) :
-  
-  # Set information in exchange file
-  inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
+    Parameters
+    ----------
+    mesh : str
+        mesh name of the domain D.
+    u : str
+        input elastic displacement field.
+    p : str
+        path of the output adjoint state.
 
-  # Call to FreeFem
-  proc = subprocess.Popen(["{FreeFem} {stats} > /dev/null 2>&1".format(FreeFem=path.FREEFEM,stats=path.FFSTATS)],shell=True)
-  proc.wait()
-  
-  if ( proc.returncode != 0 ) :
-    print("Error in stats calculation; abort.")
-    raise Exception("Error in calculung geometrical statisitics (no source ?)")
-    print(proc.returncode)
-  
-  [vol] = inout.getrAtt(file=path.EXCHFILE,attname="Volume")
-  [barx] = inout.getrAtt(file=path.EXCHFILE,attname="Barx")
-  [bary] = inout.getrAtt(file=path.EXCHFILE,attname="Bary")
-  [barz] = inout.getrAtt(file=path.EXCHFILE,attname="Barz")
-  
-  return vol,barx,bary,barz
+    """
+
+    # Set information in exchange file
+    inout.setAtt(file=path.EXCHFILE, attname="MeshName", attval=mesh)
+    inout.setAtt(file=path.EXCHFILE, attname="DispName", attval=u)
+    inout.setAtt(file=path.EXCHFILE, attname="AdjName", attval=p)
+
+    # Call to FreeFem
+    proc = subprocess.Popen(["{FreeFem} {adjoint} > /dev/null 2>&1".format(
+        FreeFem=path.FREEFEM, adjoint=path.FFADJ)], shell=True)
+    proc.wait()
+
+    if (proc.returncode != 0):
+        print(proc.returncode)
+        raise Exception(
+            "Error in numerical solver for adjoint equation; abort.")
 
 
 
+def error(mesh, u):
+    """
+    Calculate error functional data-model JLS(Omega)
 
-#####################################################################################
-#####################################################################################
+    Parameters
+    ----------
+    mesh : str
+        path of mesh of the full domain D.
+    u : str
+        path of the input displacement field.
 
-#####################################################################################
-#######   Calculate gradient of the ERROR functional                         #######
-#######       input:  mesh (string): mesh of the shape                        #######
-#######               disp (string): solution of the elasticity system        #######
-#######               adj (string):  solution of the adjoint system           #######
-#######       output: grad (string): shape gradient of stress                 #######
-#####################################################################################
+    Raises
+    ------
+    Exception
+        DESCRIPTION.
 
-def gradE(mesh,disp,adj,grad,phi) :
-  
-  # Set information in exchange file
-  inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
-  inout.setAtt(file=path.EXCHFILE,attname="DispName",attval=disp)
-  inout.setAtt(file=path.EXCHFILE,attname="AdjName",attval=adj)
-  inout.setAtt(file=path.EXCHFILE,attname="GradEName",attval=grad)
-  inout.setAtt(file=path.EXCHFILE,attname="PhiName",attval=phi)
+    Returns
+    -------
+    err : real
+        The value of JLS for the given shape 
 
-  # Call to FreeFem
-  proc = subprocess.Popen(["{FreeFem} {gradE} > /dev/null 2>&1".format(FreeFem=path.FREEFEM,gradE=path.FFGRADE)],shell=True)
-  proc.wait()
-  
-  if ( proc.returncode != 0 ) :
-    print("Error in calculation of gradient of ERROR; abort.")
-    print(proc.returncode)
+    """
+
+    # Set information in exchange file
+    inout.setAtt(file=path.EXCHFILE, attname="MeshName", attval=mesh)
+    inout.setAtt(file=path.EXCHFILE, attname="DispName", attval=u)
+
+    # Call to FreeFem
+    proc = subprocess.Popen(["{FreeFem} {error} > /dev/null 2>&1".format(
+        FreeFem=path.FREEFEM, error=path.FFERR)], shell=True)
+    proc.wait()
+
+    if (proc.returncode != 0):
+        print(proc.returncode)
+        raise Exception("Error in error calculation; abort.")
+
+    [err] = inout.getrAtt(file=path.EXCHFILE, attname="Error")
+
+    return err
+
+
+def stats(mesh):
+    """
+    Compute quantities on the shape Omega
+
+    Parameters
+    ----------
+    mesh : str
+        path of the mesh of D.
+
+    Returns
+    -------
+    vol : real
+        total volume of the shape.
+    barx : real
+        x coordinate of the barycenter.
+    bary : real
+        y coordinate of the barycenter.
+    barz : real
+        z coordinate of the barycenter.
+
+    """
+
+    # Set information in exchange file
+    inout.setAtt(file=path.EXCHFILE, attname="MeshName", attval=mesh)
+
+    # Call to FreeFem
+    proc = subprocess.Popen(["{FreeFem} {stats} > /dev/null 2>&1".format(
+        FreeFem=path.FREEFEM, stats=path.FFSTATS)], shell=True)
+    proc.wait()
+
+    if (proc.returncode != 0):
+        print("Error in stats calculation; abort.")
+        raise Exception(
+            "Error in calculung geometrical statisitics (no source ?)")
+        print(proc.returncode)
+
+    [vol] = inout.getrAtt(file=path.EXCHFILE, attname="Volume")
+    [barx] = inout.getrAtt(file=path.EXCHFILE, attname="Barx")
+    [bary] = inout.getrAtt(file=path.EXCHFILE, attname="Bary")
+    [barz] = inout.getrAtt(file=path.EXCHFILE, attname="Barz")
+
+    return vol, barx, bary, barz
+
+
+
+def gradE(mesh, disp, adj, grad, phi):
+    """
+    Calculate gradient of the ERROR functional
     
-#####################################################################################
+    Parameters
+    ----------
+    mesh : str
+        mesh of D.
+    disp : str
+        path of the elastic displacement field.
+    adj : str
+        path of the adjoint field.
+    grad : str
+        path where to output the gradient.
+    phi : str
+        path of the LS field.
+
+    """
+    # Set information in exchange file
+    inout.setAtt(file=path.EXCHFILE, attname="MeshName", attval=mesh)
+    inout.setAtt(file=path.EXCHFILE, attname="DispName", attval=disp)
+    inout.setAtt(file=path.EXCHFILE, attname="AdjName", attval=adj)
+    inout.setAtt(file=path.EXCHFILE, attname="GradEName", attval=grad)
+    inout.setAtt(file=path.EXCHFILE, attname="PhiName", attval=phi)
+
+    # Call to FreeFem
+    proc = subprocess.Popen(["{FreeFem} {gradE} > /dev/null 2>&1".format(
+        FreeFem=path.FREEFEM, gradE=path.FFGRADE)], shell=True)
+    proc.wait()
+
+    if (proc.returncode != 0):
+        print("Error in calculation of gradient of ERROR; abort.")
+        print(proc.returncode)
 
 
-#####################################################################################
-#####################################################################################
+def descent(mesh, phi, E, gE, g):
+    """
+    Calculation of the (normalized) descent direction
 
-#######################################################################################
-#####             Calculation of the (normalized) descent direction               #####
-#####      inputs :   mesh: (string for) mesh ;                                   #####
-#####                 phi: (string for) ls function                               #####
-#####                 gE: (string for) gradient of error                          #####
-#####      Output:    g: (string for) total gradient                              #####
-#######################################################################################
+    Parameters
+    ----------
+    mesh : str
+        mesh of D.
+    phi : str
+        path of the LS field.
+    E : real
+        current error.
+    gE : str
+        path of the gradient .
+    g : str
+        path where to output the descent field.
+    """
 
-def descent(mesh,phi,E,gE,g) :
+    inout.setAtt(file=path.EXCHFILE, attname="MeshName", attval=mesh)
+    inout.setAtt(file=path.EXCHFILE, attname="PhiName", attval=phi)
+    inout.setAtt(file=path.EXCHFILE, attname="GradEName", attval=gE)
+    inout.setAtt(file=path.EXCHFILE, attname="Error", attval=E)
+    inout.setAtt(file=path.EXCHFILE, attname="GradName", attval=g)
 
-  inout.setAtt(file=path.EXCHFILE,attname="MeshName",attval=mesh)
-  inout.setAtt(file=path.EXCHFILE,attname="PhiName",attval=phi)
-  inout.setAtt(file=path.EXCHFILE,attname="GradEName",attval=gE)
-  inout.setAtt(file=path.EXCHFILE,attname="Error",attval=E)
-  # inout.setAtt(file=path.EXCHFILE,attname="GradVolName",attval=gV)
-  # inout.setAtt(file=path.EXCHFILE,attname="Volume",attval=vol)
-  inout.setAtt(file=path.EXCHFILE,attname="GradName",attval=g)
-      
-  # Velocity extension - regularization via FreeFem
-  proc = subprocess.Popen(["{FreeFem} {ffdescent} > /dev/null 2>&1".format(FreeFem=path.FREEFEM,ffdescent=path.FFDESCENT)],shell=True)
-  proc.wait()
-    
-  if ( proc.returncode != 0 ) :
-    print(proc.returncode)
-    raise Exception("Error in calculation of descent direction; abort.")
+    # Velocity extension - regularization via FreeFem
+    proc = subprocess.Popen(["{FreeFem} {ffdescent} > /dev/null 2>&1".format(
+        FreeFem=path.FREEFEM, ffdescent=path.FFDESCENT)], shell=True)
+    proc.wait()
 
+    if (proc.returncode != 0):
+        print(proc.returncode)
+        raise Exception("Error in calculation of descent direction; abort.")
 
-#######################################################################################
-#######################################################################################

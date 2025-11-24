@@ -9,16 +9,6 @@ Informations:
    - To run from the console inside the magmaOpt/ folder : python -m sources.main
    - Mesh compatibility problem : export in .mesh format crashes with GMSH 4.14 
        -> Downgrade to GMSH 4.13
-       
-       
-Usefull links :
-    github page : https://github.com/Th2ooo/magmaOpt
-    sotuto paper : https://dapogny.org/publis/sotuto.pdf
-    Tutorial scientific computing (theory+practice) : https://dapogny.github.io/sctuto/index.html
-    pierre jolivet freefem parralel computing tuto : https://joliv.et/FreeFem-tutorial/
-    GMSH doc : https://gmsh.info/doc/texinfo/gmsh.html  
-    MMG doc: https://www.mmgtools.org/documentation/documentation_index.html
-    medit doc : https://www.ljll.fr/frey/logiciels/Docmedit.dir/
     
 """
 
@@ -44,12 +34,12 @@ import sources.basemesh as basemesh
 import sources.insar as insar
 
 
-go = input("ARE YOU SURE YOU WANT TO RUN ??? ")
+go = input("ARE YOU SURE YOU WANT TO RUN ? (y/n) ")
 if go != "y":
     raise Exception("not running")
 
 
-restart = 0 #Restart iteration
+restart = path.RESTARTIT #Restart iteration
 #%% #### Initialization
 ###############################################################
 ##################      START PROGRAM    ######################

@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+GMSH based advanced mesh creation functions
+
 Created on Fri May 24 00:24:58 2024
 
-@author: th2o
+@author: Théo Perrot
 """
 import os
 import gmsh 
@@ -12,7 +14,6 @@ import subprocess
 import numpy as np
 
 from sources.utils import Extent
-
 import sources.path as path
 
 
@@ -87,7 +88,6 @@ def build_mesh(out,poss,rads,ext=[],inhom=False,rename=False,mmg=True,verb=3,deb
         occ.addSphere(xs, ys, zs, 1,tag=volsrcdts[i][1])
         occ.dilate([volsrcdts[i]],xs,ys,zs,rx,ry,rz)
     
-        
     if debug : 
         occ.synchronize()
         gmsh.fltk.run()
@@ -189,6 +189,7 @@ def build_mesh(out,poss,rads,ext=[],inhom=False,rename=False,mmg=True,verb=3,deb
         
         
     ####Saving
+    
     if os.access(os.path.dirname(out), os.W_OK):     # Check if we can write to this location
         print(f'Writing mesh in {out}')
         gmsh.write(out)
@@ -200,7 +201,8 @@ def build_mesh(out,poss,rads,ext=[],inhom=False,rename=False,mmg=True,verb=3,deb
     
     
     
-    #### Renaming 
+    #### Renaming (usefull for several sources)
+    
     if rename :
         mshmed=meshio.read(out) #load with meshio
         
@@ -253,26 +255,10 @@ def build_mesh(out,poss,rads,ext=[],inhom=False,rename=False,mmg=True,verb=3,deb
 
     
 
-    
-    
-    
-    
-    
-def inimsh(mesh,psrc,rads,ext=[],vizu=False,inhom=True,verb=3) :
-  
-    
-    build_mesh(mesh,ext,psrc,rads,vizu,inhom,verb)
 
 
 
-
-
-
-
-
-
-      
-if  __name__ == "__main__":
-    # build_mesh("./res/test.mesh",inhom=1,debug=1)
-    inimsh("./res/test1.mesh",vizu=1,inhom=1)
+#### Tests
+if  __name__ == "__main__":    
+    build_mesh("./res/test.mesh",inhom=1,debug=1)
     

@@ -10,7 +10,6 @@ string SOL        = getsParam(EXCHFILE,"DispName");
 int REFUP        = getiParam(EXCHFILE,"Refup");
 int REFNEU        = getiParam(EXCHFILE,"Neumann");
 int REFISO        = getiParam(EXCHFILE,"ReferenceBnd");
-int OUTANA    =  getiParam(EXCHFILE,"OutAna");
 string OSOL        = getsParam(EXCHFILE,"ObjDisp");
 
 /* Loading mesh */
@@ -42,6 +41,4 @@ setrParam(EXCHFILE,"Error",err);
 cout << "ERROR : " << err << endl ;
 // medit("errormsh",Th);
 
-/*Out analytic displacement field*/
-if (OUTANA==1){
-printvec3(OSOL,uxo[],uyo[],uzo[]);}
+

@@ -210,7 +210,7 @@ def export_3Dviews(nit=nit):
     for it in range(nit):
         
         f3D = Path(path.PLOTS + f"3d_views/frame_{it:04d}.png")
-        fsi = Path(path.PLOTS + f"side_views/frame_{it:04d}.png")
+        fsi = Path(path.PLOTS + f"top_views/frame_{it:04d}.png")
         
         if f3D.is_file() and fsi.is_file() :
             print(f"View it {it} already exist, skipped")
@@ -360,7 +360,7 @@ def composite_animation(nit=nit-3,fps=5) :
         
         # Load and update side view image
         try:
-            img = mpimg.imread(path.PLOTS + f"side_views/frame_{it:04d}.png")
+            img = mpimg.imread(path.PLOTS + f"top_views/frame_{it:04d}.png")
             img_side.set_data(img)
         except FileNotFoundError:
             print(f"Side image for iteration {it} not found")

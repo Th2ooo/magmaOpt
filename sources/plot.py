@@ -1,4 +1,4 @@
-    #!/usr/bin/pythonw
+#!/usr/bin/pythonw
 # -*-coding:Utf-8 -*
 
 import sources.path as path
@@ -12,9 +12,8 @@ from sources.utils import LOS_set,mesh_labmask
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-import mpltern #optional, used for ternary plot
 import colormaps as cm
+
 SMALL_SIZE, MEDIUM_SIZE, BIGGER_SIZE = 18, 18, 30;
 plt.rcParams.update({
     'font.family' : 'sans-serif' , 'font.size': MEDIUM_SIZE ,  'axes.titlesize' : MEDIUM_SIZE , 'axes.labelsize' : MEDIUM_SIZE + 2, 
@@ -42,9 +41,11 @@ bestit=np.argmin(errl)
 lastit = int(itl[-1])
 
 
+
 def plot_conv_mult(save=False) :
     """
     Multiviews plot of the  convergence of shape optimization procedure
+    
     Parameters
     ----------
     save : TYPE, optional
@@ -56,7 +57,6 @@ def plot_conv_mult(save=False) :
 
     """
     ## Convergence plots
-
     
     # Load histogram
     bestit = np.argmin(errl)
@@ -144,10 +144,6 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         DESCRIPTION. The default is None.
     save : TYPE, optional
         DESCRIPTION. The default is True.
-
-    Returns
-    -------
-    None.
 
     """
     
@@ -348,55 +344,6 @@ def plot_conv_mono(nit=lastit,save=False) :
         
         
         
-#!!!! TERNARY DOES NOT WORK FOR INDEPENDANT VARIABLES
-def plot_traj(save=False) :
-    """
-    Ternary plot to vizualize the trajectory of the barycenter as well as the volume change
-
-    Returns
-    -------
-    None.
-
-    """
-    # Convert 3D coordinates to ternary coordinates (sum to 1)
-    def to_ternary(x, y, z):
-        bxlt,bylt,bzlt = x+path.XEXT/2,y+path.YEXT/2,z+path.ZEXT
-        bxlt,bylt,bzlt = bxlt/path.XEXT,bylt/path.YEXT,bzlt/path.ZEXT
-        return bxlt,bylt,bzlt
-    
-    fig = plt.figure(figsize=(10,10),layout="constrained")
-    ax = fig.add_subplot(projection="ternary")
-    
-    # Convert data to ternary coordinates
-    bxl_tern, byl_tern, bzl_tern = to_ternary(np.array(bxl), np.array(byl), np.array(bzl))
-    
-    ax.set_tlim(0.2, 0.8)    # X limits
-    ax.set_llim(0.2, 0.8)    # Y limits  
-    ax.set_rlim(0.2, 0.8)    # Z limits (focus on high Z)
-    
-    # Plot the converted data
-    c = ax.scatter(bxl_tern, byl_tern, bzl_tern, c=itl, edgecolor="none", cmap="turbo",label="Succesive position of the shape")
-    fig.colorbar(c, label="Iteration number")
-    
-    ax.set_tlabel("X (m)")
-    ax.set_llabel("Y (m)") 
-    ax.set_rlabel("Z (m)")
-    
-    if path.ERRMOD != 2 :
-        xst_tern, yst_tern, zst_tern = to_ternary(
-            np.array([path.XTs[0][0]]), 
-            np.array([path.XTs[0][1]]), 
-            np.array([path.XTs[0][2]])
-        )
-        ax.scatter(xst_tern, yst_tern, zst_tern, marker='x', c="red", s=100,label="Objective source position")
-        
-    ax.legend()
-
-    
-    if save :
-        plt.savefig(path.PLOTS+"tern_traj.pdf")
-    else :
-        plt.show()
 
 
 
@@ -499,7 +446,6 @@ print("**********************************************")
 #### Tests
 if __name__ == "__main__" :
     print(f"CURRENT IT {nit-1}, BESTIT {bestit}")
-    plot_traj(1)
     plot_shape(it=bestit,save=1)
     plot_dmr(it=bestit,save=1)
     plot_dmr(it=nit-1,save=0)

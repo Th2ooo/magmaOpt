@@ -1,4 +1,4 @@
-<img align="right" width="200" src="imgs/body.png" alt="magmaOpt">
+<img align="right" width="20%" src="imgs/body.png" alt="magmaOpt">
 
 
 # magmaOpt
@@ -17,8 +17,6 @@ Shape optimization code to infer the shape of ground deformation sources in volc
 This project is forked from [sotuto shape optimization code](https://github.com/dapogny/sotuto)
 but has been significantly modified and extended for this specific application. It is released alongside an article (in submission process, preprint available here) providing explanation of the method and demonstrate on synthetic and real test cases.
 
----
-
 
 **A short tutorial** on how to use the code and tune its main parameters is available in [**tutorial.md**](tutorial.md).
 
@@ -28,19 +26,19 @@ but has been significantly modified and extended for this specific application. 
 
 **3D Visualization of the shape and the domain (Paraview)**
 
-<img src="imgs/shape_dom.png" alt="3D View" width="500"/>
+<img src="imgs/shape_dom.png" alt="3D View" width="80%"/>
 
 
 
 **Optimization Progress**
 
-<img src="imgs/conv.png" alt="Progress" width="500"/>
+<img src="imgs/conv.png" alt="Progress" width="80%"/>
 
 
 
 **Data / Model comparison for real data**
 
-<img src="imgs/dmr.png" alt="DMR" width="500"/>
+<img src="imgs/dmr.png" alt="DMR" width="80%"/>
 
 
 ---
@@ -79,18 +77,20 @@ To verify the setup, run:
 ```bash
 python sources/inout.py
 ```
-**Note:** If you are a macOS user, ensure all dependencies are compatible with your system.
+**Note:** If you are a macOS user, modify "sed" by "gsed" in the files `sources/path.py` and `sources/inout.idp` for compatibility.
 
 ---
 
 ## Citation
 If you use this software in your research, please cite the corresponding paper (in submission process):
 ```bibtex
-unpublished{perrot2025shape,
+
+@unpublished{perrot2025shape,
   author = "Perrot Théo, Sigmundsson Freysteinn, Dapogny Charles",
   title  = "A Shape Optimization Approach for Inferring Sources of Volcano Ground Deformation",
   year   = 2025
 }
+
 ```
 
 ---
