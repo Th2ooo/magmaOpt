@@ -9,7 +9,7 @@ procedure.
 """
 
 
-#### Files paths
+#### Main paths
 
 RES     = "./res/"       # Directory for results
 PLOTS   = RES+"plots/"   # Directory to output the plots and animations 
@@ -112,15 +112,13 @@ KS = [OBJDISP.replace("sol",f"k{i}.sol") for i in range(NTCK)]
 
 
 
-#### Executables paths
+#### Other paths
 
 # Call for the executables of external codes
 FREEFEM = "FreeFem++"
 MSHDIST = "mshdist"
 ADVECT  = "/home/th2o/Softs/Advection/build/advect"
 MMG3D   = "/home/th2o/Softs/mmg/build/bin/mmg3d_O3"
-
-
 
 # Path to FreeFem scripts
 FFTEST         = SCRIPT + "testFF.edp"
@@ -133,7 +131,6 @@ FFADJ          = SCRIPT + f"adjoint{ERRMOD}.edp"#adjoint state solving script (o
 FFGRADE        = SCRIPT + "gradE.edp" # grad error script
 FFSTATS          = SCRIPT + "stats.edp"
 FFTRUNC        = SCRIPT + "truncvid.edp"
-
 
 # Names of output and exchange files
 DEFMMG       = "./DEFAULT.mmg3d"
