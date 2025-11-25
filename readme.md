@@ -56,7 +56,7 @@ cd magmaOpt
 ### 2️. Python Requirements
 The code is written in Python (3.8+). It is recommended to use a virtual environment (e.g., `venv` or `conda`). Install the required packages:
 ```bash
-pip install numpy matplotlib scipy gmsh meshio pyvista
+pip install numpy matplotlib scipy gmsh==4.13.1 meshio pyvista
 ```
 
 ### 3️. External Dependencies
