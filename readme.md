@@ -14,7 +14,7 @@ Shape optimization code to infer the shape of ground deformation sources in volc
 
 > **Note**: This code is in early development stage. If you encounter bugs or would like to contribute, please email me at [theo.perrot@ens-paris-saclay.fr](mailto:theo.perrot@ens-paris-saclay.fr)
 
-This project is forked from [sotuto shape optimization code](https://github.com/dapogny/sotuto) but has been significantly modified and extended for this specific application. It is released alongside an [**article**](https://hal.science/hal-05373455) (in submission process to Geophysical Research Letters, preprint available) providing explanation of the method and demonstrate on synthetic and real test cases.
+This project is forked from [sotuto shape optimization code](https://github.com/dapogny/sotuto) but has been significantly modified and extended for this specific application. It is released alongside an [**article**](https://hal.science/hal-05373455) (submitted to Geophysical Research Letters, preprint available) providing explanation of the method and demonstrate on synthetic and real test cases.
 
 
 **A short tutorial** on how to use the code and tune its main parameters is available in [`tutorial.md`](tutorial.md).
