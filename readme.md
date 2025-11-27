@@ -14,11 +14,10 @@ Shape optimization code to infer the shape of ground deformation sources in volc
 
 > **Note**: This code is in early development stage. If you encounter bugs or would like to contribute, please email me at [theo.perrot@ens-paris-saclay.fr](mailto:theo.perrot@ens-paris-saclay.fr)
 
-This project is forked from [sotuto shape optimization code](https://github.com/dapogny/sotuto)
-but has been significantly modified and extended for this specific application. It is released alongside an article (in submission process, preprint available here) providing explanation of the method and demonstrate on synthetic and real test cases.
+This project is forked from [sotuto shape optimization code](https://github.com/dapogny/sotuto) but has been significantly modified and extended for this specific application. It is released alongside an [**article**](https://hal.science/hal-05373455) (in submission process to Geophysical Research Letters, preprint available) providing explanation of the method and demonstrate on synthetic and real test cases.
 
 
-**A short tutorial** on how to use the code and tune its main parameters is available in [**tutorial.md**](tutorial.md).
+**A short tutorial** on how to use the code and tune its main parameters is available in [`tutorial.md`](tutorial.md).
 
 
 ## Example Outputs
@@ -82,13 +81,19 @@ python sources/inout.py
 ---
 
 ## Citation
-If you use this software in your research, please cite the corresponding paper (in submission process):
+If you use this software in your research, please cite the corresponding article (in submission process):
 ```bibtex
 
 @unpublished{perrot2025shape,
-  author = "Perrot Théo, Sigmundsson Freysteinn, Dapogny Charles",
-  title  = "A Shape Optimization Approach for Inferring Sources of Volcano Ground Deformation",
-  year   = 2025
+  TITLE = {{A shape optimization approach for inferring sources of volcano ground deformation}},
+  AUTHOR = {Perrot, Th{\'e}o and Sigmundsson, Freysteinn and Dapogny, Charles},
+  URL = {https://hal.science/hal-05373455},
+  NOTE = {working paper or preprint},
+  YEAR = {2025},
+  MONTH = Nov,
+  PDF = {https://hal.science/hal-05373455v1/file/magma_preprint.pdf},
+  HAL_ID = {hal-05373455},
+  HAL_VERSION = {v1},
 }
 
 ```
