@@ -8,7 +8,7 @@ To interact with the code as a standard user, the only file you need to modify i
 
 ### `path.py` parameters
 
-You only need to configure this file if you want to run your own test cases. Here is a short description of what  you can modify, section by section. In the provided state, `path.py` is parametrized to run a test case similar to the one presented section 3.1 of the article.
+You only need to configure this file if you want to run your own test cases. Here is a short description of what  you can modify, section by section. In the provided state, `path.py` is parametrized to run a test case similar to the one presented section 3.1 of the (article)[https://hal.science/hal-05373455].
 
 - `Main paths`: configure where the diverse folder needed for the execution are
 - `Labels`: Labels given to the different subsets of the mesh (Omega, Gamma, Gamma_u ...). You don't need to change it unless you have specific needs for the initial mesh.
@@ -34,13 +34,13 @@ The mesh exchange format used in this project is `.mesh`, for its compatibility 
 
 ## Tuning the convergence
 
-Depending on the problem you want to solve, the descent may fall in a local minimum and convergence may be never reached (as detailled in the Supporting Information Text S3 of the corresponding preprint). Here we provide a description of how certain parameters may influence the descent, so you can tune them to (hopefully) reach a satysfing convergence.
+Depending on the problem you want to solve, the descent may fall in a local minimum and convergence may be never reached (as detailled in the (Supporting Information Text S3)[https://hal.science/hal-05373455] of the corresponding preprint). Here we provide a description of how certain parameters may influence the descent, so you can tune them to (hopefully) reach a satysfing convergence.
 
 ### Meshing
 
 Obviously, the finer the mesh, the better. A too coarse mesh may have maning drawbacks. It can blur the  error function by averaging the surface displacement on large elements and artificailly modify its value, especially when the objective field has fine artifacts. A coars discretization can also reduce the freedom of the shape optimization, by preventing the devloppment of features of about the element size, which can be a drawback and create artificial local minima. In the end, it is as usual a tradeoff between accuracy and execution time. In the future, some efforts are planned to parallelize some of the steps in the algorithm (mainly FreeFem computations) to reach faster execution.
 
-**Regularization** The regularization lenght `ALPHA` matters. It is the lenght on which the gradient computed on the shape bounday Gamma is stretched/diffused in the domain D\Omega. If it is too small, may lack smoothness and "regularity", if it is too large, it oversmoothes the gradient and loose fine features. Tuning it can sometimes help when the descent is stuck. See Supporting Information Text S2 for additional details.
+**Regularization** The regularization lenght `ALPHA` matters. It is the lenght on which the gradient computed on the shape bounday Gamma is stretched/diffused in the domain D\Omega. If it is too small, may lack smoothness and "regularity", if it is too large, it oversmoothes the gradient and loose fine features. Tuning it can sometimes help when the descent is stuck. See [Supporting Information Text S2](https://hal.science/hal-05373455) for additional details.
 
 
 ### Line search
