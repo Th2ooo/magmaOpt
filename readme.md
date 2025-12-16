@@ -3,6 +3,11 @@
 
 # magmaOpt
 
+
+
+[![DOI](https://zenodo.org/badge/1094589830.svg)](https://doi.org/10.5281/zenodo.17697386)
+
+
 Shape optimization code to infer the shape of ground deformation sources in volcanic area.
 
 
@@ -86,10 +91,17 @@ If you use this software in your research, please cite the corresponding paper (
 ```bibtex
 
 @unpublished{perrot2025shape,
-  author = "Perrot Théo, Sigmundsson Freysteinn, Dapogny Charles",
-  title  = "A Shape Optimization Approach for Inferring Sources of Volcano Ground Deformation",
-  year   = 2025
+  TITLE = {{A shape optimization approach for inferring sources of volcano ground deformation}},
+  AUTHOR = {Perrot, Th{\'e}o and Sigmundsson, Freysteinn and Dapogny, Charles},
+  URL = {https://hal.science/hal-05373455},
+  NOTE = {working paper or preprint},
+  YEAR = {2025},
+  MONTH = Nov,
+  PDF = {https://hal.science/hal-05373455v1/file/magma_preprint.pdf},
+  HAL_ID = {hal-05373455},
+  HAL_VERSION = {v1},
 }
+
 
 ```
 
