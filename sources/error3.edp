@@ -1,4 +1,4 @@
-/* Calculation of the compliance of the input structure */
+/* Calculation of the ERROR of the input structure */
 include "./sources/inout.idp"
 include "./sources/macros.idp"
 load "msh3"

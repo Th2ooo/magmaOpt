@@ -59,13 +59,13 @@ if not restart  :
     
     ## Creation of the initial mesh
     print("Creating intial mesh")
-    basemesh.build_mesh(path.step(0,"mesh"),[path.X0],[path.R0],inhom=path.INHOM,mmg=True,vizu=1,debug=0)
+    basemesh.build_mesh(path.step(0,"mesh"),path.X0,path.R0,inhom=path.INHOM,mmg=True,vizu=1)
     
     
     ## Initialize error 
     if path.ERRMOD == 0 or path.ERRMOD == 1 or path.ERRMOD == 3 : 
         #Evaluate the min of error function -> create a mesh with source located at target solution
-        basemesh.build_mesh(path.OBJMESH,path.XTs,path.RTs,inhom=0,mmg=True,vizu=1,debug=0,rename=1) #creating mesh of the solution
+        basemesh.build_mesh(path.OBJMESH,path.XTs,path.RTs,inhom=0,mmg=True,vizu=1,rename=1) #creating mesh of the solution
         
         #Compute the error of this "best" mesh
         e = mechtools.elasticity(path.OBJMESH,path.OBJDISP) # computing its displacement field

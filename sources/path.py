@@ -34,33 +34,33 @@ REFEXT        = 2           # Reference of the exterior domain D\Omega
 #### Physical problem paramaters
 
 # Elastic quantities
-YOUNG =  25.4e9         # Young modulus, Pa (from sigmundsson 2024)
-POISS =  0.257          # Poison's ratio (from sigmundsson 2024)
+YOUNG =  10e9          # Young modulus, Pa (from sigmundsson 2024)
+POISS =  0.25          # Poison's ratio (from sigmundsson 2024)
 PRESS = 2e6             # Pressure change DP (source load), Pa
 
 # Initial guess Omega_0 parameters
-X0 = [0.,0,-4e3]        # xyz coordinates of the shape center (it 0), m
-R0 = [1e3,1e3,1e3]      # rx ry rz radii of the source, m
+X0 = [0.,0,-2e3]        # xyz coordinates of the shape center (it 0), m
+R0 = [0.5e3,0.5e3,0.5e3]      # rx ry rz radii of the source, m
 
 # Objective / target source(s) Omega* parameters (for ERRMOD 0 ou 1 only) 
-XTs = np.array([[2.5e3,2.5e3,-2e3]])        #centers, m
-RTs = np.array([[1e3,1e3,1e3]])             #radii, m
+XTs = np.array([[0,0,-2e3]])        #centers, m
+RTs = np.array([[2e3,1e3,1e3]])             #radii, m
 
 # Extent of the simulated doain
 XEXT          = 10e3 #extent of domain in X direction, m
 YEXT          = 10e3 #extent of domain in Y direction, m
-ZEXT          = 10e3 #extent of domain in Z direction, m
+ZEXT          = 6e3 #extent of domain in Z direction, m
 
 
 
 #### Meshing parameters
 
-MESHSIZ       = 400      # nominal size of thee mesh (used by initial mesher and as normalisation length), m
-HMIN          = 100      # minimum autorized element lenght, m
-HMAX          = 800      # maximum authorized element length, m
+MESHSIZ       = 300      # nominal size of thee mesh (used by initial mesher and as normalisation length), m
+HMIN          = 50      # minimum autorized element lenght, m
+HMAX          = 600      # maximum authorized element length, m
 HAUSD         = 50       # mawimum authorized gap between ideal shape and its mesh nodes, m
 
-HGRAD         = 1.3      # max length ratio allowed between 2 adjascent edges
+HGRAD         = 1.8      # max length ratio allowed between 2 adjascent edges
 INHOM         = False    # inhomogenous meshing for wider domains simulation (works only for initial mesh, then mmg overides it)
 DILA          = 1.5      # dilataion parameter for the domain element size if inhomogeneous meshing is selected
 FINEUP        = True     # implement refinement on  upper boundary with mmg for more accurate error

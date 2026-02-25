@@ -17,7 +17,7 @@ from sources.utils import Extent
 import sources.path as path
 
 
-def build_mesh(out,poss,rads,ext=[],inhom=False,rename=False,mmg=True,verb=3,debug=0,vizu=False) :
+def build_mesh(out,poss,rads,ext=[],inhom=False,rename=False,mmg=True,verb=3,vizu=False) :
     """
     Build initial mesh with magma chamber
 
@@ -25,9 +25,9 @@ def build_mesh(out,poss,rads,ext=[],inhom=False,rename=False,mmg=True,verb=3,deb
     ----------
     out : string
         output file where the mesh is written (has to be .mesh to be compatible with freefem/mmg)
-    poss : list of list of floats
+    poss : list of list of floats, or list of floats if 1 source only
         position of the source (X,Y,Z direction)
-    rads : list of list of floats
+    rads : list of list of floats or list of floats if 1 source only
         radii of the source (X,Y,Z direction)
     ext : list of floats, optional
         extent of the domain (X,Y,Z direction), if not provided, values from the path are used
@@ -39,8 +39,6 @@ def build_mesh(out,poss,rads,ext=[],inhom=False,rename=False,mmg=True,verb=3,deb
         Post gmsh remeshing with mmg3d (prevent domains edge to be remeshed). default True
     verb : bool, optional
         verboisity level of gmsh outputs. The default is 3.
-    debug : bool, optional
-        If true, plots and outputs additional steps for debugging purpose. The default is 0.
 
     Returns
     -------
@@ -51,9 +49,16 @@ def build_mesh(out,poss,rads,ext=[],inhom=False,rename=False,mmg=True,verb=3,deb
     # COMMENTS ON GMSH
     # when saving to mesh formmat, physical groups are not preserved, only geometrical ones
     # possibiliy to rename with meshio
-    
+    debug = 0 # If true, plots and outputs additional steps for debugging purpose. The default is 0.
+
     
     ####Paramters
+    poss = np.array(poss,dtype=float)
+    rads = np.array(rads,dtype=float)
+    if poss.ndim == 1 : #if only one source
+        poss = poss[np.newaxis,:]
+        rads = rads[np.newaxis,:]
+
     if not ext :
         ext = [path.XEXT,path.YEXT,path.ZEXT]
     domex = Extent()
