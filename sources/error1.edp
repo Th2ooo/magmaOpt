@@ -93,7 +93,7 @@ Vh ux,uy,uz,utemx,utemy,utemz;
 VhT uxT,uyT,uzT;
 
 /* Other parameters */
-real J;
+real J, r;
 
 /* Read solution and observation */
 loadvec3(SOL,ux[],uy[],uz[]);
@@ -107,8 +107,15 @@ utemz = uzT;
 /* Calculate objective */
 J = int2d(Th,REFTARG)( (ux-utemx)^2 + (uy-utemy)^2 + (uy-utemy)^2 );
 
-/* Save result */
+/*Calculate residuals magnitude*/
+r = sqrt(J/int2d(Th,REFTARG)( (utemx)^2 + (utemy)^2 + (utemy)^2 ));
+
+
+/* Save results */
 setrParam(EXCHFILE,"Error",J);
+setrParam(EXCHFILE,"ResMag",r);
+cout << "ERROR : " << J << endl ;
+
 
 
 

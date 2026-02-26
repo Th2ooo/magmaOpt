@@ -117,8 +117,9 @@ def error(mesh, u):
         raise Exception("Error in error calculation; abort.")
 
     [err] = inout.getrAtt(file=path.EXCHFILE, attname="Error")
+    [resi] = inout.getrAtt(file=path.EXCHFILE, attname="ResMag")
 
-    return err
+    return err, resi
 
 
 def stats(mesh):

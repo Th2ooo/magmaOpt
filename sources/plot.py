@@ -3,11 +3,12 @@
 
 import sources.path as path
 import sources.insar as insar
+
 import numpy as np
 import meshio
 import os 
 import pyvista as pv
-from sources.utils import LOS_set,mesh_labmask
+from sources.utils import LOS_set,mesh_labmask,NRMSD
 
 
 import matplotlib.pyplot as plt
@@ -134,7 +135,7 @@ def plot_conv_mult(save=False) :
 
 def plot_dmr(it=nit-2,ntplot=[],save=True) :
     """
-    Plot data model residuals
+    Plot data model residuals, and compute L2 error of the overall field
 
     Parameters
     ----------
@@ -172,7 +173,8 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
     #get Insar data
     outtmp = path.PLOTS+"tmplos/"
     os.makedirs(outtmp,exist_ok=True)
- 
+    
+    restots = []
     subi = -1
     for i,(tck,hea,inc) in enumerate(zip(path.TCKS,path.HEAS,path.INCS)) :
         print("Ploting",tck,"on",path.step(it,"mesh"))
@@ -239,7 +241,9 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
         ax.ticklabel_format(style='sci',scilimits=(0,0), useMathText=True)
         fig.colorbar(cm2,label="LOS residuals (mm)", ax=ax, location='right')
 
-
+        restot = NRMSD(modlos,dat)
+        restots += [restot]
+        print(f"NMRSD for track {tck}: {restot}")
         
         
     for i in range(len(ntplot)) :
@@ -247,7 +251,7 @@ def plot_dmr(it=nit-2,ntplot=[],save=True) :
     for i in range(3) :
         axs[-1,i].set(xlabel="Easting (km)") 
 
-
+    print("Average residuals for all the tracks: ",np.mean(restots))
   
     if save :
         plt.savefig(path.PLOTS+"DMRplot.pdf")
@@ -300,9 +304,9 @@ def plot_conv_mono(nit=lastit,save=False) :
     if path.ERRMOD != 2 :
         ax3 = ax.twinx()
         distn = np.sum((np.column_stack([bxl,byl,bzl])-path.XTs[0][np.newaxis,:])**2,axis=1)**0.5
-        ax3.set_ylabel("Shapes distance $||\mathbf{b}_{\Omega}-\mathbf{b}_{obj}||$ ($m$)",color=axcol,labelpad=20)
+        ax3.set_ylabel("Shapes distance $||\mathbf{b}_{\Omega}-\mathbf{b}_{obj}||$ (km)",color=axcol,labelpad=20)
     
-        p3=ax3.plot(itl[:nit],distn[:nit],color=axcol,linewidth=1,ls="--",label="Distance of shapes $||\mathbf{x}_{\Omega}-x_{obj}||$",zorder=1)
+        p3=ax3.plot(itl[:nit],distn[:nit]/1e3,color=axcol,linewidth=1,label="Distance of shapes $||\mathbf{x}_{\Omega}-x_{obj}||$",zorder=1)
         ax3.tick_params(axis='y',colors=axcol)
         ax3.zorder = 1 
         ax3.patch.set_visible(False)

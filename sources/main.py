@@ -71,7 +71,7 @@ if not restart  :
         e = mechtools.elasticity(path.OBJMESH,path.OBJDISP) # computing its displacement field
         
         if path.ERRMOD == 0 : #Analytical error against mogi soultion of best mesh possible
-            bestE = mechtools.error(path.OBJMESH,path.OBJDISP) 
+            bestE, _ = mechtools.error(path.OBJMESH,path.OBJDISP) 
         elif path.ERRMOD == 1 or path.ERRMOD == 3 : #Best possible error is 0 bc best mesh exists
             bestE = 0.0 
 
@@ -83,7 +83,7 @@ if not restart  :
     print("Null test computation ...")
     inout.setAtt(file=path.EXCHFILE,attname="Pressure",attval=0.0) # -> set 0 pressure to have a 0 disp field
     mechtools.elasticity(path.step(0,"mesh"),path.step(0,"u.sol"))
-    nullE = mechtools.error(path.step(0,"mesh"),path.step(0,"u.sol"))
+    nullE, _ = mechtools.error(path.step(0,"mesh"),path.step(0,"u.sol"))
     inout.setAtt(file=path.EXCHFILE,attname="Pressure",attval=path.PRESS) 
     print(f"Null test {nullE}")
 
@@ -97,7 +97,7 @@ if not restart  :
     
     # Calculation of the error of the shape
     print("Evaluation of intial error")
-    newE  = mechtools.error(path.step(0,"mesh"),path.step(0,"u.sol"))
+    newE, newResi  = mechtools.error(path.step(0,"mesh"),path.step(0,"u.sol"))
     curE = newE
     print(f"Minimal error reachable {bestE}")
     print("*** Initialization: Error {}".format(newE))
@@ -111,7 +111,7 @@ if not restart  :
 
 else : ## To restart loop at a given iteration
     itstart = restart
-    curE = mechtools.error(path.step(restart,"mesh"),path.step(restart,"u.sol"))
+    curE, curResi = mechtools.error(path.step(restart,"mesh"),path.step(restart,"u.sol"))
     histo = np.genfromtxt(path.HISTO,delimiter=" ")
     newE=curE
     coef = histo[restart,3]
@@ -160,10 +160,11 @@ for it in range(itstart,path.MAXIT) :
     curEgrad = path.step(it,"E.grad.sol")
     curgrad = path.step(it,"grad.sol")
     curE = newE
+    curResi = newResi
     
-    print("**************************************************************************************")
-    print(f"Iteration {it}: Error {curE:.2E}, Obj {bestE:.2E} (null={nullE}), Coeff {coef:.3f}")
-    print("**************************************************************************************")
+    print("********************************************************************************************")
+    print(f"It {it}: Error {curE:.2E}, Obj {bestE:.2E} (null={nullE}), Resi {curResi:.3f}, Coeff {coef:.3f}")
+    print("*******************************************************************************************")
     
     #### Start of iteration
     
@@ -206,7 +207,7 @@ for it in range(itstart,path.MAXIT) :
         mechtools.elasticity(newmesh,newu)
       
         # Calculation of the new value of error
-        newE = mechtools.error(newmesh,newu)
+        newE, newResi = mechtools.error(newmesh,newu)
         print(f"    New error {newE:.2E}")
 
         # Decision

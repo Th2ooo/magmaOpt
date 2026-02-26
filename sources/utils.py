@@ -212,6 +212,8 @@ def cart_to_cyl(x,y,z,chx,chy,chz) :
     return chur, chuth, chuz
 
 
+NRMSD = lambda u,ur : (np.sum((u-ur)**2,axis=0)/np.sum(ur**2,axis=0))**0.5 ## definition according to crozier 2023
+
 
 
 

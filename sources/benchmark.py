@@ -180,9 +180,9 @@ for i,exo in enumerate(exos) :
 
             
 axs[0,0].set(ylabel="$u_x$ (m)",title="Ex 1A, $z/R=1.25$")
-axs[0,1].set(ylabel="$u_y$ (m)",title="Ex 1A, $z/R=1.25$")
+axs[0,1].set(ylabel="$u_z$ (m)",title="Ex 1A, $z/R=1.25$")
 axs[1,0].set(ylabel="$u_x$ (m)",xlabel=("$X$ (m)"),title="Ex 1C, $z/R=4$")
-axs[1,1].set(ylabel="$u_y$ (m)",xlabel=("$X$ (m)"),title="Ex 1C, $z/R=4$")
+axs[1,1].set(ylabel="$u_z$ (m)",xlabel=("$X$ (m)"),title="Ex 1C, $z/R=4$")
 
 plt.savefig(path.PLOTS+"benchmark.pdf")
 

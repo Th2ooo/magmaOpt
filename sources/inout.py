@@ -305,7 +305,7 @@ def recomp_histo() :
         vol,barx,bary,barz = mechtools.stats(curmesh)
         
         # xompute current error
-        curE = mechtools.error(curmesh,curu)
+        curE, _ = mechtools.error(curmesh,curu)
 
 
         # get old coef state
