@@ -60,7 +60,5 @@ def save_results(name="") :
     
 #### Tests    
 if __name__ == "__main__" :
-    
-    
       save_results("testcase1")
     

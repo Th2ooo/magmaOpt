@@ -31,7 +31,7 @@ REFEXT        = 2           # Reference of the exterior domain D\Omega
 
 
 
-#### Physical problem paramaters
+#### Physical parameters
 
 # Elastic quantities
 YOUNG =  10e9          # Young modulus, Pa (from sigmundsson 2024)
@@ -39,8 +39,8 @@ POISS =  0.25          # Poison's ratio (from sigmundsson 2024)
 PRESS = 2e6             # Pressure change DP (source load), Pa
 
 # Initial guess Omega_0 parameters
-X0 = [0.,0,-2e3]        # xyz coordinates of the shape center (it 0), m
-R0 = [0.5e3,0.5e3,0.5e3]      # rx ry rz radii of the source, m
+X0 = [3e3,0,-4e3]        # xyz coordinates of the shape center (it 0), m
+R0 = [1e3,2e3,2e3]      # rx ry rz radii of the source, m
 
 # Objective / target source(s) Omega* parameters (for ERRMOD 0 ou 1 only) 
 XTs = np.array([[2e3,2e3,-2e3]])        #centers, m
@@ -55,12 +55,12 @@ ZEXT          = 10e3 #extent of domain in Z direction, m
 
 #### Meshing parameters
 
-MESHSIZ       = 500      # nominal size of thee mesh (used by initial mesher and as normalisation length), m
-HMIN          = 20      # minimum autorized element lenght, m
-HMAX          = 1000      # maximum authorized element length, m
+MESHSIZ       = 400      # nominal size of thee mesh (used by initial mesher and as normalisation length), m
+HMIN          = 200      # minimum autorized element lenght, m
+HMAX          = 700      # maximum authorized element length, m
 HAUSD         = 50       # mawimum authorized gap between ideal shape and its mesh nodes, m
 
-HGRAD         = 1.3      # max length ratio allowed between 2 adjascent edges
+HGRAD         = 1.8      # max length ratio allowed between 2 adjascent edges
 INHOM         = False    # inhomogenous meshing for wider domains simulation (works only for initial mesh, then mmg overides it)
 DILA          = 1.5      # dilataion parameter for the domain element size if inhomogeneous meshing is selected
 FINEUP        = True     # implement refinement on  upper boundary with mmg for more accurate error
@@ -73,7 +73,7 @@ FINEUP        = True     # implement refinement on  upper boundary with mmg for 
 RESTARTIT = 0  # iteration where to restart the optimization, if it has been interupted. If 0, a new optimization is started and overwrites the former one
 
 # Error type 
-ERRMOD = 2
+ERRMOD = 1
 """ 0 if error is computed with analytic McTigue solution (BROKEN)
     1 if computed with numeric sol
     2 if computed with InSAR real data (bestE = null test)
@@ -88,9 +88,9 @@ EPS           = 1e-10      # Precision parameter in the computation of the desce
 ALPHA         = MESHSIZ*5  # Velocity extension - regularization lenght, few mesh elements (to extend gradient outside of REFISO)
 MAXIT         = 10000      # Maximum number of iterations in the shape optimization 
 MAXITLS       = 10         # Maximum number of iterations in the line search procedure
-TOL           = 0.02       # Tolerance for a slight increase in the ERROR
-MULTCOEF      = 1.3        # Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
-MINCOEF       = 0.01      # Minimum allowed step size 
+TOL           = 0.01       # Tolerance for a slight increase in the ERROR
+MULTCOEF      = 1.1        # >1 Multiplier for the step size (to accelerate convergence).1/MULTCOEF is applied if fail in reducing error
+MINCOEF       = 0.01       # Minimum allowed step size 
 MAXCOEF       = 2.         # Maximum allowed step size between two iterations (in # * MESHSIZ)
 INICOEF = 1                # initial step size 
 

@@ -2,14 +2,32 @@
 # -*-coding:Utf-8 -*
 
 
-"""
-author: Théo Perrot (modified from Charles Dapogny and Florian Feppon sotuto code)
+"""                                                                   ,---                       
+          ____                                 ____               /   /   \                ___     
+        ,'  , `.                             ,'  , `.            /   .     : ,-.----.    ,--.'|_   
+     ,-+-,.' _ |                          ,-+-,.' _ |           .   /   ;.  \\    /  \   |  | :,'  
+  ,-+-. ;   , ||            ,----._,.  ,-+-. ;   , ||          .   ;   /  ` ;|   :    |  :  : ' :  
+ ,--.'|'   |  || ,--.--.   /   /  ' / ,--.'|'   |  || ,--.--.  ;   |  ; \ ; ||   | .\ :.;__,'  /   
+|   |  ,', |  |,/       \ |   :     ||   |  ,', |  |,/       \ |   :  | ; | '.   : |: ||  |   |    
+|   | /  | |--'.--.  .-. ||   | .\  .|   | /  | |--'.--.  .-. |.   |  ' ' ' :|   |  \ ::__,'| :    
+|   : |  | ,    \__\/: . ..   ; ';  ||   : |  | ,    \__\/: . .'   ;  \; /  ||   : .  |  '  : |__  
+|   : |  |/     ," .--.; |'   .   . ||   : |  |/     ," .--.; | \   \  ',  / :     |`-'  |  | '.'| 
+|   | |`-'     /  /  ,.  | `---`-'| ||   | |`-'     /  /  ,.  |  ;   :    /  :   : :     ;  :    ; 
+|   ;/        ;  :   .'   \.'__/\_: ||   ;/        ;  :   .'   \  \   \ .'   |   | :     |  ,   /  
+'---'         |  ,     .-./|   :    :'---'         |  ,     .-./   `---`     `---'.|      ---`-'   
+               `--`---'     \   \  /                `--`---'                   `---`               
+                             `--`-'                                                                
+Version: 1.0                                
+Author: Théo Perrot, forked from Charles Dapogny and Florian Feppon sotuto code
+Github page: https://github.com/Th2ooo/magmaOpt
+Preprint associated with the code: https://hal.science/hal-05373455v1/file/magma_preprint.pdf
 
 Informations:
-   - To run from the console inside the magmaOpt/ folder : python -m sources.main
+   - To run from the console inside the magmaOpt/ folder : 'python -m sources.main'
    - Mesh compatibility problem : export in .mesh format crashes with GMSH 4.14 
        -> Downgrade to GMSH 4.13
-    
+   - Modify sources/path.py to run your own optimization cases
+
 """
 
 # system imports
@@ -18,7 +36,8 @@ import time
 import sys
 import os
 
-if 0 : #To activate if called from any other directory than magmaOpt
+diff_fold = False
+if diff_fold : #To activate if called from any other directory than magmaOpt
     # Set working directory to magma/ and add sources to path
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)

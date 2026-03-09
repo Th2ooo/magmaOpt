@@ -25,25 +25,24 @@ but has been significantly modified and extended for this specific application. 
 
 **A short tutorial** on how to use the code and tune its main parameters is available in [**tutorial.md**](tutorial.md).
 
-
 ## Example Outputs
 
 
 **3D Visualization of the shape and the domain (Paraview)**
 
-<img src="imgs/shape_dom.png" alt="3D View" width="80%"/>
+<img src="imgs/shape_dom.png" alt="3D View" width="60%"/>
 
 
 
 **Optimization Progress**
 
-<img src="imgs/conv.png" alt="Progress" width="80%"/>
+<img src="imgs/conv.png" alt="Progress" width="60%"/>
 
 
 
 **Data / Model comparison for real data**
 
-<img src="imgs/dmr.png" alt="DMR" width="80%"/>
+<img src="imgs/dmr.png" alt="DMR" width="60%"/>
 
 
 ---
@@ -61,8 +60,9 @@ cd magmaOpt
 ### 2️. Python Requirements
 The code is written in Python (3.8+). It is recommended to use a virtual environment (e.g., `venv` or `conda`). Install the required packages:
 ```bash
-pip install numpy matplotlib scipy gmsh meshio pyvista
+pip install numpy matplotlib scipy gmsh=4.13 meshio pyvista
 ```
+> **Note:** If you have a more recent version of GMSH, please downgrade to 4.13 or lower, as new versions cause compatibility issues.
 
 ### 3️. External Dependencies
 To run the code, you will need the following open-source tools:
@@ -82,12 +82,12 @@ To verify the setup, run:
 ```bash
 python sources/inout.py
 ```
-**Note:** If you are a macOS user, modify "sed" by "gsed" in the files `sources/path.py` and `sources/inout.idp` for compatibility.
+> **Note:** If you are a macOS user, modify "sed" by "gsed" in the files `sources/path.py` and `sources/inout.idp` for compatibility.
 
 ---
 
 ## Citation
-If you use this software in your research, please cite the corresponding paper (in submission process):
+If you use this software in your research, please cite the corresponding paper (in revision process):
 ```bibtex
 
 @unpublished{perrot2025shape,
@@ -108,4 +108,4 @@ If you use this software in your research, please cite the corresponding paper (
 ---
 
 ## License
-This project is licensed under the **GNU GPLv3** license. See [LICENSE](license.txt) for details.
+This project is licensed under the **GNU GPLv3** license. See [license](license.txt) for details.

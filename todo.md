@@ -2,47 +2,26 @@
 
 *author: Théo Perrot*
 *sept-nov 2025*
-
-## Things to do before publication
-
-- Main text :
-    - FS rereading
-    - Correction figures part 3 and text
-    - ereading charles modifs
-
-- Supp mat
-    - Write text S3-S4
-    - Figures
-        - Disp field test case
-        - 2nd test case
-        - InSAR test cases
-            - 1 MPa
-            - 5 MPa
-
-- Code
-    - publish
-    - clean
-    - add documentation
-    - write readme
-    - write tutorial
+*feb 2026*
 
 
 
 ## Things to fix
 
+- add ref supp
+- commentary fs
+- finish tutorial
+- publish in zenodo
+- modify data statement
+- fix supp mat according to guidelines
 
 
 ## Features to add
 
+- TO compute the null test, use a synthetic null dispacement field (as in insar interp) instead of solving elasticity for nothing
+
+
 - Improve ERRMOD 3  to be more flexible
-
-
-- README
-    - installation instructions
-    - basic usage
-    - examples
-
-- TO compute the null test, use a synthetic null dispacement field (as in insar interp) instead of solving elasticity
 
 
 - Common output dir for vtu outputs
@@ -68,17 +47,6 @@
 - Move all path managments  to Pathlib
 
 
-- Clean code
-    -remove usless funcs or scripts
-    -documentation for functions
-        -remove charles way of documenting
-    -comment
-
-- proper Readme
-    - install instructions
-    - licence
-    - screenshots
-
 - Improve Line Search (https://optimization.cbe.cornell.edu/index.php?title=Line_search_methods)
     - check for better adaptation of step size algorithms
     - Add more clever step size (coef) managment, using previous error/coef behavior
@@ -87,7 +55,53 @@
     - slows if flat
 
 
+
 ## Done
+
+
+
+- Clean code
+    -remove usless funcs or scripts
+    -documentation for functions
+        -remove charles way of documenting
+    -comment
+
+
+- proper Readme
+    - install instructions
+    - licence
+    - screenshots
+
+
+- README
+    - installation instructions
+    - basic usage
+    - examples
+
+
+
+Things to do before publication
+
+- Main text :
+    - FS rereading
+    - Correction figures part 3 and text
+    - ereading charles modifs
+
+- Supp mat
+    - Write text S3-S4
+    - Figures
+        - Disp field test case
+        - 2nd test case
+        - InSAR test cases
+            - 1 MPa
+            - 5 MPa
+
+- Code
+    - publish
+    - clean
+    - add documentation
+    - write readme
+    - write tutorial
 
 
 - Fix errmod 1
