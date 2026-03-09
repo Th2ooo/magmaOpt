@@ -5,8 +5,7 @@
 
 
 
-[![DOI](https://zenodo.org/badge/1094589830.svg)](https://doi.org/10.5281/zenodo.17697386)
-
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17697386.svg)](https://doi.org/10.5281/zenodo.17697386)
 
 Shape optimization code to infer the shape of ground deformation sources in volcanic area.
 
