@@ -68,7 +68,7 @@ Depending on you needs, you may modify the FreeFem scripts directly, or the pyth
 
 
 ## Useful links
-
+- Companion article ([supporting information](https://agupubs.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1029%2F2025GL120764&file=2025GL120764-sup-0001-Supporting+Information+SI-S01.pdf) are also avalaible) : https://doi.org/10.1029/2025GL120764 
 - Repo github page : https://github.com/Th2ooo/magmaOpt
 - **sotuto** code paper : https://dapogny.org/publis/sotuto.pdf
 - Tutorial on scientific computing introducing many of the concepts used in this work, by Charles Dapogny : https://dapogny.github.io/sctuto/index.html
