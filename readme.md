@@ -19,7 +19,7 @@ Shape optimization code to infer the shape of ground deformation sources in volc
 > **Note**: This code is in early development stage. If you encounter bugs or would like to contribute, please email me at [theo.perrot@ens-paris-saclay.fr](mailto:theo.perrot@ens-paris-saclay.fr)
 
 This project is forked from [sotuto shape optimization code](https://github.com/dapogny/sotuto)
-but has been significantly modified and extended for this specific application. It is released alongside an article (in submission process, preprint available here) providing explanation of the method and demonstrate on synthetic and real test cases.
+but has been significantly modified and extended for this specific application. It is released alongside an [article](https://doi.org/10.1029/2025GL120764) providing explanation of the method and demonstrate on synthetic and real test cases.
 
 
 **A short tutorial** on how to use the code and tune its main parameters is available in [**tutorial.md**](tutorial.md).
@@ -86,21 +86,20 @@ python sources/inout.py
 ---
 
 ## Citation
-If you use this software in your research, please cite the corresponding paper (in revision process):
+If you use this software in your research, please cite the corresponding paper:
 ```bibtex
 
-@unpublished{perrot2025shape,
-  TITLE = {{A shape optimization approach for inferring sources of volcano ground deformation}},
-  AUTHOR = {Perrot, Th{\'e}o and Sigmundsson, Freysteinn and Dapogny, Charles},
-  URL = {https://hal.science/hal-05373455},
-  NOTE = {working paper or preprint},
-  YEAR = {2025},
-  MONTH = Nov,
-  PDF = {https://hal.science/hal-05373455v1/file/magma_preprint.pdf},
-  HAL_ID = {hal-05373455},
-  HAL_VERSION = {v1},
+@article{perrot2026shape,
+author = {Perrot, Théo and Sigmundsson, Freysteinn and Dapogny, Charles},
+title = {A Shape Optimization Approach for Inferring Sources of Volcano Ground Deformation},
+journal = {Geophysical Research Letters},
+volume = {53},
+number = {7},
+pages = {e2025GL120764},
+doi = {https://doi.org/10.1029/2025GL120764},
+url = {https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/2025GL120764},
+year = {2026}
 }
-
 
 ```
 
